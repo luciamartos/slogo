@@ -6,6 +6,26 @@
 + Eric Song (ess42)
 + Ray Song (ys101)
 
+### Critique of Cell Society
+
++ Should not be part of API
+	+ setValue() in Cell
+	+ setRule() in Cell
+	+ setRT() in Cell - not something that another program should be able to see
+
++ Part of External API
+	+ setSimulation()
+	+ pauseSimulation()
+	+ startSimulation()
+	+ saveBoard()
+	
+
++ Part if Internal API
+	+ getProbCatch()
+	+ toString()
+	+ getFishReproductionInterval()
+
+
 ### Overall Plan for SLogo
 
 + Parsing will take place in the Interpreter class, which will accept **String inputs** as keys to a pre-defined Properties file.
@@ -19,19 +39,50 @@
 ### Create APIs
 
 + External
-	+ Frontend: 
+	+ Frontend: drawTurtle(), drawWindow(), accessHTMLPage()
 	+ Backend: Interpretation methods (ex: forward(), back())
 
 + Internal
-	+ Frontend: 
-	+ Backend: 
+	+ Frontend: updateView(), Draw(), Move()
+	+ Backend: parseInput(), Interpretation methods (ex: forward(), back()) + Helper Methods that help with the calculation (ex: recursive process that runs through the command). 
+
 
 ### Use Cases
 
 ```java
-	public Grid repopulateGrid(){
-		
-	}
+	parseInput();
+	interpretSubCommand();
+	checkError();
+	handleMotion();
+	updateView();
+	updateCommandHistory();	
+```
+
+```java
+	parseInput();
+	interpretSubCommand();
+	checkError();
+	displayError();
+```
+
+```java
+	parseInput();
+	interpretSubCommand();
+	checkError();
+	handleMotion();
+	updateView();
+	updateCommandHistory();	
+	
+```
+
+```java
+	parseInput();
+	interpretSubCommand();
+	checkError();
+	handleColorChange();
+	updateView();
+	updateCommandHistory();	
+	
 ```
  
 
