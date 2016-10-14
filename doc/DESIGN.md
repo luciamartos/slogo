@@ -1,4 +1,4 @@
-#SLogo Team 18 : Design
+# SLogo Team 18 : Design
 
 ### Introduction
 
@@ -38,6 +38,7 @@ Here is an image of the user interface:
 ![User Interface Diagram](user_interface.png "User Interface")
 
 The errors which the backend will look out for and display will be in one of the following categories: 
+
 **Invalid Input:** Command does not exist (if the string is not a registered command eg. “ketchup 10” )
 
 **Syntax Error:** Values are not what expected (if you call a command and its not followed by what it needs to run eg. “forward potato”)
@@ -108,7 +109,7 @@ Here are the APIs that will be implemented by the backend:
 	+ public String getStringValue()
 	+ public int getIntValue()
 
-In addition, there will be multiple edge cases where an exception will have to be thrown. **(Note: These exceptions will not disrupt the program. Appropriate error messages will be displayed to the user.)** Here are the possible edge cases, as well as the type of exception that will be thrown:
+In addition, there will be multiple edge cases where an exception will have to be thrown. *(Note: These exceptions will not disrupt the program. Appropriate error messages will be displayed to the user.)* Here are the possible edge cases, as well as the type of exception that will be thrown:
 
 + The most salient example is a command that is not included in any language; for example, "qwbeafuiqewl" or "apple orange bear" are two commands that would not be accepted in any way, because none of the words correspond to the keywords in our Properties file. In this case, an illegal input exception will be thrown.
 + Another exception, and one that's more difficult to catch, is one where the keywords are correct, but they are organized in a way that the interpreter cannot handle. For example, "50 fd" is a command that will throw an error because the correct syntax for moving the turtle 50 pixels forward is "fd 50". In this case, a syntax error exception will be thrown.
@@ -120,7 +121,7 @@ In addition, there will be multiple edge cases where an exception will have to b
 Sequence of Code for the given use case: The user types 'fd 50' in the command window, and sees the turtle move in the display window leaving a trail, and the command is added to the environment's history.
 
 ```java
-        parseInput(); //called by the ModelController 
+    parseInput(); //called by the ModelController 
     interpretSubCommand(); //called by the Interpreter
     checkError(); //called by the Interpreter
     handleMotion(); //called by the Model Controller
@@ -132,7 +133,7 @@ Sequence of Code for the given use case: The user types 'fd 50' in the command w
 Sequence of Code (Ray Song): The user types in ‘sadgbjilrg’ in the command window, which calls an illegal input exception and displays a user-friendly message on the window.
 
 ```java
-        parseInput(); //called by the ModelController
+    parseInput(); //called by the ModelController
     interpretSubCommand(); //called by the Interpreter
     checkError(); //called by the Interpreter
     throwIllegalErrorException(); //called by the Interpreter
@@ -152,13 +153,13 @@ We discussed at length how to store our data. We decided to have a basic object 
 
 ### Team Responsibilities
 
-**Lucia Martos, Eric Song: frontend development**
-	- Lucia Martos: Will work on MainView development for front-end UI, and assist in ViewController to interface with the back end.
-	- Eric Song: Will work on ViewController to interface with the back end, and assist in MainView development for front-end UI.
++ **Lucia Martos, Eric Song: frontend development**
+	+ Lucia Martos: Will work on MainView development for front-end UI, and assist in ViewController to interface with the back end.
+	+ Eric Song: Will work on ViewController to interface with the back end, and assist in MainView development for front-end UI.
 
-**Andrew Bihl, Ray Song : backend development**
-	- Andrew Bihl: Representation and updating of data in the model, delegation of error messages, observer-observable implementation, and ModelController.
-	- Ray Song: Will work on incorporating regex expressions into Interpreter class, as well as recursive search of input to correctly parse each input.
++ **Andrew Bihl, Ray Song : backend development**
+	+ Andrew Bihl: Representation and updating of data in the model, delegation of error messages, observer-observable implementation, and ModelController.
+	+ Ray Song: Will work on incorporating regex expressions into Interpreter class, as well as recursive search of input to correctly parse each input.
 
 
 
