@@ -49,11 +49,31 @@ The errors which the backend will look out for and display will be in one of the
 
 API roles:
 
-The MainView is front end external
-ViewController is front end and internal
-Main and ModelController are back end and internal
-Main Interpreter is backend and external 
-Actionable and nonactionable sub-interpreters are backend internal
+The MainView is front end external  
+ViewController is front end and internal  
+Main and ModelController are back end and internal  
+Main Interpreter is backend and external   
+Actionable and nonactionable sub-interpreters are backend internal  
+
+**Frontend APIs - External**
+
+The main features of the external frontend API will be contained in a MainView class. This class will contain all of the methods to display and modify various user interface objects to the user while the program is running.
+
++ **MainView**
+	+ public void updateChanges(Model model)
+	+ public String passString(String s)
+
+**Frontend APIs - Internal**
+
+Most of the APIs in the frontend will be internal. This is because many methods are strictly used for the specific implementation of this assignment.
+
++ **MainView**
+	+ public boolean compareChanges(Object o)
+
++ **ViewController**
+    + public String passString(String s)
+    + public ViewController()
+    + public void detectEnterPress()
 
 **Backend APIs - External**
 
