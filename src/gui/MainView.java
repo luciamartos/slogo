@@ -1,6 +1,9 @@
 package gui;
 
 import java.util.List;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -9,8 +12,11 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 
 public class MainView {
 	private static final double PADDING = 15;
@@ -19,6 +25,7 @@ public class MainView {
 	private static final double APP_HEIGHT = 600;
 	private static final double INPUT_PANEL_HEIGHT = 20;
 	private static final double PAST_COMMAND_LIST_WIDTH = 120;
+	private static final Paint BACKGROUND_COLOR_SCENE = Color.ALICEBLUE;
 	private Group sceneRoot;
 	private Scene scene;
 	private double appWidth, appHeight;
@@ -31,7 +38,7 @@ public class MainView {
 		sceneRoot = new Group();
 		appWidth = APP_WIDTH;
 		appHeight = APP_HEIGHT;
-		scene = new Scene(sceneRoot, appWidth, appHeight);
+		scene = new Scene(sceneRoot, appWidth, appHeight, BACKGROUND_COLOR_SCENE);
 		sceneRoot.setId("root");
 
 		createTitleBox();
@@ -68,15 +75,31 @@ public class MainView {
 	
 	private void createListPastCommands(){
 		myListPastCommands = new ListView<String>();
-		pastCommands = FXCollections.observableArrayList("Peras", "Manzanas");
+		pastCommands = FXCollections.observableArrayList("move 10");
 		myListPastCommands.setItems(pastCommands);
+	   
+		//produce sample label to signal command being pressed (this will be removed)
+		final Label label = new Label();
+	    label.setLayoutX(10);
+        label.setLayoutY(appHeight - 50);
+        label.setFont(Font.font("Verdana", 20));
 		
+	    
 		myListPastCommands.setPrefWidth(PAST_COMMAND_LIST_WIDTH);
 		myListPastCommands.setPrefHeight(appHeight - INPUT_PANEL_HEIGHT - TITLE_BOX_HEIGHT - PADDING*4);
 		myListPastCommands.setLayoutX(appWidth - PADDING -PAST_COMMAND_LIST_WIDTH);
 		myListPastCommands.setLayoutY(PADDING*2 + TITLE_BOX_HEIGHT);
+		//handle user clicking on an value of the list
+		myListPastCommands.getSelectionModel().selectedItemProperty().addListener(
+		            new ChangeListener<String>() {
+		                public void changed(ObservableValue<? extends String> ov, 
+		                    String old_val, String curCommand) {
+		                        label.setText("Run: "+curCommand);
+		                        //RUN COMMAND OF STRING
+		            }
+		        });
 
-		sceneRoot.getChildren().add(myListPastCommands);
+		sceneRoot.getChildren().addAll(myListPastCommands, label);
 	}
 
 	private void createCommandInputter() {

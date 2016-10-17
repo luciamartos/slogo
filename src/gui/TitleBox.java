@@ -7,7 +7,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 public class TitleBox extends Group {
-    private static final Color BACKGROUND_COLOR = Color.LIGHTBLUE;
+    private static final Color BACKGROUND_COLOR = Color.CORNFLOWERBLUE;
     private static final double ARC_SIZE = 50;
     private static final double TEXT_VERTICAL_ALIGNMENT_RATIO = 0.625;
     private static final String FONT_FAMILY = "Monospace";
