@@ -14,8 +14,11 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 
 public class MainView {
@@ -33,6 +36,8 @@ public class MainView {
 	private InputPanel inputPanel;
 	private ListView<String> myListPastCommands;
 	private ObservableList<String> pastCommands;
+	private GraphicsContext gc;
+	private Canvas canvas;
 
 	public MainView() {
 		sceneRoot = new Group();
@@ -42,7 +47,7 @@ public class MainView {
 		sceneRoot.setId("root");
 
 		createTitleBox();
-		createDrawingGrid();
+		createCanvas();
 		createCommandInputter();
 		createListPastCommands();
 
@@ -58,19 +63,24 @@ public class MainView {
 		sceneRoot.getChildren().add(titleBox);
 	}
 
-	private void createDrawingGrid() {
-		Canvas canvas = new Canvas(400, 200);
-		canvas.setWidth(appWidth - PADDING - PAST_COMMAND_LIST_WIDTH);
+	private void createCanvas() {
+		canvas = new Canvas(400, 200);
+		canvas.setWidth(appWidth - PADDING*3 - PAST_COMMAND_LIST_WIDTH);
 		canvas.setHeight(appHeight - PADDING - TITLE_BOX_HEIGHT);
 		canvas.setLayoutX(PADDING);
 		canvas.setLayoutY(PADDING + TITLE_BOX_HEIGHT);
 
 		// Get the graphics context of the canvas
 		// TODO: make a more descriptive name
-		GraphicsContext gc = canvas.getGraphicsContext2D();
+		gc = canvas.getGraphicsContext2D();
 		gc.setFill(Color.BLUE);
-		gc.fillOval(100, 70, 50, 30);
+		initializeTurtle();
 		sceneRoot.getChildren().add(canvas);
+	}
+
+	private void initializeTurtle() {
+		Image turtle = new Image(getClass().getClassLoader().getResourceAsStream("turtle.png"), 50, 50, true, true);
+		gc.drawImage(turtle, canvas.getWidth()/2,canvas.getHeight()/2); //TODO: Figure out a better way to get the lengths and sizes
 	}
 	
 	private void createListPastCommands(){
@@ -95,7 +105,7 @@ public class MainView {
 		                public void changed(ObservableValue<? extends String> ov, 
 		                    String old_val, String curCommand) {
 		                        label.setText("Run: "+curCommand);
-		                        //RUN COMMAND OF STRING
+		                        //TODO: RUN COMMAND OF STRING
 		            }
 		        });
 
