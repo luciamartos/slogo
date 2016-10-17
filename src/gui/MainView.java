@@ -15,12 +15,18 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 
+/**
+ * 
+ * @author LuciaMartos
+ */
 public class MainView {
 	private static final double PADDING = 15;
 	private static final double TITLE_BOX_HEIGHT = 40;
@@ -38,6 +44,7 @@ public class MainView {
 	private ObservableList<String> pastCommands;
 	private GraphicsContext gc;
 	private Canvas canvas;
+	private Pane pane;
 
 	public MainView() {
 		sceneRoot = new Group();
@@ -63,57 +70,90 @@ public class MainView {
 		sceneRoot.getChildren().add(titleBox);
 	}
 
+	//TODO : MAKE THIS A NEWW CLASS1
 	private void createCanvas() {
+		pane = new Pane();
 		canvas = new Canvas(400, 200);
-		canvas.setWidth(appWidth - PADDING*3 - PAST_COMMAND_LIST_WIDTH);
+		canvas.setWidth(appWidth - PADDING * 3 - PAST_COMMAND_LIST_WIDTH);
 		canvas.setHeight(appHeight - PADDING - TITLE_BOX_HEIGHT);
 		canvas.setLayoutX(PADDING);
 		canvas.setLayoutY(PADDING + TITLE_BOX_HEIGHT);
-
+		initializeTurtle();
+		pane.getChildren().add(canvas);
 		// Get the graphics context of the canvas
 		// TODO: make a more descriptive name
 		gc = canvas.getGraphicsContext2D();
 		gc.setFill(Color.BLUE);
-		initializeTurtle();
-		sceneRoot.getChildren().add(canvas);
+		sceneRoot.getChildren().addAll(canvas, pane);// DO I NEED TO ADD CANVAS
+														// TO?
+
 	}
 
 	private void initializeTurtle() {
-		Image turtle = new Image(getClass().getClassLoader().getResourceAsStream("turtle.png"), 50, 50, true, true);
-		gc.drawImage(turtle, canvas.getWidth()/2,canvas.getHeight()/2); //TODO: Figure out a better way to get the lengths and sizes
+		Turtle myTurtle = new Turtle(canvas.getWidth() / 2, canvas.getHeight() / 2, "turtle.png", true);
+		// gc.drawImage(myTurtle.getMyImage(),
+		// canvas.getWidth()/2,canvas.getHeight()/2); //TODO: Figure out a
+		// better way to get the lengths and sizes
+		addTurtleAtXY(myTurtle);
+		// TODO: DISCUSS DUPLICATE CHILDREN ERROR
+	}
+
+	private void addTurtleAtXY(Turtle myTurtle) {
+		ImageView turtleImage = myTurtle.getMyImageView();
+		turtleImage.setTranslateX(myTurtle.getXPos());
+		turtleImage.setTranslateY(myTurtle.getYPos());
+		pane.getChildren().addAll(turtleImage);
+	}
+
+	private void removeTurtle(Turtle myTurtle) {
+		pane.getChildren().remove(myTurtle.getMyImage());
+	}
+
+	private void moveTurtle(Turtle myTurtle, int x, int y) {
+		removeTurtle(myTurtle);
+		addTurtleAtXY(myTurtle);
+	}
+
+	private void hideTurtle(Turtle myTurtle) {
+		myTurtle.setShowTurtle(false);
+		removeTurtle(myTurtle);
+	}
+
+	private void showTurtle(Turtle myTurtle){
+		myTurtle.setShowTurtle(true);
+		addTurtleAtXY(myTurtle);
 	}
 	
-	private void createListPastCommands(){
+	private void createListPastCommands() {
 		myListPastCommands = new ListView<String>();
 		pastCommands = FXCollections.observableArrayList("move 10");
 		myListPastCommands.setItems(pastCommands);
-	   
-		//produce sample label to signal command being pressed (this will be removed)
+
+		// produce sample label to signal command being pressed (this will be
+		// removed)
 		final Label label = new Label();
-	    label.setLayoutX(10);
-        label.setLayoutY(appHeight - 50);
-        label.setFont(Font.font("Verdana", 20));
-		
-	    
+		label.setLayoutX(10);
+		label.setLayoutY(appHeight - 50);
+		label.setFont(Font.font("Verdana", 20));
+
 		myListPastCommands.setPrefWidth(PAST_COMMAND_LIST_WIDTH);
-		myListPastCommands.setPrefHeight(appHeight - INPUT_PANEL_HEIGHT - TITLE_BOX_HEIGHT - PADDING*4);
-		myListPastCommands.setLayoutX(appWidth - PADDING -PAST_COMMAND_LIST_WIDTH);
-		myListPastCommands.setLayoutY(PADDING*2 + TITLE_BOX_HEIGHT);
-		//handle user clicking on an value of the list
-		myListPastCommands.getSelectionModel().selectedItemProperty().addListener(
-		            new ChangeListener<String>() {
-		                public void changed(ObservableValue<? extends String> ov, 
-		                    String old_val, String curCommand) {
-		                        label.setText("Run: "+curCommand);
-		                        //TODO: RUN COMMAND OF STRING
-		            }
-		        });
+		myListPastCommands.setPrefHeight(appHeight - INPUT_PANEL_HEIGHT - TITLE_BOX_HEIGHT - PADDING * 4);
+		myListPastCommands.setLayoutX(appWidth - PADDING - PAST_COMMAND_LIST_WIDTH);
+		myListPastCommands.setLayoutY(PADDING * 2 + TITLE_BOX_HEIGHT);
+		// handle user clicking on an value of the list
+		myListPastCommands.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+			public void changed(ObservableValue<? extends String> ov, String old_val, String curCommand) {
+				label.setText("Run: " + curCommand);
+				// TODO: RUN COMMAND OF STRING
+			}
+		});
 
 		sceneRoot.getChildren().addAll(myListPastCommands, label);
 	}
 
 	private void createCommandInputter() {
-		//TODO: Fix delay, it runs one command delayed how can i make the commadline accessible before?
+		// TODO: Fix delay, it runs one command delayed how can i make the
+		// commadline accessible before?
 		EventHandler<ActionEvent> runCommandHandler = event -> {
 			String currentCommandLine = inputPanel.getCurrentCommandLine();
 			if (currentCommandLine == null || currentCommandLine.length() == 0) {

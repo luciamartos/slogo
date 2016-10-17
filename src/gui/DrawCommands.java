@@ -5,7 +5,6 @@ public class DrawCommands {
 	public DrawCommands() {
 		// TODO Auto-generated constructor stub
 		
-		
 	
 	}
 	
