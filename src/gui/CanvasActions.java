@@ -29,7 +29,6 @@ public class CanvasActions {
 		pane.getChildren().addAll(canvas);
 		gc = canvas.getGraphicsContext2D(); // TODO: make a more descriptive name
 		initializeTurtle();
-		removeTurtle(myTurtle);
 	}
 	
 	public void setBackgroundColorCanvas(String myColor){
@@ -62,34 +61,35 @@ public class CanvasActions {
 	private void initializeTurtle() {
 		 myTurtle = new Turtle(canvas.getWidth() / 2, canvas.getHeight() / 2, "turtle.png", true, Color.BLACK);
 		// better way to get the lengths and sizes
-		addTurtleAtXY(myTurtle);
+		addTurtleAtXY();
 		// TODO: DISCUSS DUPLICATE CHILDREN ERROR
 	}
 
-	private void addTurtleAtXY(Turtle myTurtle) {
+	private void addTurtleAtXY() {
 		ImageView turtleImage = myTurtle.getMyImageView();
 		turtleImage.setTranslateX(myTurtle.getXPos());
 		turtleImage.setTranslateY(myTurtle.getYPos());
 		pane.getChildren().add(turtleImage);
 	}
 
-	public void removeTurtle(Turtle myTurtle) {
-		pane.getChildren().remove(myTurtle.getMyImage());
+	public void removeTurtle() {
+		pane.getChildren().remove(myTurtle.getMyImageView());
 	}
 
-	public void moveTurtle(Turtle myTurtle, int x, int y) {
-		removeTurtle(myTurtle);
-		addTurtleAtXY(myTurtle);
+
+	public void moveTurtle(int x, int y) {
+		removeTurtle();
+		addTurtleAtXY();
 	}
 
-	public void hideTurtle(Turtle myTurtle) {
+	public void hideTurtle() {
 		myTurtle.setShowTurtle(false);
-		removeTurtle(myTurtle);
+		removeTurtle();
 	}
 
-	public void showTurtle(Turtle myTurtle) {
+	public void showTurtle() {
 		myTurtle.setShowTurtle(true);
-		addTurtleAtXY(myTurtle);
+		addTurtleAtXY();
 	}
 	
 	//TODO: error which clears the message
@@ -109,8 +109,6 @@ public class CanvasActions {
 	public void setPenColor(Turtle myTurtle, Color myColor){
 		myTurtle.setPenColor(myColor);
 	}
-		
-	
 
 
 }
