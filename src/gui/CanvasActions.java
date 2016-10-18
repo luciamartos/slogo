@@ -62,7 +62,6 @@ public class CanvasActions {
 		 myTurtle = new Turtle(canvas.getWidth() / 2, canvas.getHeight() / 2, "turtle.png", true, Color.BLACK);
 		// better way to get the lengths and sizes
 		addTurtleAtXY();
-		// TODO: DISCUSS DUPLICATE CHILDREN ERROR
 	}
 
 	private void addTurtleAtXY() {
