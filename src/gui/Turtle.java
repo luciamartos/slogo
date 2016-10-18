@@ -2,6 +2,7 @@ package gui;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 /**
  * 
  * @author LuciaMartos
@@ -12,11 +13,13 @@ public class Turtle {
 	private boolean showTurtle;
 	private ImageView myImageView;
 	private Image myImage;
+	private Color penColor;
 
-	public Turtle(double x, double y, String imageName, boolean turtleStatus) {
+	public Turtle(double x, double y, String imageName, boolean turtleStatus, Color myColor) {
 		xPos = x;
 		yPos = y;
 		showTurtle = turtleStatus;
+		penColor = myColor;
 		myImage = new Image(getClass().getClassLoader().getResourceAsStream(imageName), 50, 50, true, true);
 		myImageView = new ImageView(myImage);
 	}
@@ -51,6 +54,10 @@ public class Turtle {
 
 	protected Image getMyImage() {
 		return myImage;
+	}
+	
+	protected void setPenColor(Color myColor){
+		penColor = myColor;
 	}
 	
 	protected void setMyImage(String nameImage) {

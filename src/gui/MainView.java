@@ -10,17 +10,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 
 /**
@@ -42,16 +35,14 @@ public class MainView {
 	private InputPanel inputPanel;
 	private ListView<String> myListPastCommands;
 	private ObservableList<String> pastCommands;
-	private GraphicsContext gc;
-	private Canvas canvas;
-	private Pane pane;
+	private CanvasActions canvasActions;
+
 
 	public MainView() {
 		sceneRoot = new Group();
 		appWidth = APP_WIDTH;
 		appHeight = APP_HEIGHT;
 		scene = new Scene(sceneRoot, appWidth, appHeight, BACKGROUND_COLOR_SCENE);
-		sceneRoot.setId("root");
 
 		createTitleBox();
 		createCanvas();
@@ -70,59 +61,11 @@ public class MainView {
 		sceneRoot.getChildren().add(titleBox);
 	}
 
-	//TODO : MAKE THIS A NEWW CLASS1
 	private void createCanvas() {
-		pane = new Pane();
-		canvas = new Canvas(400, 200);
-		canvas.setWidth(appWidth - PADDING * 3 - PAST_COMMAND_LIST_WIDTH);
-		canvas.setHeight(appHeight - PADDING - TITLE_BOX_HEIGHT);
-		canvas.setLayoutX(PADDING);
-		canvas.setLayoutY(PADDING + TITLE_BOX_HEIGHT);
-		initializeTurtle();
-		pane.getChildren().add(canvas);
-		// Get the graphics context of the canvas
-		// TODO: make a more descriptive name
-		gc = canvas.getGraphicsContext2D();
-		gc.setFill(Color.BLUE);
-		sceneRoot.getChildren().addAll(canvas, pane);// DO I NEED TO ADD CANVAS
-														// TO?
-
+		canvasActions = new CanvasActions();
+		sceneRoot.getChildren().addAll(canvasActions.getPane());
 	}
 
-	private void initializeTurtle() {
-		Turtle myTurtle = new Turtle(canvas.getWidth() / 2, canvas.getHeight() / 2, "turtle.png", true);
-		// gc.drawImage(myTurtle.getMyImage(),
-		// canvas.getWidth()/2,canvas.getHeight()/2); //TODO: Figure out a
-		// better way to get the lengths and sizes
-		addTurtleAtXY(myTurtle);
-		// TODO: DISCUSS DUPLICATE CHILDREN ERROR
-	}
-
-	private void addTurtleAtXY(Turtle myTurtle) {
-		ImageView turtleImage = myTurtle.getMyImageView();
-		turtleImage.setTranslateX(myTurtle.getXPos());
-		turtleImage.setTranslateY(myTurtle.getYPos());
-		pane.getChildren().addAll(turtleImage);
-	}
-
-	private void removeTurtle(Turtle myTurtle) {
-		pane.getChildren().remove(myTurtle.getMyImage());
-	}
-
-	private void moveTurtle(Turtle myTurtle, int x, int y) {
-		removeTurtle(myTurtle);
-		addTurtleAtXY(myTurtle);
-	}
-
-	private void hideTurtle(Turtle myTurtle) {
-		myTurtle.setShowTurtle(false);
-		removeTurtle(myTurtle);
-	}
-
-	private void showTurtle(Turtle myTurtle){
-		myTurtle.setShowTurtle(true);
-		addTurtleAtXY(myTurtle);
-	}
 	
 	private void createListPastCommands() {
 		myListPastCommands = new ListView<String>();
