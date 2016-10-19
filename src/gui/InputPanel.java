@@ -24,29 +24,28 @@ public class InputPanel extends HBox {
 		setPrefHeight(height);
 		setLayoutY(appHeight - height - PADDING);
 		setLayoutX(PADDING);
-		
+
 		// set the text box
-		double width = appWidth - RUN_BUTTON_WIDTH- (PADDING * 2);
+		double width = appWidth - RUN_BUTTON_WIDTH - (PADDING * 2);
 		commandInput = new TextField();
 		commandInput.setPromptText("Enter your command here...");
-		commandInput.setPrefWidth(width); 	//CHANGE TO COMMAND BUTTON WIDTH
+		commandInput.setPrefWidth(width); // CHANGE TO COMMAND BUTTON WIDTH
 		commandInput.getText();
 
-		//set the run button
+		// set the run button
 		runButton = new Button("Run");
 		runButton.setPrefWidth(RUN_BUTTON_WIDTH);
-		runButton.setOnAction(event ->{
+		runButton.setOnAction(event -> {
+			currentCommandLine = commandInput.getText();
 			runCommandHandler.handle(event);
-				currentCommandLine = commandInput.getText();
-				System.out.println(currentCommandLine);
-				commandInput.clear();
+			commandInput.clear();
 		});
 
 		getChildren().addAll(commandInput, runButton);
 	}
-	
-	//Is this good design..?
-	public String getCurrentCommandLine(){
+
+	// Is this good design..?
+	public String getCurrentCommandLine() {
 		return currentCommandLine;
 	}
 

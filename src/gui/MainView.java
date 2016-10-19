@@ -24,7 +24,7 @@ import javafx.scene.text.Font;
 public class MainView {
 	private static final String VIEW_PROPERTIES_PACKAGE = "resources.properties/";
 	protected ResourceBundle viewProperties;
-	
+
 	private static final Paint BACKGROUND_COLOR_SCENE = Color.ALICEBLUE;
 	private Group sceneRoot;
 	private Scene scene;
@@ -35,11 +35,10 @@ public class MainView {
 	private ObservableList<String> pastCommands;
 	private CanvasActions canvasActions;
 
-
 	public MainView() {
-		
+
 		viewProperties = ResourceBundle.getBundle(VIEW_PROPERTIES_PACKAGE + "View");
-	
+
 		sceneRoot = new Group();
 		appWidth = getProperty("app_width");
 		appHeight = getProperty("app_height");
@@ -49,7 +48,6 @@ public class MainView {
 		createCanvas();
 		createCommandInputter();
 		createListPastCommands();
-
 
 	}
 
@@ -69,7 +67,6 @@ public class MainView {
 		sceneRoot.getChildren().addAll(canvasActions.getPane());
 	}
 
-	
 	private void createListPastCommands() {
 		myListPastCommands = new ListView<String>();
 		pastCommands = FXCollections.observableArrayList("move 10");
@@ -82,8 +79,7 @@ public class MainView {
 		label.setLayoutY(appHeight - 50);
 		label.setFont(Font.font("Verdana", 20));
 
-		
-		myListPastCommands.setPrefWidth(getProperty("past_command_list_width"));		
+		myListPastCommands.setPrefWidth(getProperty("past_command_list_width"));
 		myListPastCommands.setPrefHeight(getProperty("past_command_list_height"));
 		myListPastCommands.setLayoutX(getProperty("past_command_list_x"));
 		myListPastCommands.setLayoutY(getProperty("past_command_list_y"));
@@ -98,20 +94,18 @@ public class MainView {
 
 		sceneRoot.getChildren().addAll(myListPastCommands, label);
 	}
-	
-	//TODO: check for missing param and assign default value / errors
-	private double getProperty(String propertyName){
+
+	// TODO: check for missing param and assign default value / errors
+	private double getProperty(String propertyName) {
 		return Double.parseDouble(viewProperties.getString(propertyName));
 	}
 
 	private void createCommandInputter() {
-		// TODO: Fix delay, it runs one command delayed how can i make the command line accessible before?
+		// TODO: Fix delay, it runs one command delayed how can i make the
+		// command line accessible before?
 		EventHandler<ActionEvent> runCommandHandler = event -> {
 			String currentCommandLine = inputPanel.getCurrentCommandLine();
-			if (currentCommandLine == null || currentCommandLine.length() == 0) {
-				System.out.println("Return Error: EMPTY STRING");
-			} else {
-				System.out.println("RUN COMMAND: " + currentCommandLine);
+			if (!(currentCommandLine == null) && !(currentCommandLine.length() == 0)) {
 				pastCommands.add(currentCommandLine);
 			}
 		};
