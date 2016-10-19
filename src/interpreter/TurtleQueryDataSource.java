@@ -5,5 +5,5 @@ public interface TurtleQueryDataSource {
 	public double getYCoordinate();
 	public double getAngle();
 	public boolean getTurtleIsShowing();
-	public boolean getPenIsUp();
+	public boolean getPenIsDown();
 }
