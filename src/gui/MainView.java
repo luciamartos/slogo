@@ -1,6 +1,7 @@
 package gui;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -21,12 +22,9 @@ import javafx.scene.text.Font;
  * @author LuciaMartos
  */
 public class MainView {
-	private static final double PADDING = 15;
-	private static final double TITLE_BOX_HEIGHT = 40;
-	private static final double APP_WIDTH = 600;
-	private static final double APP_HEIGHT = 600;
-	private static final double INPUT_PANEL_HEIGHT = 20;
-	private static final double PAST_COMMAND_LIST_WIDTH = 120;
+	private static final String VIEW_PROPERTIES_PACKAGE = "resources.properties/";
+	protected ResourceBundle viewProperties;
+	
 	private static final Paint BACKGROUND_COLOR_SCENE = Color.ALICEBLUE;
 	private Group sceneRoot;
 	private Scene scene;
@@ -39,10 +37,12 @@ public class MainView {
 
 
 	public MainView() {
+		
+		viewProperties = ResourceBundle.getBundle(VIEW_PROPERTIES_PACKAGE + "View");
 	
 		sceneRoot = new Group();
-		appWidth = APP_WIDTH;
-		appHeight = APP_HEIGHT;
+		appWidth = getProperty("app_width");
+		appHeight = getProperty("app_height");
 		scene = new Scene(sceneRoot, appWidth, appHeight, BACKGROUND_COLOR_SCENE);
 
 		createTitleBox();
@@ -54,10 +54,11 @@ public class MainView {
 	}
 
 	private void createTitleBox() {
-		double x = PADDING;
-		double y = PADDING;
-		double width = appWidth - (2 * PADDING);
-		double height = TITLE_BOX_HEIGHT;
+		double padding = getProperty("padding");
+		double x = padding;
+		double y = padding;
+		double width = appWidth - (2 * padding);
+		double height = getProperty("title_box_height");
 		String title = "SLOGO";
 		titleBox = new TitleBox(x, y, width, height, title);
 		sceneRoot.getChildren().add(titleBox);
@@ -81,10 +82,12 @@ public class MainView {
 		label.setLayoutY(appHeight - 50);
 		label.setFont(Font.font("Verdana", 20));
 
-		myListPastCommands.setPrefWidth(PAST_COMMAND_LIST_WIDTH);
-		myListPastCommands.setPrefHeight(appHeight - INPUT_PANEL_HEIGHT - TITLE_BOX_HEIGHT - PADDING * 4);
-		myListPastCommands.setLayoutX(appWidth - PADDING - PAST_COMMAND_LIST_WIDTH);
-		myListPastCommands.setLayoutY(PADDING * 2 + TITLE_BOX_HEIGHT);
+		
+		myListPastCommands.setPrefWidth(getProperty("past_command_list_width"));		
+		myListPastCommands.setPrefHeight(getProperty("past_command_list_height"));
+		myListPastCommands.setLayoutX(getProperty("past_command_list_x"));
+		myListPastCommands.setLayoutY(getProperty("past_command_list_y"));
+
 		// handle user clicking on an value of the list
 		myListPastCommands.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			public void changed(ObservableValue<? extends String> ov, String old_val, String curCommand) {
@@ -94,6 +97,11 @@ public class MainView {
 		});
 
 		sceneRoot.getChildren().addAll(myListPastCommands, label);
+	}
+	
+	//TODO: check for missing param and assign default value / errors
+	private double getProperty(String propertyName){
+		return Double.parseDouble(viewProperties.getString(propertyName));
 	}
 
 	private void createCommandInputter() {
@@ -108,11 +116,11 @@ public class MainView {
 			}
 		};
 
-		inputPanel = new InputPanel(INPUT_PANEL_HEIGHT, appHeight, appWidth, runCommandHandler);
+		inputPanel = new InputPanel(getProperty("input_panel_height"), appHeight, appWidth, runCommandHandler);
 		sceneRoot.getChildren().addAll(inputPanel);
 	}
 
-	public Scene getScene() {
+	Scene getScene() {
 		return scene;
 	}
 }
