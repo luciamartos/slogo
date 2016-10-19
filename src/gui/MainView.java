@@ -95,8 +95,7 @@ public class MainView {
 	}
 
 	private void createCommandInputter() {
-		// TODO: Fix delay, it runs one command delayed how can i make the
-		// commadline accessible before?
+		// TODO: Fix delay, it runs one command delayed how can i make the command line accessible before?
 		EventHandler<ActionEvent> runCommandHandler = event -> {
 			String currentCommandLine = inputPanel.getCurrentCommandLine();
 			if (currentCommandLine == null || currentCommandLine.length() == 0) {

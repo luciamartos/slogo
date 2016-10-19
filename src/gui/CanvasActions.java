@@ -91,6 +91,14 @@ public class CanvasActions {
 		addTurtleAtXY();
 	}
 	
+	public void putPenDown(){
+		myTurtle.setPenDown(true);
+	}
+	
+	public void putPenUp(){
+		myTurtle.setPenDown(false);
+	}
+	
 	//TODO: error which clears the message
 	public void displayErrorMessage(String myError){
 		final Label label = new Label();

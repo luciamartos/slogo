@@ -3,6 +3,7 @@ package gui;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+
 /**
  * 
  * @author LuciaMartos
@@ -14,6 +15,8 @@ public class Turtle {
 	private ImageView myImageView;
 	private Image myImage;
 	private Color penColor;
+	private boolean penDown;
+	private double heading;
 
 	public Turtle(double x, double y, String imageName, boolean turtleStatus, Color myColor) {
 		xPos = x;
@@ -22,6 +25,22 @@ public class Turtle {
 		penColor = myColor;
 		myImage = new Image(getClass().getClassLoader().getResourceAsStream(imageName), 50, 50, true, true);
 		myImageView = new ImageView(myImage);
+	}
+
+	public boolean getPenDown() {
+		return penDown;
+	}
+
+	public void setPenDown(boolean penPos) {
+		penDown = penPos;
+	}
+
+	public double getHeading() {
+		return heading;
+	}
+
+	public void setHeading(double direction) {
+		heading = direction;
 	}
 
 	protected double getXPos() {
@@ -55,11 +74,15 @@ public class Turtle {
 	protected Image getMyImage() {
 		return myImage;
 	}
-	
-	protected void setPenColor(Color myColor){
+
+	protected void setPenColor(Color myColor) {
 		penColor = myColor;
 	}
-	
+
+	protected Color getPenColor() {
+		return penColor;
+	}
+
 	protected void setMyImage(String nameImage) {
 		myImage = new Image(getClass().getClassLoader().getResourceAsStream("turtle.png"), 50, 50, true, true);
 		myImageView = new ImageView(myImage);
