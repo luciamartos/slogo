@@ -39,6 +39,7 @@ public class MainView {
 
 
 	public MainView() {
+	
 		sceneRoot = new Group();
 		appWidth = APP_WIDTH;
 		appHeight = APP_HEIGHT;
@@ -48,6 +49,7 @@ public class MainView {
 		createCanvas();
 		createCommandInputter();
 		createListPastCommands();
+
 
 	}
 
