@@ -1,4 +1,4 @@
-package gui;
+
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -8,14 +8,11 @@ import javafx.stage.Stage;
  * application.
  */
 public class Main extends Application {
-    private MainView mainView;
+    private MainController controller;
 
     @Override
     public void start (Stage stage) {
-    	mainView = new MainView();
-        stage.setTitle("SLOGO"); //AppResources.APP_TITLE.getResource()
-        stage.setScene(mainView.getScene());
-        stage.show();
+    	controller = new MainController(stage);
     }
 
     public static void main (String[] args) {
