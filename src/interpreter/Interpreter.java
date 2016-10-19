@@ -1,14 +1,14 @@
 package interpreter;
 
-import commandModel.CommandModel;
+//import commandModel.CommandModel;
 
 public abstract class Interpreter {
 	
-	private CommandModel model;
+//	private CommandModel model;
 	
 	abstract void parseInput(String input);
 	
-	public CommandModel getModel(){
-		return model;
-	}
+//	public CommandModel getModel(){
+//		return model;
+//	}
 }
