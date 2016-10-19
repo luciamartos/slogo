@@ -2,13 +2,21 @@ package interpreter;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class MathInterpreter extends Interpreter{
+public class MathInterpreter extends SubInterpreter{
 	
 	private final double PI = 3.14159;
 	
-	void parseInput(String input) {
-		String[] split = input.split("\\s+");
-		String keyword = split[0].toLowerCase();
+	void parseInput(String[] input) {
+//		String keyword = split[0].toLowerCase();//<---Put in MainInterpreter
+		//parse command, get number of Parameters. 
+		int numberOfParameters;
+		for (int i = 1; i <= numberOfParameters; i++){ //Handle case of not ENOUGH parameters
+			String s = input[i];
+			if (//string can be converted to double){
+				double param = Double.parseDouble(s);
+			double param = mainController.parseInput(s);
+					
+		}
 		
 		if(keyword.equals("sum")){
 			
