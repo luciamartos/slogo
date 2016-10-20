@@ -1,10 +1,13 @@
 package interpreter;
 
+import java.util.Arrays;
+
 import slogo_update.slogoUpdate;
 
 public class MainInterpreter {
 	
 	private slogoUpdate model;
+//	private SubInterpreter interpreter;
 	
 	public MainInterpreter(){
 		model = new slogoUpdate();
@@ -20,6 +23,12 @@ public class MainInterpreter {
 		
 		String keyword = input[0].toLowerCase();
 		
+		if(keyword.equals("sum")){
+			MathInterpreter mi = new MathInterpreter();
+			double[] param = parseParam(Arrays.copyOfRange(input, 1, 3)); //last index is exclusive
+			System.out.println(mi.sum(param[0],param[1]));
+		}
+		
 		//parse command, get number of Parameters. 
 		int numberOfParameters = input.length-1;
 		for (int i = 1; i <= numberOfParameters; i++){  //Handle case of not ENOUGH parameters
@@ -34,11 +43,21 @@ public class MainInterpreter {
 					
 		}
 		
-		if(keyword.equals("sum")){
-			System.out.println("Sum command");
-		}
+		
 	}
 	
+	public double[] parseParam(String[] params){
+		double[] res = new double[params.length];
+		int index = 0;
+		for(String elem: params){
+			if(isDouble(elem)){
+				double temp = Double.parseDouble(elem);
+				res[index++] = temp;
+			}
+		}
+		return res;
+	}
+
 	private boolean isDouble(String str) {
 		try {
 			Double.parseDouble(str);
