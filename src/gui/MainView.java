@@ -28,7 +28,6 @@ public class MainView {
 	private static final Paint BACKGROUND_COLOR_SCENE = Color.ALICEBLUE;
 	private Group sceneRoot;
 	private Scene scene;
-	private double appWidth, appHeight;
 	private TitleBox titleBox;
 	private InputPanel inputPanel;
 	private ListView<String> myListPastCommands;
@@ -39,8 +38,8 @@ public class MainView {
 		
 		this.viewProperties = viewProperties;
 		sceneRoot = new Group();
-		appWidth = viewProperties.getDoubleProperty("app_width");
-		appHeight = viewProperties.getDoubleProperty("app_height");
+		double appWidth = viewProperties.getDoubleProperty("app_width");
+		double appHeight = viewProperties.getDoubleProperty("app_height");
 		scene = new Scene(sceneRoot, appWidth, appHeight, BACKGROUND_COLOR_SCENE);
 
 		createTitleBox();
@@ -54,7 +53,7 @@ public class MainView {
 		double padding = viewProperties.getDoubleProperty("padding");
 		double x = padding;
 		double y = padding;
-		double width = appWidth - (2 * padding);
+		double width = viewProperties.getDoubleProperty("title_box_width");
 		double height = viewProperties.getDoubleProperty("title_box_height");
 		String title = "SLOGO";
 		titleBox = new TitleBox(x, y, width, height, title);
@@ -74,8 +73,8 @@ public class MainView {
 		// produce sample label to signal command being pressed (this will be
 		// removed)
 		final Label label = new Label();
-		label.setLayoutX(10);
-		label.setLayoutY(appHeight - 50);
+		label.setLayoutX(viewProperties.getDoubleProperty("label_x"));
+		label.setLayoutY(viewProperties.getDoubleProperty("label_y"));
 		label.setFont(Font.font("Verdana", 20));
 
 		myListPastCommands.setPrefWidth(viewProperties.getDoubleProperty("past_command_list_width"));
@@ -104,7 +103,7 @@ public class MainView {
 			}
 		};
 
-		inputPanel = new InputPanel(viewProperties.getDoubleProperty("input_panel_height"), appHeight, appWidth, runCommandHandler);
+		inputPanel = new InputPanel(viewProperties, runCommandHandler);
 		sceneRoot.getChildren().addAll(inputPanel);
 	}
 

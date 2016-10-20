@@ -47,7 +47,7 @@ public class CanvasActions {
 	private void initializePane() {
 		pane = new Pane();
 		setBackgroundColorCanvas(COLOR_CANVAS);
-	    pane.setPrefSize(viewProperties.getDoubleProperty("canvas_width"), viewProperties.getDoubleProperty("canvas_height")); //QUESTION! DO I HAVE TO SET UP FOR BOTH?
+	    pane.setPrefSize(viewProperties.getDoubleProperty("canvas_width"), viewProperties.getDoubleProperty("canvas_height"));
 	    pane.setLayoutX(viewProperties.getDoubleProperty("canvas_layout_x"));
 	    pane.setLayoutY(viewProperties.getDoubleProperty("canvas_layout_y"));
 	}
