@@ -33,6 +33,7 @@ public class MainView {
 	private ListView<String> myListPastCommands;
 	private ObservableList<String> pastCommands;
 	private CanvasActions canvasActions;
+	private Settings settings;
 
 	public MainView(Properties viewProperties) {
 		
@@ -46,7 +47,7 @@ public class MainView {
 		createCanvas();
 		createCommandInputter();
 		createListPastCommands();
-
+		createSettings();
 	}
 
 	private void createTitleBox() {
@@ -64,10 +65,15 @@ public class MainView {
 		canvasActions = new CanvasActions(viewProperties);
 		sceneRoot.getChildren().addAll(canvasActions.getPane());
 	}
+	
+	private void createSettings() {
+		settings = new Settings(viewProperties);
+		sceneRoot.getChildren().addAll(settings.getVBox());
+	}
 
 	private void createListPastCommands() {
 		myListPastCommands = new ListView<String>();
-		pastCommands = FXCollections.observableArrayList("move 10");
+		pastCommands = FXCollections.observableArrayList();
 		myListPastCommands.setItems(pastCommands);
 
 		// produce sample label to signal command being pressed (this will be
