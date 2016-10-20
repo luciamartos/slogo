@@ -10,9 +10,8 @@ public class TestMain extends Application{
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		// TODO Auto-generated method stub
 		String input = "sum 10 12";
-		MathInterpreter mi = new MathInterpreter();
-		mi.parseInput(input);
+		MainInterpreter main = new MainInterpreter();
+		main.parseInput(input);
 	}
 }
