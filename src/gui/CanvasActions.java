@@ -1,5 +1,8 @@
 package gui;
 
+import java.util.ResourceBundle;
+
+import general.Properties;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -13,17 +16,15 @@ import javafx.scene.text.Font;
 
 
 public class CanvasActions {
-	private static final double PADDING = 15;
-	private static final double TITLE_BOX_HEIGHT = 40;
-	private static final double APP_WIDTH = 600;
-	private static final double APP_HEIGHT = 600;
 	private static final String COLOR_CANVAS = "white";
 	private GraphicsContext gc;
 	private Canvas canvas;
 	private Pane pane;
 	private Turtle myTurtle;
+	private Properties viewProperties;
 	
-	public CanvasActions() {
+	public CanvasActions(Properties viewProperties) {
+		this.viewProperties = viewProperties;
 		initializePane();
 		initializeCanvas();
 		pane.getChildren().addAll(canvas);
@@ -36,19 +37,19 @@ public class CanvasActions {
 	}
 
 	private void initializeCanvas() {
-		canvas = new Canvas(APP_WIDTH - 300, APP_HEIGHT-400);
-		canvas.setWidth(APP_WIDTH - 160);
-		canvas.setHeight(APP_HEIGHT-120);
-		canvas.setLayoutX(PADDING);
-		canvas.setLayoutY(PADDING*2 + TITLE_BOX_HEIGHT);
+		canvas = new Canvas(viewProperties.getDoubleProperty("canvas_x"), viewProperties.getDoubleProperty("canvas_y"));
+		canvas.setWidth(viewProperties.getDoubleProperty("canvas_width"));
+		canvas.setHeight(viewProperties.getDoubleProperty("canvas_height"));
+		canvas.setLayoutX(viewProperties.getDoubleProperty("canvas_layout_x"));
+		canvas.setLayoutY(viewProperties.getDoubleProperty("canvas_layout_y"));
 	}
 
 	private void initializePane() {
 		pane = new Pane();
 		setBackgroundColorCanvas(COLOR_CANVAS);
-	    pane.setPrefSize(APP_WIDTH - 160, APP_HEIGHT-120); //QUESTION! DO I HAVE TO SET UP FOR BOTH?
-	    pane.setLayoutX(PADDING);
-	    pane.setLayoutY(PADDING*2 + TITLE_BOX_HEIGHT);
+	    pane.setPrefSize(viewProperties.getDoubleProperty("canvas_width"), viewProperties.getDoubleProperty("canvas_height")); //QUESTION! DO I HAVE TO SET UP FOR BOTH?
+	    pane.setLayoutX(viewProperties.getDoubleProperty("canvas_layout_x"));
+	    pane.setLayoutY(viewProperties.getDoubleProperty("canvas_layout_y"));
 	}
 	
 	public Pane getPane(){

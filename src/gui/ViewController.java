@@ -1,5 +1,8 @@
 package gui;
 
+import java.util.ResourceBundle;
+
+import general.Properties;
 import javafx.stage.Stage;
 
 /**
@@ -8,16 +11,19 @@ import javafx.stage.Stage;
  */
 public class ViewController {
 	
+	private static final String VIEW_PROPERTIES_PACKAGE = "resources.properties/";
+	private Properties viewProperties;
+	
 	MainView view;
 
 	public ViewController(Stage stage) {
-		view = new MainView();
+		viewProperties = new Properties(VIEW_PROPERTIES_PACKAGE + "View");
+		view = new MainView(viewProperties);
 		setupStage(stage);
-		
 	}
 	
 	private void setupStage(Stage stage){
-		stage.setTitle("SLOGO"); //AppResources.APP_TITLE.getResource()
+		stage.setTitle(viewProperties.getStringProperty("title"));
         stage.setScene(view.getScene());
         stage.show();
 	}

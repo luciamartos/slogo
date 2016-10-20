@@ -1,3 +1,4 @@
+package general;
 import gui.ViewController;
 import javafx.stage.Stage;
 

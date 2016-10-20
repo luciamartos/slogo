@@ -3,6 +3,7 @@ package gui;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import general.Properties;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -22,8 +23,7 @@ import javafx.scene.text.Font;
  * @author LuciaMartos
  */
 public class MainView {
-	private static final String VIEW_PROPERTIES_PACKAGE = "resources.properties/";
-	protected ResourceBundle viewProperties;
+	private Properties viewProperties;
 
 	private static final Paint BACKGROUND_COLOR_SCENE = Color.ALICEBLUE;
 	private Group sceneRoot;
@@ -35,13 +35,12 @@ public class MainView {
 	private ObservableList<String> pastCommands;
 	private CanvasActions canvasActions;
 
-	public MainView() {
-
-		viewProperties = ResourceBundle.getBundle(VIEW_PROPERTIES_PACKAGE + "View");
-
+	public MainView(Properties viewProperties) {
+		
+		this.viewProperties = viewProperties;
 		sceneRoot = new Group();
-		appWidth = getProperty("app_width");
-		appHeight = getProperty("app_height");
+		appWidth = viewProperties.getDoubleProperty("app_width");
+		appHeight = viewProperties.getDoubleProperty("app_height");
 		scene = new Scene(sceneRoot, appWidth, appHeight, BACKGROUND_COLOR_SCENE);
 
 		createTitleBox();
@@ -52,18 +51,18 @@ public class MainView {
 	}
 
 	private void createTitleBox() {
-		double padding = getProperty("padding");
+		double padding = viewProperties.getDoubleProperty("padding");
 		double x = padding;
 		double y = padding;
 		double width = appWidth - (2 * padding);
-		double height = getProperty("title_box_height");
+		double height = viewProperties.getDoubleProperty("title_box_height");
 		String title = "SLOGO";
 		titleBox = new TitleBox(x, y, width, height, title);
 		sceneRoot.getChildren().add(titleBox);
 	}
 
 	private void createCanvas() {
-		canvasActions = new CanvasActions();
+		canvasActions = new CanvasActions(viewProperties);
 		sceneRoot.getChildren().addAll(canvasActions.getPane());
 	}
 
@@ -79,10 +78,10 @@ public class MainView {
 		label.setLayoutY(appHeight - 50);
 		label.setFont(Font.font("Verdana", 20));
 
-		myListPastCommands.setPrefWidth(getProperty("past_command_list_width"));
-		myListPastCommands.setPrefHeight(getProperty("past_command_list_height"));
-		myListPastCommands.setLayoutX(getProperty("past_command_list_x"));
-		myListPastCommands.setLayoutY(getProperty("past_command_list_y"));
+		myListPastCommands.setPrefWidth(viewProperties.getDoubleProperty("past_command_list_width"));
+		myListPastCommands.setPrefHeight(viewProperties.getDoubleProperty("past_command_list_height"));
+		myListPastCommands.setLayoutX(viewProperties.getDoubleProperty("past_command_list_x"));
+		myListPastCommands.setLayoutY(viewProperties.getDoubleProperty("past_command_list_y"));
 
 		// handle user clicking on an value of the list
 		myListPastCommands.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
@@ -95,14 +94,9 @@ public class MainView {
 		sceneRoot.getChildren().addAll(myListPastCommands, label);
 	}
 
-	// TODO: check for missing param and assign default value / errors
-	private double getProperty(String propertyName) {
-		return Double.parseDouble(viewProperties.getString(propertyName));
-	}
+
 
 	private void createCommandInputter() {
-		// TODO: Fix delay, it runs one command delayed how can i make the
-		// command line accessible before?
 		EventHandler<ActionEvent> runCommandHandler = event -> {
 			String currentCommandLine = inputPanel.getCurrentCommandLine();
 			if (!(currentCommandLine == null) && !(currentCommandLine.length() == 0)) {
@@ -110,7 +104,7 @@ public class MainView {
 			}
 		};
 
-		inputPanel = new InputPanel(getProperty("input_panel_height"), appHeight, appWidth, runCommandHandler);
+		inputPanel = new InputPanel(viewProperties.getDoubleProperty("input_panel_height"), appHeight, appWidth, runCommandHandler);
 		sceneRoot.getChildren().addAll(inputPanel);
 	}
 
