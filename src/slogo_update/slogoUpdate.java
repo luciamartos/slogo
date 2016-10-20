@@ -4,16 +4,37 @@ public class slogoUpdate {
 	private double heading;
 	private double pixel;
 	private boolean penUp;
+	private boolean turtleIsShowing;
 	
-	private void setHeading(double heading){
+	public void setHeading(double heading){
 		this.heading = heading;
 	}
 	
-	private void setPixel(double pixel){
+	public void setPixel(double pixel){
 		this.pixel = pixel;
 	}
 	
-	private void setPen(){
+	public void setPen(){
 		this.penUp = !this.penUp;
+	}
+	
+	public void setShowing(){
+		this.turtleIsShowing = !this.turtleIsShowing;
+	}
+	
+	public double getHeading(){
+		return heading;
+	}
+	
+	public double getPixel(){
+		return pixel;
+	}
+	
+	public boolean getPenUp(){
+		return penUp;
+	}
+	
+	public boolean getShowing(){
+		return turtleIsShowing;
 	}
 }

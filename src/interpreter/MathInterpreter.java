@@ -1,27 +1,12 @@
 package interpreter;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 public class MathInterpreter extends SubInterpreter{
 	
 	private final double PI = 3.14159;
 	
+	@Override
 	void parseInput(String[] input) {
-//		String keyword = split[0].toLowerCase();//<---Put in MainInterpreter
-		//parse command, get number of Parameters. 
-		int numberOfParameters;
-		for (int i = 1; i <= numberOfParameters; i++){ //Handle case of not ENOUGH parameters
-			String s = input[i];
-			if (//string can be converted to double){
-				double param = Double.parseDouble(s);
-			double param = mainController.parseInput(s);
-					
-		}
-		
-		if(keyword.equals("sum")){
-			
-			System.out.println("Sum command");
-		}
+
 	}
 	
 	double sum(double a, double b){
@@ -44,16 +29,42 @@ public class MathInterpreter extends SubInterpreter{
 		return a%b;
 	}
 	
-	double max(double max){
-		return Math.random() * (max+1);
-	}
-	
 	double minus(double a){
 		return -a;
 	}
 	
+	double max(double max){
+		return Math.random() * (max+1);
+	}
+	
+	double sin(double degrees){
+		return Math.sin(Math.toRadians(degrees));
+	}
+	
+	double cos(double degrees){
+		return Math.cos(Math.toRadians(degrees));
+	}
+	
+	double tan(double degrees){
+		return Math.tan(Math.toRadians(degrees));
+	}
+	
+	double atan(double degrees){
+		return Math.atan(Math.toRadians(degrees));
+	}
+	
+	double log(double a){
+		return Math.log(a);
+	}
+	
+	double pow(double base, double exp){
+		return Math.pow(base, exp);
+	}
+	
+	
 	double getPI(){
 		return PI;
 	}
+
 	
 }
