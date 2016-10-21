@@ -71,8 +71,8 @@ public class RegexMain {
             String fileInput = readFileToString("/Users/yrsong/Documents/workspace/slogo_team18/data/examples/variables/square.logo");
             // try against different inputs
             parseText(lang, examples);
-            parseText(lang, userInput.split(WHITESPACE));
-            parseText(lang, fileInput.split(WHITESPACE));
+//            parseText(lang, userInput.split(WHITESPACE));
+//            parseText(lang, fileInput.split(WHITESPACE));
         }
         catch (FileNotFoundException e) {
             //e.printStackTrace();
