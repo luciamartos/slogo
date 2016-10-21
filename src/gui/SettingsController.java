@@ -1,6 +1,7 @@
 package gui;
 
 import java.io.File;
+import java.util.Observable;
 
 import general.Properties;
 import javafx.collections.FXCollections;
@@ -13,19 +14,20 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
-public class Settings {
+public class SettingsController extends Observable{
 
 	private Properties viewProperties;
 	private VBox vBox;
 	private Button imageButton;
 
-	public Settings(Properties viewProperties) {
+	public SettingsController(Stage stage, Properties viewProperties){
 		this.viewProperties = viewProperties;
 		initializeVBox();
 		initializePenColorSetting();
 		initializeBackgroundColorSetting();
-		initializeTurtleImageSetting();
+		initializeTurtleImageSetting(stage);
 	}
 
 	private void initializeVBox() {
@@ -60,24 +62,31 @@ public class Settings {
 
 		// set the run button
 		Button colorButton = createButton("Set",viewProperties.getDoubleProperty("run_button_width"));
-		//TODO: make the prompt text equal to current setting?
-		// colorButton.setOnAction(event -> {
-		// currentCommandLine = colorInput.getText();
-		// runCommandHandler.handle(event);
-		// colorInput.clear();
-		// });
+		colorButton.setOnAction(event -> {
+			setChanged();
+			notifyObservers("Background color: "+colorInput.getText());
+			colorInput.clear();
+		});
 		hBox.getChildren().addAll(colorInput, colorButton);
 		vBox.getChildren().add(hBox);
 	}
 	
-	private void initializeTurtleImageSetting() {
+	private void initializeTurtleImageSetting(Stage stage) {
 		imageButton = createButton("Change Turtle Image", 200);
 		vBox.getChildren().add(imageButton);
-
-	}
-	
-	public void turtleImageSetAction(EventHandler<ActionEvent> event){
+		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(final ActionEvent e) {
+				FileChooser fileChooser = new FileChooser();
+				File file = fileChooser.showOpenDialog(stage);
+				if (file != null && file.isFile()) {
+					setChanged();
+				    notifyObservers(file);
+				}
+			}
+		};
 		imageButton.setOnAction(event);
+
 	}
 	
 	private TextField createTextBox(String text, double width){
