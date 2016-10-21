@@ -9,13 +9,12 @@ import regularExpression.ProgramParser;
 
 public class MainInterpreter {
 	
-	final String WHITESPACE = "\\p{Space}";
+	private final String WHITESPACE = "\\p{Space}";
 	private final String DEFAULT_RESOURCE_LANGUAGE = "resources/languages/";
 	private final String DEFAULT_RESOURCE_PACKAGE = "resources/properties/";
 	private final String PROPERTIES_TITLE = "Interpreter";
 	private final String[] languages = {"Chinese","English","French","German","Italian",
 			"Portuguese","Russian","Spanish","Syntax"};
-	
 	
 	private SlogoUpdate model;
 	private ResourceBundle rb;
@@ -30,11 +29,11 @@ public class MainInterpreter {
 		String[] split = input.split("\\s+");
 		ProgramParser lang = new ProgramParser();
 		lang = addPatterns(lang);
-		
 		String[] parsed = createParsedArray(split, lang);
 //		for(String elem: parsed){
 //			System.out.println(elem);
 //		}
+		//split is the original input, parsed is the translated version (translated with ProgramParser)
 		interpretCommand(split, parsed);
 	}
 	
@@ -66,7 +65,7 @@ public class MainInterpreter {
 	}
 	
 	private void interpretTurtleCommand(String[] input, String keyword){
-		
+		System.out.println("You've reached turtlecommand!");
 	}
 	
 	private void interpretMathCommand(String[] input, String keyword) throws ClassNotFoundException, InstantiationException, 
