@@ -1,13 +1,13 @@
-package slogo_update;
+package interpreter;
 
 public class slogoUpdate {
-	private double heading;
+	private double angle;
 	private double pixel;
 	private boolean penUp;
 	private boolean turtleIsShowing;
 	
 	public void setHeading(double heading){
-		this.heading = heading;
+		this.angle = heading;
 	}
 	
 	public void setPixel(double pixel){
@@ -23,7 +23,7 @@ public class slogoUpdate {
 	}
 	
 	public double getHeading(){
-		return heading;
+		return angle;
 	}
 	
 	public double getPixel(){

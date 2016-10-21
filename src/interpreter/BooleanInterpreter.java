@@ -8,11 +8,11 @@ public class BooleanInterpreter extends SubInterpreter{
 		
 	}
 	
-	double less(double a, double b){
+	double lessThan(double a, double b){
 		return (a<b) ? 1 : 0;
 	}
 	
-	double greater(double a, double b){
+	double greaterThan(double a, double b){
 		return (a>b) ? 1 : 0;
 	}
 	

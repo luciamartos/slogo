@@ -5,7 +5,7 @@ import javafx.stage.Stage;
 
 public class TestMain extends Application{
 	
-	String input = "- 10 12";
+	String input = "random 100";
 	
 	public static void main(String[] args){
 		launch(args);
