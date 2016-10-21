@@ -10,8 +10,12 @@ import regularExpression.ProgramParser;
 public class MainInterpreter {
 	
 	final String WHITESPACE = "\\p{Space}";
+	private final String DEFAULT_RESOURCE_LANGUAGE = "resources/languages/";
 	private final String DEFAULT_RESOURCE_PACKAGE = "resources/properties/";
 	private final String PROPERTIES_TITLE = "Interpreter";
+	private final String[] languages = {"Chinese","English","French","German","Italian",
+			"Portuguese","Russian","Spanish","Syntax"};
+	
 	
 	private SlogoUpdate model;
 	private ResourceBundle rb;
@@ -28,43 +32,77 @@ public class MainInterpreter {
 		lang = addPatterns(lang);
 		
 		String[] parsed = createParsedArray(split, lang);
+//		for(String elem: parsed){
+//			System.out.println(elem);
+//		}
 		interpretCommand(split, parsed);
 	}
 	
-	public void interpretCommand(String[] input, String[] parsed) throws ClassNotFoundException, NoSuchMethodException, 
+	private void interpretCommand(String[] input, String[] parsed) throws ClassNotFoundException, NoSuchMethodException, 
 	SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		String keyword = parsed[0].toLowerCase();
 		if(isNonInputMathExpression(keyword) || isUnaryMathExpression(keyword) || isBinaryMathExpression(keyword)){
-			double[] param;
-			interpreter = Class.forName(rb.getString("MathInterpreterLabel"));
-			Object obj = interpreter.newInstance();
-			Class[] args;
-			
-			if(isNonInputMathExpression(keyword)){
-				args = createDoubleArgs(0);
-				Method method = interpreter.getDeclaredMethod(keyword, args);
-				System.out.println(method.invoke(obj));
-			}
-			
-			else if(isUnaryMathExpression(keyword)){
-				param = parseParam(Arrays.copyOfRange(input, 1, 2));
-				args = createDoubleArgs(1);
-				Method method = interpreter.getDeclaredMethod(keyword, args);
-				System.out.println(method.invoke(obj, param[0]));
-			}
-			
-			else if(isBinaryMathExpression(keyword)){
-				param = parseParam(Arrays.copyOfRange(input, 1, 3)); //last index is exclusive
-				args = createDoubleArgs(2);
-				Method method = interpreter.getDeclaredMethod(keyword, args);
-				System.out.println(method.invoke(obj, param[0], param[1]));
-			}
+			interpretMathCommand(input, keyword);
+		}
+		
+		else if(isUnaryBooleanExpression(keyword) || isBinaryBooleanExpression(keyword)){
+			interpretBooleanCommand(input, keyword);
 		}
 		
 	}
 	
-	public double[] parseParam(String[] params){
+	private void interpretMathCommand(String[] input, String keyword) throws ClassNotFoundException, InstantiationException, 
+	IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException{
+		double[] param;
+		interpreter = Class.forName(rb.getString("MathInterpreterLabel"));
+		Object obj = interpreter.newInstance();
+		Class[] args;
+		
+		if(isNonInputMathExpression(keyword)){
+			args = createDoubleArgs(0);
+			Method method = interpreter.getDeclaredMethod(keyword, args);
+			System.out.println(method.invoke(obj));
+		}
+		
+		else if(isUnaryMathExpression(keyword)){
+			param = parseParam(Arrays.copyOfRange(input, 1, 2));
+			args = createDoubleArgs(1);
+			Method method = interpreter.getDeclaredMethod(keyword, args);
+			System.out.println(method.invoke(obj, param[0]));
+		}
+		
+		else if(isBinaryMathExpression(keyword)){
+			param = parseParam(Arrays.copyOfRange(input, 1, 3)); //last index is exclusive
+			args = createDoubleArgs(2);
+			Method method = interpreter.getDeclaredMethod(keyword, args);
+			System.out.println(method.invoke(obj, param[0], param[1]));
+		}
+	}
+	
+	private void interpretBooleanCommand(String[] input, String keyword) throws ClassNotFoundException, InstantiationException, 
+	IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException{
+		double[] param;
+		interpreter = Class.forName(rb.getString("BooleanInterpreterLabel"));
+		Object obj = interpreter.newInstance();
+		Class[] args;
+		
+		if(isUnaryBooleanExpression(keyword)){
+			param = parseParam(Arrays.copyOfRange(input, 1, 2));
+			args = createDoubleArgs(1);
+			Method method = interpreter.getDeclaredMethod(keyword, args);
+			System.out.println(method.invoke(obj, param[0]));
+		}
+		
+		else if(isBinaryBooleanExpression(keyword)){
+			param = parseParam(Arrays.copyOfRange(input, 1, 3)); //last index is exclusive
+			args = createDoubleArgs(2);
+			Method method = interpreter.getDeclaredMethod(keyword, args);
+			System.out.println(method.invoke(obj, param[0], param[1]));
+		}
+	}
+	
+	private double[] parseParam(String[] params){
 		double[] res = new double[params.length];
 		int index = 0;
 		for(String elem: params){
@@ -85,8 +123,9 @@ public class MainInterpreter {
 	}
 	
 	private ProgramParser addPatterns(ProgramParser lang){
-		lang.addPatterns("resources/languages/English");
-        lang.addPatterns("resources/languages/Syntax");
+		for(String language:languages){
+			lang.addPatterns(DEFAULT_RESOURCE_LANGUAGE+language);
+		}
         return lang;
 	}
 	
@@ -125,7 +164,13 @@ public class MainInterpreter {
 	}
 	
 	boolean isUnaryBooleanExpression(String input){
-		return input.equalsIgnoreCase(rb.getString("sum"));
+		return input.equalsIgnoreCase(rb.getString("not"));
+	}
+	
+	boolean isBinaryBooleanExpression(String input){
+		return input.equalsIgnoreCase(rb.getString("less")) || input.equalsIgnoreCase(rb.getString("greater")) ||
+				input.equalsIgnoreCase(rb.getString("equal")) || input.equalsIgnoreCase(rb.getString("notequal")) ||
+				input.equalsIgnoreCase(rb.getString("and")) || input.equalsIgnoreCase(rb.getString("or"));
 	}
 	
 	public SlogoUpdate getModel(){

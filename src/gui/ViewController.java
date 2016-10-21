@@ -2,7 +2,8 @@ package gui;
 
 import java.io.File;
 import java.io.IOException;
-
+import java.util.Observable;
+import java.util.Observer;
 
 import general.Properties;
 import javafx.beans.value.ChangeListener;
@@ -26,42 +27,38 @@ import javafx.stage.Stage;
  * 
  * @author LuciaMartos
  */
-public class ViewController {
+public class ViewController implements Observer{
 	private Properties viewProperties;
 
 	private static final String VIEW_PROPERTIES_PACKAGE = "resources.properties/";
 	private static final Paint BACKGROUND_COLOR_SCENE = Color.ALICEBLUE;
 	private Group sceneRoot;
-	private Scene scene;
 	private TitleBox titleBox;
 	private InputPanel inputPanel;
 	private ListView<String> myListPastCommands;
 	private ObservableList<String> pastCommands;
 	private CanvasActions canvasActions;
-	private Settings settings;
+	private SettingsController settings;
 	private Stage stage;
 
 	public ViewController(Stage stage) {
-		this.stage = stage;
 		viewProperties = new Properties(VIEW_PROPERTIES_PACKAGE + "View");
-		
-		
 		sceneRoot = new Group();
-		double appWidth = viewProperties.getDoubleProperty("app_width");
-		double appHeight = viewProperties.getDoubleProperty("app_height");
-		scene = new Scene(sceneRoot, appWidth, appHeight, BACKGROUND_COLOR_SCENE);
+		
+		initializeSettingsController();
 
 		createTitleBox();
 		createCanvas();
 		createCommandInputter();
 		createListPastCommands();
-		createSettings();
 		
-		
-		setupStage();
+		setupStage(stage);
 	}
 	
-	private void setupStage(){
+	private void setupStage(Stage stage){
+		double appWidth = viewProperties.getDoubleProperty("app_width");
+		double appHeight = viewProperties.getDoubleProperty("app_height");
+		Scene scene = new Scene(sceneRoot, appWidth, appHeight, BACKGROUND_COLOR_SCENE);
 		stage.setTitle(viewProperties.getStringProperty("title"));
         stage.setScene(scene);
         stage.show();
@@ -79,25 +76,21 @@ public class ViewController {
 	}
 
 	public void createCanvas() {
-		canvasActions = new CanvasActions(viewProperties);
+		double canvasX =viewProperties.getDoubleProperty("canvas_x");
+				double canvasY=viewProperties.getDoubleProperty("canvas_y");
+		double canvasWidth=viewProperties.getDoubleProperty("canvas_width");
+		double canvasHeight=viewProperties.getDoubleProperty("canvas_height");
+		double canvasLayoutX=viewProperties.getDoubleProperty("canvas_layout_x");
+		double canvasLayoutY=viewProperties.getDoubleProperty("canvas_layout_y");
+		canvasActions = new CanvasActions(canvasX, canvasY, canvasWidth, canvasHeight, canvasLayoutX, canvasLayoutY);
 		sceneRoot.getChildren().addAll(canvasActions.getPane());
 	}
 
-	private void createSettings() {
-		settings = new Settings(viewProperties);
+	private void initializeSettingsController() {
+		settings = new SettingsController(stage,viewProperties);
+		settings.addObserver(this);
 		sceneRoot.getChildren().addAll(settings.getVBox());
-		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(final ActionEvent e) {
-				FileChooser fileChooser = new FileChooser();
-				ViewController.this.createCanvas();
-				File file = fileChooser.showOpenDialog(stage);
-				if (file != null && file.isFile()) {
-					canvasActions.changeImage(file);
-				}
-			}
-		};
-		settings.turtleImageSetAction(event);
+		
 	}
 
 
@@ -140,5 +133,17 @@ public class ViewController {
 
 		inputPanel = new InputPanel(viewProperties, runCommandHandler);
 		sceneRoot.getChildren().addAll(inputPanel);
+	}
+	
+	//currently only observable this controller observes is settingsController
+	public void update(Observable obs, Object o){
+		if(obs instanceof SettingsController){
+			if(o instanceof File)
+				canvasActions.changeImage((File)o);
+			else if(o instanceof String){
+				
+			}
+		}
+
 	}
 }

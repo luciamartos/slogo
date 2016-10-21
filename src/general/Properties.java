@@ -1,8 +1,6 @@
 package general;
 import java.util.ResourceBundle;
 
-import gui.ViewController1;
-
 public class Properties {
 
 	protected ResourceBundle properties;
