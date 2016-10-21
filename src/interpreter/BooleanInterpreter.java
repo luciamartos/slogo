@@ -1,12 +1,6 @@
 package interpreter;
 
 public class BooleanInterpreter extends SubInterpreter{
-
-	@Override
-	void parseInput(String[] input) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	double lessthan(double a, double b){
 		return (a<b) ? 1 : 0;
