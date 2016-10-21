@@ -13,7 +13,7 @@ public class MathInterpreter extends SubInterpreter{
 		return a+b;
 	}
 	
-	double diff(double a, double b){
+	double difference(double a, double b){
 		return a-b;
 	}
 	
@@ -33,36 +33,40 @@ public class MathInterpreter extends SubInterpreter{
 		return -a;
 	}
 	
+	double random(double max){
+		return (Math.random() * ((max) + 1));
+	}
+	
 	double max(double max){
 		return Math.random() * (max+1);
 	}
 	
-	double sin(double degrees){
+	double sine(double degrees){
 		return Math.sin(Math.toRadians(degrees));
 	}
 	
-	double cos(double degrees){
+	double cosine(double degrees){
 		return Math.cos(Math.toRadians(degrees));
 	}
 	
-	double tan(double degrees){
+	double tangent(double degrees){
 		return Math.tan(Math.toRadians(degrees));
 	}
 	
-	double atan(double degrees){
+	double arctangent(double degrees){
 		return Math.atan(Math.toRadians(degrees));
 	}
 	
-	double log(double a){
+	double naturallog(double a){
 		return Math.log(a);
 	}
 	
-	double pow(double base, double exp){
+	double power(double base, double exp){
 		return Math.pow(base, exp);
 	}
 	
 	
-	double getPI(){
+	double pi(){
 		return PI;
 	}
 

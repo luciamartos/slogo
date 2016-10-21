@@ -5,7 +5,7 @@ import javafx.stage.Stage;
 
 public class TestMain extends Application{
 	
-	String input = "sum 10 12";
+	String input = "- 10 12";
 	
 	public static void main(String[] args){
 		launch(args);
