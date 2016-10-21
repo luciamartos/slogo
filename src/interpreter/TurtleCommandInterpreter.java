@@ -2,9 +2,9 @@ package interpreter;
 
 public class TurtleCommandInterpreter {
 
-	private slogoUpdate model;
+	private SlogoUpdate model;
 	
-	TurtleCommandInterpreter(slogoUpdate model){
+	TurtleCommandInterpreter(SlogoUpdate model){
 		this.model = model;
 	}
 	
@@ -19,7 +19,7 @@ public class TurtleCommandInterpreter {
 		return 0;
 	}
 	
-	slogoUpdate getModel(){
+	SlogoUpdate getModel(){
 		return model;
 	}
 	

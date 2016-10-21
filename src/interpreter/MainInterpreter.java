@@ -13,12 +13,12 @@ public class MainInterpreter {
 	private final String DEFAULT_RESOURCE_PACKAGE = "resources/properties/";
 	private final String PROPERTIES_TITLE = "Interpreter";
 	
-	private slogoUpdate model;
+	private SlogoUpdate model;
 	private ResourceBundle rb;
 	private Class interpreter;
 	
 	public MainInterpreter(){
-		model = new slogoUpdate();
+		model = new SlogoUpdate();
 		rb = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+PROPERTIES_TITLE);
 	}
 	
@@ -128,7 +128,7 @@ public class MainInterpreter {
 		return input.equalsIgnoreCase(rb.getString("sum"));
 	}
 	
-	public slogoUpdate getModel(){
+	public SlogoUpdate getModel(){
 		return model;
 	}
 }
