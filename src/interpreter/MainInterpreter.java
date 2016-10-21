@@ -2,9 +2,12 @@ package interpreter;
 
 import java.util.Arrays;
 
+import regularExpression.ProgramParser;
 import slogo_update.slogoUpdate;
 
 public class MainInterpreter {
+	
+	final String WHITESPACE = "\\p{Space}";
 	
 	private slogoUpdate model;
 //	private SubInterpreter interpreter;
@@ -15,7 +18,11 @@ public class MainInterpreter {
 	
 	public void parseInput(String input){
 		String[] split = input.split("\\s+");
-		interpretCommand(split);
+		ProgramParser lang = new ProgramParser();
+		lang = addPatterns(lang);
+		
+		String[] parsed = createParsedArray(split, lang);
+		interpretCommand(parsed);
 	}
 	
 	public void interpretCommand(String[] input){
@@ -56,6 +63,20 @@ public class MainInterpreter {
 			}
 		}
 		return res;
+	}
+	
+	private String[] createParsedArray(String[] in, ProgramParser lang){
+		String[] out = new String[in.length];
+		for(int i=0;i<in.length;i++){
+			out[i] = lang.getSymbol(in[i]);
+		}
+		return out;
+	}
+	
+	private ProgramParser addPatterns(ProgramParser lang){
+		lang.addPatterns("resources/languages/English");
+        lang.addPatterns("resources/languages/Syntax");
+        return lang;
 	}
 
 	private boolean isDouble(String str) {
