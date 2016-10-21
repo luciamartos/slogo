@@ -5,12 +5,18 @@ public class SlogoUpdate {
 	private double movementDelta;
 	private Boolean turtleShouldDraw;
 	private Boolean turtleShouldShow;
+	private Double newXCoordinate;
+	private Double newYCoordinate;
+	private Double newAngle;
 	
 	public SlogoUpdate(){
 		rotationDelta = 0;
 		movementDelta = 0;
 		turtleShouldDraw = null;
 		turtleShouldShow = null;
+		newXCoordinate = null;
+		newYCoordinate = null;
+		newAngle = null;
 	}
 	
 	public double getRotationDelta(){
@@ -21,12 +27,24 @@ public class SlogoUpdate {
 		return movementDelta;
 	}
 	
-	public boolean getTurtleShouldDraw(){
+	public Boolean getTurtleShouldDraw(){
 		return turtleShouldDraw;
 	}
 	
-	public boolean getTurtleShouldShow(){
+	public Boolean getTurtleShouldShow(){
 		return turtleShouldShow;
+	}
+	
+	public Double getNewXCoordinate(){
+		return newXCoordinate;
+	}
+	
+	public Double getNewYCoordinate(){
+		return newYCoordinate;
+	}
+	
+	public Double getNewAngle(){
+		return newAngle;
 	}
 	
 //Interpreter should call these methods to update the data object as it handles commands
@@ -47,12 +65,25 @@ public class SlogoUpdate {
 		movementDelta -= pixels;
 	}
 	
-	public void showTurtle(){
+	public void show(){
 		turtleShouldShow = true;
 	}
 	
-	public void hideTurtle(){
+	public void hide(){
 		turtleShouldShow = false;
+	}
+	
+	public void moveTo(double x, double y){
+		newXCoordinate = x;
+		newYCoordinate = y;
+	}
+	
+	public void turnToward(double x, double y){
+		newAngle = 0.0;
+	}
+	
+	public void setAngle(double angle){
+		newAngle = angle;
 	}
 	
 	public void putPenDown(){
