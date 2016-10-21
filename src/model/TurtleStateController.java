@@ -1,5 +1,4 @@
 package model;
-import interpreter.TurtleQueryDataSource;
 
 public class TurtleStateController implements TurtleQueryDataSource{
 
@@ -11,27 +10,27 @@ public class TurtleStateController implements TurtleQueryDataSource{
  */
 	@Override
 	public double getXCoordinate() {
-		return TurtleState.getCurrentState().xCoordinate;
+		return TurtleState.getCurrentState().getXCoordinate();
 	}
 
 	@Override
 	public double getYCoordinate() {
-		return TurtleState.getCurrentState().yCoordinate;
+		return TurtleState.getCurrentState().getYCoordinate();
 	}
 
 	@Override
 	public double getAngle() {
-		return TurtleState.getCurrentState().angle;
+		return TurtleState.getCurrentState().getAngle();
 	}
 
 	@Override
 	public boolean getTurtleIsShowing() {
-		return TurtleState.getCurrentState().turtleIsShowing;
+		return TurtleState.getCurrentState().isShowing();
 	}
 
 	@Override
-	public boolean getPenIsDown() {
-		return TurtleState.getCurrentState().penIsDown;
+	public boolean getTurtleIsDrawing() {
+		return TurtleState.getCurrentState().isDrawing();
 	}
 	
 }
