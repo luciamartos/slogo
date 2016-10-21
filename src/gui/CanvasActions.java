@@ -1,5 +1,6 @@
 package gui;
 
+import java.io.File;
 import java.util.ResourceBundle;
 
 import general.Properties;
@@ -9,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -60,9 +62,21 @@ public class CanvasActions {
 	}
 	
 	private void initializeTurtle() {
-		 myTurtle = new Turtle(canvas.getWidth() / 2, canvas.getHeight() / 2, "turtle.png", true, Color.BLACK);
+		Image turtleImg = new Image("resources/images/turtle.png", 50, 50, true, true);		
+		 myTurtle = new Turtle(canvas.getWidth() / 2, canvas.getHeight() / 2, turtleImg, true, Color.BLACK);
 		// better way to get the lengths and sizes
 		addTurtleAtXY();
+	}
+	
+	public void changeImage(File file) {
+		
+		try {
+			Image img = new Image(file.getName(), 50, 50, true, true);			
+			setTurtleImage(img);
+		} catch (Exception e) {
+			displayErrorMessage("The file you selected is not a valid image file.");
+		}
+
 	}
 
 	private void addTurtleAtXY() {
@@ -77,7 +91,7 @@ public class CanvasActions {
 	}
 
 
-	public void moveTurtle(int x, int y) {
+	public void moveTurtle(double x, double y) {
 		removeTurtle();
 		addTurtleAtXY();
 	}
@@ -103,15 +117,16 @@ public class CanvasActions {
 	//TODO: error which clears the message
 	public void displayErrorMessage(String myError){
 		final Label label = new Label();
-		label.setLayoutX(canvas.getWidth()/2);
+		label.setLayoutX(0);
 		label.setLayoutY(canvas.getHeight()/2);
-		label.setFont(Font.font("Verdana", 50));
+		label.setFont(Font.font("Verdana", 30));
 		label.setText(myError);
 		pane.getChildren().add(label);
 	}
 	
-	public void changeTurtleImage(String myFile, Turtle myTurtle){
-		myTurtle.setMyImage(myFile);
+	public void setTurtleImage(Image image){
+		myTurtle.setImage(image);
+		moveTurtle(myTurtle.getXPos(),myTurtle.getYPos());
 	}
 	
 	public void setPenColor(Turtle myTurtle, Color myColor){

@@ -1,7 +1,8 @@
 package gui;
 
-import java.util.List;
-import java.util.ResourceBundle;
+import java.io.File;
+import java.io.IOException;
+
 
 import general.Properties;
 import javafx.beans.value.ChangeListener;
@@ -14,9 +15,11 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 
 /**
  * 
@@ -34,10 +37,11 @@ public class MainView {
 	private ObservableList<String> pastCommands;
 	private CanvasActions canvasActions;
 	private Settings settings;
+	private ViewController controller;
 
-	public MainView(Properties viewProperties) {
-		
-		this.viewProperties = viewProperties;
+	public MainView(ViewController controller) {
+		this.controller = controller;
+		viewProperties = controller.getProperties();
 		sceneRoot = new Group();
 		double appWidth = viewProperties.getDoubleProperty("app_width");
 		double appHeight = viewProperties.getDoubleProperty("app_height");
@@ -61,15 +65,29 @@ public class MainView {
 		sceneRoot.getChildren().add(titleBox);
 	}
 
-	private void createCanvas() {
+	public void createCanvas() {
 		canvasActions = new CanvasActions(viewProperties);
 		sceneRoot.getChildren().addAll(canvasActions.getPane());
 	}
-	
+
 	private void createSettings() {
 		settings = new Settings(viewProperties);
 		sceneRoot.getChildren().addAll(settings.getVBox());
+		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(final ActionEvent e) {
+				FileChooser fileChooser = new FileChooser();
+				MainView.this.createCanvas();
+				File file = fileChooser.showOpenDialog(controller.getStage());
+				if (file != null && file.isFile()) {
+					canvasActions.changeImage(file);
+				}
+			}
+		};
+		settings.turtleImageSetAction(event);
 	}
+
+
 
 	private void createListPastCommands() {
 		myListPastCommands = new ListView<String>();
@@ -98,8 +116,6 @@ public class MainView {
 
 		sceneRoot.getChildren().addAll(myListPastCommands, label);
 	}
-
-
 
 	private void createCommandInputter() {
 		EventHandler<ActionEvent> runCommandHandler = event -> {

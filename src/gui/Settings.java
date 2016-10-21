@@ -1,34 +1,40 @@
 package gui;
 
+import java.io.File;
+
 import general.Properties;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 
 public class Settings {
 
 	private Properties viewProperties;
 	private VBox vBox;
+	private Button imageButton;
 
 	public Settings(Properties viewProperties) {
 		this.viewProperties = viewProperties;
-		intializeVBox();
-		intializePenColorSetting();
-		intializeBackgroundColorSetting();
-
+		initializeVBox();
+		initializePenColorSetting();
+		initializeBackgroundColorSetting();
+		initializeTurtleImageSetting();
 	}
 
-	private void intializeVBox() {
+	private void initializeVBox() {
 		vBox = new VBox(viewProperties.getDoubleProperty("padding"));
 		vBox.setLayoutX(viewProperties.getDoubleProperty("settings_x"));
 		vBox.setLayoutY(viewProperties.getDoubleProperty("settings_y"));
 	}
 
-	private void intializePenColorSetting() {
+	private void initializePenColorSetting() {
 		HBox hBox = new HBox(viewProperties.getDoubleProperty("padding"));
 
 		// set the text box
@@ -46,7 +52,7 @@ public class Settings {
 		vBox.getChildren().add(hBox);
 	}
 	
-	private void intializeBackgroundColorSetting() {
+	private void initializeBackgroundColorSetting() {
 		HBox hBox = new HBox(viewProperties.getDoubleProperty("padding"));
 
 		// set the text box
@@ -62,6 +68,16 @@ public class Settings {
 		// });
 		hBox.getChildren().addAll(colorInput, colorButton);
 		vBox.getChildren().add(hBox);
+	}
+	
+	private void initializeTurtleImageSetting() {
+		imageButton = createButton("Change Turtle Image", 200);
+		vBox.getChildren().add(imageButton);
+
+	}
+	
+	public void turtleImageSetAction(EventHandler<ActionEvent> event){
+		imageButton.setOnAction(event);
 	}
 	
 	private TextField createTextBox(String text, double width){

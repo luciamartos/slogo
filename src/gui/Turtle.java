@@ -18,13 +18,12 @@ public class Turtle {
 	private boolean penDown;
 	private double heading;
 
-	public Turtle(double x, double y, String imageName, boolean turtleStatus, Color myColor) {
+	public Turtle(double x, double y, Image image, boolean turtleStatus, Color myColor) {
 		xPos = x;
 		yPos = y;
 		showTurtle = turtleStatus;
 		penColor = myColor;
-		myImage = new Image(getClass().getClassLoader().getResourceAsStream(imageName), 50, 50, true, true);
-		myImageView = new ImageView(myImage);
+		setImage(image);
 	}
 
 	public boolean getPenDown() {
@@ -83,8 +82,8 @@ public class Turtle {
 		return penColor;
 	}
 
-	protected void setMyImage(String nameImage) {
-		myImage = new Image(getClass().getClassLoader().getResourceAsStream("turtle.png"), 50, 50, true, true);
+	protected void setImage(Image image) {
+		myImage = image;
 		myImageView = new ImageView(myImage);
 	}
 
