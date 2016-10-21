@@ -1,7 +1,7 @@
 package general;
 import java.util.ResourceBundle;
 
-import gui.ViewController;
+import gui.ViewController1;
 
 public class Properties {
 
