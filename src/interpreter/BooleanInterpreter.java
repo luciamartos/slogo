@@ -8,11 +8,11 @@ public class BooleanInterpreter extends SubInterpreter{
 		
 	}
 	
-	double less(double a, double b){
+	double lessthan(double a, double b){
 		return (a<b) ? 1 : 0;
 	}
 	
-	double greater(double a, double b){
+	double greaterthan(double a, double b){
 		return (a>b) ? 1 : 0;
 	}
 	
@@ -20,20 +20,20 @@ public class BooleanInterpreter extends SubInterpreter{
 		return (a==b) ? 1 : 0;
 	}
 	
-	double notEqual(double a, double b){
+	double notequal(double a, double b){
 		return (a!=b) ? 1 : 0;
 	}
 	
-	double and(boolean a, boolean b){
-		return (a&&b) ? 1 : 0;
+	double and(double a, double b){
+		return (a==0&&b==0) ? 1 : 0;
 	}
 	
-	double or(boolean a, boolean b){
-		return (a||b) ? 1 : 0;
+	double or(double a, double b){
+		return (a==0||b==0) ? 1 : 0;
 	}
 	
-	double not(boolean a){
-		return (!a) ? 1 : 0;
+	double not(double a){
+		return (a==0) ? 1 : 0;
 	}
 	
 		

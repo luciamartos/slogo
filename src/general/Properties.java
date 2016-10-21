@@ -1,7 +1,6 @@
 package general;
 import java.util.ResourceBundle;
 
-
 public class Properties {
 
 	protected ResourceBundle properties;

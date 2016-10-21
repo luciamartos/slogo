@@ -1,7 +1,5 @@
 package interpreter;
 
-import slogo_update.slogoUpdate;
-
 public class TurtleCommandInterpreter {
 
 	private slogoUpdate model;

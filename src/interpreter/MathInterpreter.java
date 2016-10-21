@@ -37,10 +37,6 @@ public class MathInterpreter extends SubInterpreter{
 		return (Math.random() * ((max) + 1));
 	}
 	
-	double max(double max){
-		return Math.random() * (max+1);
-	}
-	
 	double sine(double degrees){
 		return Math.sin(Math.toRadians(degrees));
 	}
