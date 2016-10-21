@@ -1,6 +1,6 @@
 package interpreter;
 
-public class TurtleCommandInterpreter {
+public class TurtleCommandInterpreter extends SubInterpreter{
 
 	private slogoUpdate model;
 	
@@ -22,5 +22,5 @@ public class TurtleCommandInterpreter {
 	slogoUpdate getModel(){
 		return model;
 	}
-	
+
 }
