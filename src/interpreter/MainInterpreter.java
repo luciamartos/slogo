@@ -18,7 +18,7 @@ public class MainInterpreter {
 	
 	private SlogoUpdate model;
 	private ResourceBundle rb;
-	private Class interpreterClass;
+//	private Class interpreterClass;
 	private String[] parsed;
 	
 	public MainInterpreter(){
@@ -31,9 +31,9 @@ public class MainInterpreter {
 		ProgramParser lang = new ProgramParser();
 		lang = addPatterns(lang);
 		parsed = createParsedArray(split, lang);
-//		for(String elem: parsed){
-//			System.out.println(elem);
-//		}
+		for(String elem: parsed){
+			System.out.println(elem);
+		}
 		//split is the original input, parsed is the translated version (translated with ProgramParser)
 		interpretCommand(split, parsed, 0);
 	}
@@ -73,7 +73,7 @@ public class MainInterpreter {
 	private double interpretMathCommand(String[] input, String keyword, int searchStartIndex) throws ClassNotFoundException, InstantiationException, 
 	IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException{
 		double[] param;
-		interpreterClass = Class.forName(rb.getString("MathInterpreterLabel"));
+		Class interpreterClass = Class.forName(rb.getString("MathInterpreterLabel"));
 		Object obj = interpreterClass.newInstance();
 		Class[] args;
 		MathInterpreter interpreter = new MathInterpreter();
@@ -107,7 +107,7 @@ public class MainInterpreter {
 	private double interpretBooleanCommand(String[] input, String keyword, int searchStartIndex) throws ClassNotFoundException, InstantiationException, 
 	IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException{
 		double[] param;
-		interpreterClass = Class.forName(rb.getString("BooleanInterpreterLabel"));
+		Class interpreterClass = Class.forName(rb.getString("BooleanInterpreterLabel"));
 		Object obj = interpreterClass.newInstance();
 		Class[] args;
 		BooleanInterpreter interpreter = new BooleanInterpreter();
@@ -122,6 +122,9 @@ public class MainInterpreter {
 		
 		else if(interpreter.isBinaryBooleanExpression(keyword)){
 			param = parseParam(input, searchStartIndex+1, 2); //last index is exclusive
+			for(double elem: param){
+				System.out.println("xxx: "+ elem);
+			}
 			args = createDoubleArgs(2);
 			Method method = interpreterClass.getDeclaredMethod(keyword, args);
 			System.out.println(method.invoke(obj, param[0], param[1]));

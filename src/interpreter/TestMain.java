@@ -5,7 +5,7 @@ import javafx.stage.Stage;
 
 public class TestMain extends Application{
 	
-	String input = "less? pi - 100 10";
+	String input = "less? pi 100";
 	
 	public static void main(String[] args){
 		launch(args);
