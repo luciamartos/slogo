@@ -2,6 +2,7 @@ package gui;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -27,7 +28,7 @@ import javafx.stage.Stage;
  * 
  * @author LuciaMartos
  */
-public class ViewController implements Observer{
+public class ViewController implements Observer {
 	private Properties viewProperties;
 
 	private static final String VIEW_PROPERTIES_PACKAGE = "resources.properties/";
@@ -38,30 +39,30 @@ public class ViewController implements Observer{
 	private ListView<String> myListPastCommands;
 	private ObservableList<String> pastCommands;
 	private CanvasActions canvasActions;
-	private SettingsController settings;
+	private SettingsController settingsController;
 	private Stage stage;
 
 	public ViewController(Stage stage) {
 		viewProperties = new Properties(VIEW_PROPERTIES_PACKAGE + "View");
 		sceneRoot = new Group();
-		
+
 		initializeSettingsController();
 
 		createTitleBox();
 		createCanvas();
 		createCommandInputter();
 		createListPastCommands();
-		
+
 		setupStage(stage);
 	}
-	
-	private void setupStage(Stage stage){
+
+	private void setupStage(Stage stage) {
 		double appWidth = viewProperties.getDoubleProperty("app_width");
 		double appHeight = viewProperties.getDoubleProperty("app_height");
 		Scene scene = new Scene(sceneRoot, appWidth, appHeight, BACKGROUND_COLOR_SCENE);
 		stage.setTitle(viewProperties.getStringProperty("title"));
-        stage.setScene(scene);
-        stage.show();
+		stage.setScene(scene);
+		stage.show();
 	}
 
 	private void createTitleBox() {
@@ -76,24 +77,22 @@ public class ViewController implements Observer{
 	}
 
 	public void createCanvas() {
-		double canvasX =viewProperties.getDoubleProperty("canvas_x");
-				double canvasY=viewProperties.getDoubleProperty("canvas_y");
-		double canvasWidth=viewProperties.getDoubleProperty("canvas_width");
-		double canvasHeight=viewProperties.getDoubleProperty("canvas_height");
-		double canvasLayoutX=viewProperties.getDoubleProperty("canvas_layout_x");
-		double canvasLayoutY=viewProperties.getDoubleProperty("canvas_layout_y");
+		double canvasX = viewProperties.getDoubleProperty("canvas_x");
+		double canvasY = viewProperties.getDoubleProperty("canvas_y");
+		double canvasWidth = viewProperties.getDoubleProperty("canvas_width");
+		double canvasHeight = viewProperties.getDoubleProperty("canvas_height");
+		double canvasLayoutX = viewProperties.getDoubleProperty("canvas_layout_x");
+		double canvasLayoutY = viewProperties.getDoubleProperty("canvas_layout_y");
 		canvasActions = new CanvasActions(canvasX, canvasY, canvasWidth, canvasHeight, canvasLayoutX, canvasLayoutY);
 		sceneRoot.getChildren().addAll(canvasActions.getPane());
 	}
 
 	private void initializeSettingsController() {
-		settings = new SettingsController(stage,viewProperties);
-		settings.addObserver(this);
-		sceneRoot.getChildren().addAll(settings.getVBox());
-		
+		settingsController = new SettingsController(stage, viewProperties);
+		settingsController.addObserver(this);
+		sceneRoot.getChildren().addAll(settingsController.getVBox());
+
 	}
-
-
 
 	private void createListPastCommands() {
 		myListPastCommands = new ListView<String>();
@@ -134,16 +133,29 @@ public class ViewController implements Observer{
 		inputPanel = new InputPanel(viewProperties, runCommandHandler);
 		sceneRoot.getChildren().addAll(inputPanel);
 	}
-	
-	//currently only observable this controller observes is settingsController
-	public void update(Observable obs, Object o){
-		if(obs instanceof SettingsController){
-			if(o instanceof File)
-				canvasActions.changeImage((File)o);
-			else if(o instanceof String){
-				
-			}
+
+	// currently only observable this controller observes is settingsController
+	public void update(Observable obs, Object o) {
+		try {
+			Method update = getClass().getMethod("update", obs.getClass(), Object.class);
+			update.invoke(this, obs, o);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+
+	}
+
+	public void update(SettingsController obs, Object o) {
+		if (o != null) {
+			canvasActions.displayErrorMessage(o.toString());
+			return;
+		}
+		if (settingsController.getNewImage() != null)
+			canvasActions.changeImage(settingsController.getNewImage());
+		if (settingsController.getNewBackgroundColor() != null)
+			canvasActions.setBackgroundColorCanvas(settingsController.getNewBackgroundColor());
+		if (settingsController.getNewPenColor() != null)
+			canvasActions.setPenColor(settingsController.getNewPenColor());
 
 	}
 }

@@ -35,7 +35,7 @@ public class CanvasActions {
 	}
 
 	public void setBackgroundColorCanvas(String myColor) {
-		pane.setStyle("-fx-background-color: " + myColor);
+		pane.setStyle("-fx-background-color: " + myColor + ";");
 	}
 
 	private void initializeCanvas(double canvasX, double canvasY, double canvasWidth, double canvasHeight,
@@ -64,7 +64,7 @@ public class CanvasActions {
 	}
 
 	private void initializeTurtle() {
-		Image turtleImg = new Image(IMAGE_PATH+"turtle.png", 50, 50, true, true);
+		Image turtleImg = new Image(IMAGE_PATH + "turtle.png", 50, 50, true, true);
 		myTurtle = new Turtle(canvas.getWidth() / 2, canvas.getHeight() / 2, turtleImg, true, Color.BLACK);
 		// better way to get the lengths and sizes
 		addTurtleAtXY();
@@ -73,7 +73,7 @@ public class CanvasActions {
 	public void changeImage(File file) {
 
 		try {
-			Image img = new Image(IMAGE_PATH+file.getName(), 50, 50, true, true);
+			Image img = new Image(IMAGE_PATH + file.getName(), 50, 50, true, true);
 			setTurtleImage(img);
 		} catch (Exception e) {
 			displayErrorMessage("The file you selected is not a valid image file.");
@@ -131,7 +131,7 @@ public class CanvasActions {
 		addTurtleAtXY();
 	}
 
-	public void setPenColor(Turtle myTurtle, Color myColor) {
+	public void setPenColor(Color myColor) {
 		myTurtle.setPenColor(myColor);
 	}
 
