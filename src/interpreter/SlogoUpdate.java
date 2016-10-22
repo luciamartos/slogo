@@ -1,16 +1,14 @@
 package interpreter;
 
-import model.TurtleStateDataSource;
-
 public class SlogoUpdate {
 	private Boolean turtleShouldDraw;
 	private Boolean turtleShouldShow;
 	private Double xCoordinate;
 	private Double yCoordinate;
-	private Double currAngle;
+	private Double newAngle;
 	
 	public SlogoUpdate(TurtleStateDataSource source){
-		currAngle = source.getAngle();
+		newAngle = source.getAngle();
 		turtleShouldDraw = source.getTurtleIsDrawing();
 		turtleShouldShow = source.getTurtleIsShowing();
 		xCoordinate = source.getXCoordinate();
@@ -34,7 +32,7 @@ public class SlogoUpdate {
 	}
 	
 	public Double getAngle(){
-		return currAngle;
+		return newAngle;
 	}
 	
 //Interpreter should call these methods to update the data object as it handles commands
@@ -49,11 +47,11 @@ public class SlogoUpdate {
 	}
 	
 	public void moveForward(double pixels){
-
+		
 	}
 	
 	public void moveBackward(double pixels){
-
+		
 	}
 	
 	public void show(){
@@ -71,11 +69,11 @@ public class SlogoUpdate {
 	
 	public void turnToward(double x, double y){
 		//TODO: This is probably not the right function?
-		currAngle = 0.0;
+		newAngle = 0.0;
 	}
 	
 	public void setAngle(double angle){
-		currAngle = angle;
+		newAngle = angle;
 	}
 	
 	public void putPenDown(){
