@@ -55,12 +55,12 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 	}
 	
 	double showturtle(){
-		model.showTurtle();
+		model.show();
 		return 1;
 	}
 	
 	double hideturtle(){
-		model.hideTurtle();
+		model.hide();
 		return 0;
 	}
 	
