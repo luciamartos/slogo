@@ -24,7 +24,7 @@ public class SettingsController extends Observable {
 	private static final String IMAGE_PATH = "resources/images/";
 
 	private Properties viewProperties;
-	private VBox vBox;
+	private HBox hBox;
 	private Button imageButton;
 
 	private String newBackgroundColor;
@@ -33,20 +33,19 @@ public class SettingsController extends Observable {
 
 	public SettingsController(Stage stage, Properties viewProperties) {
 		this.viewProperties = viewProperties;
-		initializeVBox();
+		initializeHBox();
 		initializePenColorSetting();
 		initializeBackgroundColorSetting();
 		initializeTurtleImageSetting(stage);
 	}
 
-	private void initializeVBox() {
-		vBox = new VBox(viewProperties.getDoubleProperty("padding"));
-		vBox.setLayoutX(viewProperties.getDoubleProperty("settings_x"));
-		vBox.setLayoutY(viewProperties.getDoubleProperty("settings_y"));
+	private void initializeHBox() {
+		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
+		hBox.setLayoutX(viewProperties.getDoubleProperty("settings_x"));
+		hBox.setLayoutY(viewProperties.getDoubleProperty("settings_y"));
 	}
 
 	private void initializePenColorSetting() {
-		HBox hBox = new HBox(viewProperties.getDoubleProperty("padding"));
 		TextField colorInput = createTextBox("Change Pen Color", 200);
 		Button colorButton = createButton("Set", viewProperties.getDoubleProperty("run_button_width"));
 		colorButton.setOnAction(event -> {
@@ -61,12 +60,9 @@ public class SettingsController extends Observable {
 			colorInput.clear();
 		});
 		hBox.getChildren().addAll(colorInput, colorButton);
-		vBox.getChildren().add(hBox);
 	}
 
 	private void initializeBackgroundColorSetting() {
-		HBox hBox = new HBox(viewProperties.getDoubleProperty("padding"));
-
 		// set the text box
 		TextField colorInput = createTextBox("Change Background Color", 200);
 
@@ -83,7 +79,6 @@ public class SettingsController extends Observable {
 			colorInput.clear();
 		});
 		hBox.getChildren().addAll(colorInput, colorButton);
-		vBox.getChildren().add(hBox);
 	}
 
 	private Color checkValidColor(String colorText) {
@@ -97,7 +92,7 @@ public class SettingsController extends Observable {
 
 	private void initializeTurtleImageSetting(Stage stage) {
 		imageButton = createButton("Change Turtle Image", 200);
-		vBox.getChildren().add(imageButton);
+		hBox.getChildren().add(imageButton);
 		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(final ActionEvent e) {
@@ -130,8 +125,8 @@ public class SettingsController extends Observable {
 		return button;
 	}
 
-	public VBox getVBox() {
-		return vBox;
+	public HBox getHBox() {
+		return hBox;
 	}
 
 	public String getNewBackgroundColor() {

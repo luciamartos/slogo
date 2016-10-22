@@ -20,7 +20,6 @@ import javafx.scene.text.Font;
 public class CanvasActions {
 	private static final String COLOR_CANVAS = "white";
 	private static final String IMAGE_PATH = "resources/images/";
-	
 	private GraphicsContext gc;
 	private Canvas canvas;
 	private Pane pane;
@@ -42,6 +41,7 @@ public class CanvasActions {
 
 	private void initializeCanvas(double canvasX, double canvasY, double canvasWidth, double canvasHeight,
 			double canvasLayoutX, double canvasLayoutY) {
+		//TODO: delete all x and y's
 		canvas = new Canvas(canvasX, canvasY);
 		canvas.setWidth(canvasWidth);
 		canvas.setHeight(canvasHeight);

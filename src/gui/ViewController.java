@@ -19,6 +19,8 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -40,7 +42,6 @@ public class ViewController implements Observer {
 	private Group sceneRoot;
 	private TitleBox titleBox;
 	private InputPanel inputPanel;
-	private ListView<String> myListPastCommands;
 	private ObservableList<String> pastCommands;
 	private CanvasActions canvasActions;
 	private SettingsController settingsController;
@@ -51,36 +52,31 @@ public class ViewController implements Observer {
 		viewProperties = new Properties(VIEW_PROPERTIES_PACKAGE + "View");
 		sceneRoot = new Group();
 
-		HBox box1 = new HBox(15);
-		box1.setPadding(new Insets(15,15,15,15));
+		//HBox box1 = new HBox(15);
+		//box1.setPadding(new Insets(15, 15, 15, 15));
 		VBox box2 = new VBox(15);
+		box2.setPadding(new Insets(15, 15, 15, 15));
 		HBox box3 = new HBox(15);
 
 		VBox box4 = new VBox(15);
 
+		sceneRoot.getChildren().add(box2);
 
-		sceneRoot.getChildren().add(box1);
-
-		box1.getChildren().add(box2);
 
 		box2.getChildren().add(createTitleBox());
 		box2.getChildren().add(box3);
+		box2.getChildren().add(initializeSettingsController());
 		box2.getChildren().add(createErrorConsole());
 
 		box3.getChildren().add(box4);
-		box3.getChildren().add(createListPastCommands());
+		box3.getChildren().add(createPastCommandsListView());
+		box3.getChildren().add(createTableView());
 
 		box4.getChildren().add(createCanvas());
 		box4.getChildren().add(createCommandInputter());
 
 		initializeSettingsController();
 		setupStage(stage);
-	}
-
-	private void createCanvasAndLists() {
-		HBox canvasAndLists = new HBox(15);
-		// canvasAndLists.setLayoutX(value);
-		VBox canvasAndCommandInputter = new VBox(15);
 	}
 
 	private void setupStage(Stage stage) {
@@ -117,32 +113,22 @@ public class ViewController implements Observer {
 		return canvasActions.getPane();
 	}
 
-	private void initializeSettingsController() {
+	private Node initializeSettingsController() {
 		settingsController = new SettingsController(stage, viewProperties);
 		settingsController.addObserver(this);
-		sceneRoot.getChildren().addAll(settingsController.getVBox());
+		return settingsController.getHBox();
 
 	}
 
-	private Node createListPastCommands() {
-		myListPastCommands = new ListView<String>();
+	private Node createPastCommandsListView() {
+		ListView<String> pastCommandsListView = new ListView<String>();
 		pastCommands = FXCollections.observableArrayList();
-		myListPastCommands.setItems(pastCommands);
+		pastCommandsListView.setItems(pastCommands);
 
-		// produce sample label to signal command being pressed (this will be
-		// removed)
-		// final Label label = new Label();
-		// label.setLayoutX(viewProperties.getDoubleProperty("console_label_x"));
-		// label.setLayoutY(viewProperties.getDoubleProperty("console_label_y"));
-		// label.setFont(Font.font("Verdana", 20));
-
-		myListPastCommands.setPrefWidth(viewProperties.getDoubleProperty("past_command_list_width"));
-		myListPastCommands.setPrefHeight(viewProperties.getDoubleProperty("past_command_list_height"));
-		myListPastCommands.setLayoutX(viewProperties.getDoubleProperty("past_command_list_x"));
-		myListPastCommands.setLayoutY(viewProperties.getDoubleProperty("past_command_list_y"));
-
+		pastCommandsListView.setPrefWidth(viewProperties.getDoubleProperty("past_command_list_width"));
+		pastCommandsListView.setPrefHeight(viewProperties.getDoubleProperty("past_command_list_height"));
 		// handle user clicking on an value of the list
-		myListPastCommands.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+		pastCommandsListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			public void changed(ObservableValue<? extends String> ov, String old_val, String curCommand) {
 				// not actually an error
 				errorConsole.displayErrorMessage("Run: " + curCommand);
@@ -150,7 +136,42 @@ public class ViewController implements Observer {
 			}
 		});
 
-		return myListPastCommands;
+		return pastCommandsListView;
+	}
+
+	private Node createTableView() {
+		TableView tableView = new TableView();
+		TableColumn variables = new TableColumn("Environment\nVariables");
+		TableColumn userDefinedCommands = new TableColumn("User-Defined\nCommands");
+		tableView.getColumns().addAll(variables, userDefinedCommands);
+		
+		TableColumn variableNames = new TableColumn("Name");
+		TableColumn variableValues = new TableColumn("Value");
+		variables.getColumns().addAll(variableNames, variableValues);
+		
+		TableColumn userDefinedCommandNames = new TableColumn("Name");
+		TableColumn userDefinedCommandValues = new TableColumn("Value");
+		userDefinedCommands.getColumns().addAll(userDefinedCommandNames, userDefinedCommandValues);
+		
+		
+		// turtleVariables = FXCollections.observableArrayList();
+//		pastCommandsListView.setItems(pastCommands);
+//
+//		pastCommandsListView.setPrefWidth(viewProperties.getDoubleProperty("past_command_list_width"));
+//		pastCommandsListView.setPrefHeight(viewProperties.getDoubleProperty("past_command_list_height"));
+//		pastCommandsListView.setLayoutX(viewProperties.getDoubleProperty("past_command_list_x"));
+//		pastCommandsListView.setLayoutY(viewProperties.getDoubleProperty("past_command_list_y"));
+//
+//		// handle user clicking on an value of the list
+//		pastCommandsListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+//			public void changed(ObservableValue<? extends String> ov, String old_val, String curCommand) {
+//				// not actually an error
+//				errorConsole.displayErrorMessage("Run: " + curCommand);
+//				// TODO: RUN COMMAND OF STRING
+//			}
+//		});
+
+		return tableView;
 	}
 
 	private Node createCommandInputter() {
