@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import model.TurtleStateDataSource;
 
 import regularExpression.ProgramParser;
 
@@ -20,8 +21,8 @@ public class MainInterpreter {
 	private ResourceBundle rb;
 	private String[] parsed;
 	
-	public MainInterpreter(){
-		model = new SlogoUpdate();
+	public MainInterpreter(TurtleStateDataSource source){
+		model = new SlogoUpdate(source);
 		rb = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+PROPERTIES_TITLE);
 	}
 	
@@ -69,7 +70,8 @@ public class MainInterpreter {
 	IllegalArgumentException, InvocationTargetException{
 		double[] param;
 		Class interpreterClass = Class.forName(rb.getString("TurtleCommandInterpreterLabel"));
-		Object obj = interpreterClass.newInstance();
+//		Object obj = interpreterClass.newInstance();
+		Object obj = interpreterClass.getDeclaredConstructor(SlogoUpdate.class).newInstance(model);
 		Class[] args;
 		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model);
 		
