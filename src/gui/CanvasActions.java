@@ -1,6 +1,8 @@
 package gui;
 
 import java.io.File;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.ResourceBundle;
 
 import general.Properties;
@@ -17,7 +19,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-public class CanvasActions {
+public class CanvasActions implements Observer{
 	private static final String COLOR_CANVAS = "white";
 	private static final String IMAGE_PATH = "resources/images/";
 	private GraphicsContext gc;
@@ -30,7 +32,7 @@ public class CanvasActions {
 
 
 	public CanvasActions(double canvasX, double canvasY, double canvasWidth, double canvasHeight, double canvasLayoutX,
-			double canvasLayoutY, double errorLabelX, double errorLabelY) {
+			double canvasLayoutY, double errorLabelX, double errorLabelY){
 		initializePane(canvasWidth, canvasHeight, canvasLayoutX, canvasLayoutY);
 		initializeCanvas(canvasX, canvasY, canvasWidth, canvasHeight, canvasLayoutX, canvasLayoutY);
 		pane.getChildren().addAll(canvas);
@@ -68,16 +70,6 @@ public class CanvasActions {
 	public Canvas getCanvas() {
 		return canvas;
 	}
-	
-	public void updateCanvasActions(){
-		removeTurtle();
-		setShowTurtle();
-		setPenDown();
-		setPenColor();
-		addTurtleAtXY();
-		drawPath();
-		
-	}
 
 	private void initializeTurtle() {
 		turtleImgView = new ImageView(new Image(IMAGE_PATH + "turtle.png", 50, 50, true, true));
@@ -112,7 +104,7 @@ public class CanvasActions {
 		pane.getChildren().remove(turtleImgView);
 	}
 
-	public void moveTurtle(double x, double y) {
+	public void moveTurtle() {
 		removeTurtle();
 		addTurtleAtXY();
 	}
@@ -138,6 +130,17 @@ public class CanvasActions {
 
 	public void setPenColor() {
 		myColor = myController.getPenColor();
+	}
+
+	//check with eric if this is ok?
+	@Override
+	public void update(Observable o, Object arg) {
+		removeTurtle();
+		setShowTurtle();
+		setPenDown();
+		setPenColor();
+		addTurtleAtXY();
+		drawPath();
 	}
 
 }
