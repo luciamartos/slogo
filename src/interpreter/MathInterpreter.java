@@ -4,11 +4,6 @@ public class MathInterpreter extends SubInterpreter{
 	
 	private final double PI = 3.14159;
 	
-	@Override
-	void parseInput(String[] input) {
-
-	}
-	
 	double sum(double a, double b){
 		return a+b;
 	}
