@@ -3,24 +3,24 @@ import interpreter.SlogoUpdate;
 
 public class TurtleStateController implements TurtleStateDataSource{
 
-//	public void applyChanges(SlogoUpdate changes){
-//		
-//		TurtleState modelToUpdate = TurtleState.getCurrentState();
-//		double currentAngle = modelToUpdate.getAngle();
-//		double currentX = modelToUpdate.getXCoordinate();
-//		double currentY = modelToUpdate.getYCoordinate();
-//		
-//		
-//		Boolean shouldDraw = changes.getTurtleShouldDraw();
-//		//null state means no changes (no command issued)
-//		if (shouldDraw != null){
-//			modelToUpdate.setDrawing(shouldDraw);
-//		}
-//		Boolean shouldShow = changes.getTurtleShouldShow();
-//		if (shouldShow != null){
-//			modelToUpdate.setShowing(shouldShow);
-//		}
-//	}
+	public void applyChanges(SlogoUpdate changes){
+		
+		TurtleState modelToUpdate = TurtleState.getCurrentState();
+		double currentAngle = modelToUpdate.getAngle();
+		double currentX = modelToUpdate.getXCoordinate();
+		double currentY = modelToUpdate.getYCoordinate();
+		
+		
+		Boolean shouldDraw = changes.getTurtleShouldDraw();
+		//null state means no changes (no command issued)
+		if (shouldDraw != null){
+			modelToUpdate.setDrawing(shouldDraw);
+		}
+		Boolean shouldShow = changes.getTurtleShouldShow();
+		if (shouldShow != null){
+			modelToUpdate.setShowing(shouldShow);
+		}
+	}
 	
 	private double calculateNewAngle(double currentAngle, double angleDelta){
 		currentAngle += angleDelta;

@@ -100,5 +100,21 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 	SlogoUpdate getModel(){
 		return model;
 	}
+	
+	boolean isNonInputTurtleCommand(String input){
+		return input.equalsIgnoreCase(rb.getString("pd")) || input.equalsIgnoreCase(rb.getString("pu")) ||
+				input.equalsIgnoreCase(rb.getString("st")) || input.equalsIgnoreCase(rb.getString("ht")) ||
+				input.equalsIgnoreCase(rb.getString("home")) || input.equalsIgnoreCase(rb.getString("cs"));
+	}
+	
+	boolean isUnaryTurtleCommand(String input){
+		return input.equalsIgnoreCase(rb.getString("fd")) || input.equalsIgnoreCase(rb.getString("bk")) ||
+				input.equalsIgnoreCase(rb.getString("lt")) || input.equalsIgnoreCase(rb.getString("rt")) ||
+				input.equalsIgnoreCase(rb.getString("seth"));
+	}
+	
+	boolean isBinaryTurtleCommand(String input){
+		return input.equalsIgnoreCase(rb.getString("towards")) || input.equalsIgnoreCase(rb.getString("setxy"));
+	}
 
 }
