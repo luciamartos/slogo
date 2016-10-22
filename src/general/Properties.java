@@ -1,6 +1,10 @@
 package general;
 import java.util.ResourceBundle;
 
+/**
+ * 
+ * @author Eric Song
+ */
 public class Properties {
 
 	protected ResourceBundle properties;

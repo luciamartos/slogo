@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ResourceBundle;
 
 import general.Properties;
+import javafx.animation.SequentialTransition;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -19,13 +20,14 @@ import javafx.scene.text.Font;
 public class CanvasActions {
 	private static final String COLOR_CANVAS = "white";
 	private static final String IMAGE_PATH = "resources/images/";
+	
 	private GraphicsContext gc;
 	private Canvas canvas;
 	private Pane pane;
-	private Turtle myTurtle;
+	private TurtleView myTurtle;
 
 	public CanvasActions(double canvasX, double canvasY, double canvasWidth, double canvasHeight, double canvasLayoutX,
-			double canvasLayoutY) {
+			double canvasLayoutY, double errorLabelX, double errorLabelY) {
 		initializePane(canvasWidth, canvasHeight, canvasLayoutX, canvasLayoutY);
 		initializeCanvas(canvasX, canvasY, canvasWidth, canvasHeight, canvasLayoutX, canvasLayoutY);
 		pane.getChildren().addAll(canvas);
@@ -65,20 +67,13 @@ public class CanvasActions {
 
 	private void initializeTurtle() {
 		Image turtleImg = new Image(IMAGE_PATH + "turtle.png", 50, 50, true, true);
-		myTurtle = new Turtle(canvas.getWidth() / 2, canvas.getHeight() / 2, turtleImg, true, Color.BLACK);
+		myTurtle = new TurtleView(canvas.getWidth() / 2, canvas.getHeight() / 2, turtleImg, true, Color.BLACK);
 		// better way to get the lengths and sizes
 		addTurtleAtXY();
 	}
 
-	public void changeImage(File file) {
-
-		try {
-			Image img = new Image(IMAGE_PATH + file.getName(), 50, 50, true, true);
-			setTurtleImage(img);
-		} catch (Exception e) {
-			displayErrorMessage("The file you selected is not a valid image file.");
-		}
-
+	public void changeImage(Image image) {
+		setTurtleImage(image);
 	}
 
 	private void addTurtleAtXY() {
@@ -113,16 +108,6 @@ public class CanvasActions {
 
 	public void putPenUp() {
 		myTurtle.setPenDown(false);
-	}
-
-	// TODO: error which clears the message
-	public void displayErrorMessage(String myError) {
-		final Label label = new Label();
-		label.setLayoutX(0);
-		label.setLayoutY(canvas.getHeight() / 2);
-		label.setFont(Font.font("Verdana", 30));
-		label.setText(myError);
-		pane.getChildren().add(label);
 	}
 
 	public void setTurtleImage(Image image) {

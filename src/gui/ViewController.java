@@ -41,6 +41,7 @@ public class ViewController implements Observer {
 	private CanvasActions canvasActions;
 	private SettingsController settingsController;
 	private Stage stage;
+	private ErrorConsole errorConsole;
 
 	public ViewController(Stage stage) {
 		viewProperties = new Properties(VIEW_PROPERTIES_PACKAGE + "View");
@@ -52,6 +53,7 @@ public class ViewController implements Observer {
 		createCanvas();
 		createCommandInputter();
 		createListPastCommands();
+		createErrorConsole();
 
 		setupStage(stage);
 	}
@@ -83,7 +85,10 @@ public class ViewController implements Observer {
 		double canvasHeight = viewProperties.getDoubleProperty("canvas_height");
 		double canvasLayoutX = viewProperties.getDoubleProperty("canvas_layout_x");
 		double canvasLayoutY = viewProperties.getDoubleProperty("canvas_layout_y");
-		canvasActions = new CanvasActions(canvasX, canvasY, canvasWidth, canvasHeight, canvasLayoutX, canvasLayoutY);
+		double errorLabelX = viewProperties.getDoubleProperty("error_label_x");
+		double errorLabelY = viewProperties.getDoubleProperty("error_label_y");
+		canvasActions = new CanvasActions(canvasX, canvasY, canvasWidth, canvasHeight, canvasLayoutX, canvasLayoutY,
+				errorLabelX, errorLabelY);
 		sceneRoot.getChildren().addAll(canvasActions.getPane());
 	}
 
@@ -101,10 +106,10 @@ public class ViewController implements Observer {
 
 		// produce sample label to signal command being pressed (this will be
 		// removed)
-		final Label label = new Label();
-		label.setLayoutX(viewProperties.getDoubleProperty("label_x"));
-		label.setLayoutY(viewProperties.getDoubleProperty("label_y"));
-		label.setFont(Font.font("Verdana", 20));
+		// final Label label = new Label();
+		// label.setLayoutX(viewProperties.getDoubleProperty("console_label_x"));
+		// label.setLayoutY(viewProperties.getDoubleProperty("console_label_y"));
+		// label.setFont(Font.font("Verdana", 20));
 
 		myListPastCommands.setPrefWidth(viewProperties.getDoubleProperty("past_command_list_width"));
 		myListPastCommands.setPrefHeight(viewProperties.getDoubleProperty("past_command_list_height"));
@@ -114,12 +119,13 @@ public class ViewController implements Observer {
 		// handle user clicking on an value of the list
 		myListPastCommands.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			public void changed(ObservableValue<? extends String> ov, String old_val, String curCommand) {
-				label.setText("Run: " + curCommand);
+				// not actually an error
+				errorConsole.displayErrorMessage("Run: " + curCommand);
 				// TODO: RUN COMMAND OF STRING
 			}
 		});
 
-		sceneRoot.getChildren().addAll(myListPastCommands, label);
+		sceneRoot.getChildren().add(myListPastCommands);
 	}
 
 	private void createCommandInputter() {
@@ -134,6 +140,13 @@ public class ViewController implements Observer {
 		sceneRoot.getChildren().addAll(inputPanel);
 	}
 
+	private void createErrorConsole() {
+		errorConsole = new ErrorConsole(viewProperties.getDoubleProperty("error_label_x"),
+				viewProperties.getDoubleProperty("error_label_y"),viewProperties.getDoubleProperty("error_font_size"));
+		sceneRoot.getChildren().add(errorConsole.getErrorMessage());
+
+	}
+
 	// currently only observable this controller observes is settingsController
 	public void update(Observable obs, Object o) {
 		try {
@@ -146,8 +159,9 @@ public class ViewController implements Observer {
 	}
 
 	public void update(SettingsController obs, Object o) {
+
 		if (o != null) {
-			canvasActions.displayErrorMessage(o.toString());
+			errorConsole.displayErrorMessage(o.toString());
 			return;
 		}
 		if (settingsController.getNewImage() != null)

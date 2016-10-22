@@ -12,6 +12,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -20,13 +21,15 @@ import javafx.stage.Stage;
 
 public class SettingsController extends Observable {
 
+	private static final String IMAGE_PATH = "resources/images/";
+
 	private Properties viewProperties;
 	private VBox vBox;
 	private Button imageButton;
 
 	private String newBackgroundColor;
 	private Color newPenColor;
-	private File newImage;
+	private Image newImage;
 
 	public SettingsController(Stage stage, Properties viewProperties) {
 		this.viewProperties = viewProperties;
@@ -47,14 +50,14 @@ public class SettingsController extends Observable {
 		TextField colorInput = createTextBox("Change Pen Color", 200);
 		Button colorButton = createButton("Set", viewProperties.getDoubleProperty("run_button_width"));
 		colorButton.setOnAction(event -> {
-			try {
-				Field field = Class.forName("javafx.scene.paint.Color").getField(colorInput.getText().toUpperCase());
-				newPenColor = (Color) field.get(null);
-				notifyObservers();
-			} catch (Exception e) {
-				notifyObservers("Invalid Color");
-			}
+			Color tempColor = checkValidColor(colorInput.getText());
 			setChanged();
+			if (tempColor == null) {
+				notifyObservers("Invalid Pen Color: " + colorInput.getText());
+			} else {
+				newPenColor = tempColor;
+				notifyObservers();
+			}
 			colorInput.clear();
 		});
 		hBox.getChildren().addAll(colorInput, colorButton);
@@ -70,20 +73,26 @@ public class SettingsController extends Observable {
 		// set the run button
 		Button colorButton = createButton("Set", viewProperties.getDoubleProperty("run_button_width"));
 		colorButton.setOnAction(event -> {
-			try {
-				Field field = Class.forName("javafx.scene.paint.Color").getField(colorInput.getText().toUpperCase());
-				Color tempColor = (Color) field.get(null);
+			setChanged();
+			if (checkValidColor(colorInput.getText()) == null) {
+				notifyObservers("Invalid Background Color: " + colorInput.getText());
+			} else {
 				newBackgroundColor = colorInput.getText().toLowerCase();
 				notifyObservers();
-				
-			} catch (Exception e) {
-				notifyObservers("Invalid Color");
 			}
-			setChanged();
 			colorInput.clear();
 		});
 		hBox.getChildren().addAll(colorInput, colorButton);
 		vBox.getChildren().add(hBox);
+	}
+
+	private Color checkValidColor(String colorText) {
+		try {
+			Field field = Class.forName("javafx.scene.paint.Color").getField(colorText.toUpperCase());
+			return (Color) field.get(null);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	private void initializeTurtleImageSetting(Stage stage) {
@@ -94,10 +103,13 @@ public class SettingsController extends Observable {
 			public void handle(final ActionEvent e) {
 				FileChooser fileChooser = new FileChooser();
 				File file = fileChooser.showOpenDialog(stage);
-				if (file != null && file.isFile()) {
-					newImage = file;
-					setChanged();
+				setChanged();
+				try {
+					Image image = new Image(IMAGE_PATH + file.getName(), 50, 50, true, true);
+					newImage = image;
 					notifyObservers();
+				} catch (Exception ex) {
+					notifyObservers("The file you selected is not a valid image file: " + file.getName());
 				}
 			}
 		};
@@ -130,7 +142,7 @@ public class SettingsController extends Observable {
 		return newPenColor;
 	}
 
-	public File getNewImage() {
+	public Image getNewImage() {
 		return newImage;
 	}
 

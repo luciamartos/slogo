@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
  * 
  * @author LuciaMartos
  */
-public class Turtle {
+public class TurtleView {
 	private double xPos;
 	private double yPos;
 	private boolean showTurtle;
@@ -18,7 +18,7 @@ public class Turtle {
 	private boolean penDown;
 	private double heading;
 
-	public Turtle(double x, double y, Image image, boolean turtleStatus, Color myColor) {
+	public TurtleView(double x, double y, Image image, boolean turtleStatus, Color myColor) {
 		xPos = x;
 		yPos = y;
 		showTurtle = turtleStatus;
