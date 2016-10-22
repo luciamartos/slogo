@@ -1,8 +1,8 @@
 package interpreter;
 
-import model.TurtleQueryDataSource;
+import model.TurtleStateDataSource;
 
 public class TurtleQueryInterpreter{
-	private static TurtleQueryDataSource dataSource;
+	private static TurtleStateDataSource dataSource;
 	
 }

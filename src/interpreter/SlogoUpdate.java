@@ -1,30 +1,20 @@
 package interpreter;
 
+import model.TurtleStateDataSource;
+
 public class SlogoUpdate {
-	private double rotationDelta;
-	private double movementDelta;
 	private Boolean turtleShouldDraw;
 	private Boolean turtleShouldShow;
 	private Double newXCoordinate;
 	private Double newYCoordinate;
 	private Double newAngle;
 	
-	public SlogoUpdate(){
-		rotationDelta = 0;
-		movementDelta = 0;
-		turtleShouldDraw = null;
-		turtleShouldShow = null;
-		newXCoordinate = null;
-		newYCoordinate = null;
-		newAngle = null;
-	}
-	
-	public double getRotationDelta(){
-		return rotationDelta;
-	}
-	
-	public double getMovementDelta(){
-		return movementDelta;
+	public SlogoUpdate(TurtleStateDataSource source){
+		newAngle = source.getAngle();
+		turtleShouldDraw = source.getTurtleIsDrawing();
+		turtleShouldShow = source.getTurtleIsShowing();
+		newXCoordinate = source.getXCoordinate();
+		newYCoordinate = source.getYCoordinate();
 	}
 	
 	public Boolean getTurtleShouldDraw(){
@@ -49,20 +39,21 @@ public class SlogoUpdate {
 	
 //Interpreter should call these methods to update the data object as it handles commands
 	
+	//TODO: Implement methods.
 	public void rotateClockwise(double degrees){
-		rotationDelta += degrees;
+		
 	}
 	
 	public void rotateCounterClockwise(double degrees){
-		rotationDelta -= degrees;
+
 	}
 	
 	public void moveForward(double pixels){
-		movementDelta += pixels;
+
 	}
 	
 	public void moveBackward(double pixels){
-		movementDelta -= pixels;
+
 	}
 	
 	public void show(){

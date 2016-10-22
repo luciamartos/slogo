@@ -1,6 +1,6 @@
 package model;
 
-public interface TurtleQueryDataSource {
+public interface TurtleStateDataSource {
 	public double getXCoordinate();
 	public double getYCoordinate();
 	public double getAngle();
