@@ -20,8 +20,8 @@ public class TitleBox extends Group {
     private Rectangle background;
     private Text titleText;
     public TitleBox(double x, double y, double width, double height, String title) {
-        setLayoutX(x);
-        setLayoutY(y);
+        //setLayoutX(x);
+        //setLayoutY(y);
         background = new Rectangle(width, height);
         background.setFill(BACKGROUND_COLOR);
         background.setArcHeight(ARC_SIZE);

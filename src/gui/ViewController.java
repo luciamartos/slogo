@@ -13,11 +13,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -47,15 +51,36 @@ public class ViewController implements Observer {
 		viewProperties = new Properties(VIEW_PROPERTIES_PACKAGE + "View");
 		sceneRoot = new Group();
 
+		HBox box1 = new HBox(15);
+		box1.setPadding(new Insets(15,15,15,15));
+		VBox box2 = new VBox(15);
+		HBox box3 = new HBox(15);
+
+		VBox box4 = new VBox(15);
+
+
+		sceneRoot.getChildren().add(box1);
+
+		box1.getChildren().add(box2);
+
+		box2.getChildren().add(createTitleBox());
+		box2.getChildren().add(box3);
+		box2.getChildren().add(createErrorConsole());
+
+		box3.getChildren().add(box4);
+		box3.getChildren().add(createListPastCommands());
+
+		box4.getChildren().add(createCanvas());
+		box4.getChildren().add(createCommandInputter());
+
 		initializeSettingsController();
-
-		createTitleBox();
-		createCanvas();
-		createCommandInputter();
-		createListPastCommands();
-		createErrorConsole();
-
 		setupStage(stage);
+	}
+
+	private void createCanvasAndLists() {
+		HBox canvasAndLists = new HBox(15);
+		// canvasAndLists.setLayoutX(value);
+		VBox canvasAndCommandInputter = new VBox(15);
 	}
 
 	private void setupStage(Stage stage) {
@@ -67,7 +92,7 @@ public class ViewController implements Observer {
 		stage.show();
 	}
 
-	private void createTitleBox() {
+	private Node createTitleBox() {
 		double padding = viewProperties.getDoubleProperty("padding");
 		double x = padding;
 		double y = padding;
@@ -75,10 +100,10 @@ public class ViewController implements Observer {
 		double height = viewProperties.getDoubleProperty("title_box_height");
 		String title = "SLOGO";
 		titleBox = new TitleBox(x, y, width, height, title);
-		sceneRoot.getChildren().add(titleBox);
+		return titleBox;
 	}
 
-	public void createCanvas() {
+	public Node createCanvas() {
 		double canvasX = viewProperties.getDoubleProperty("canvas_x");
 		double canvasY = viewProperties.getDoubleProperty("canvas_y");
 		double canvasWidth = viewProperties.getDoubleProperty("canvas_width");
@@ -89,7 +114,7 @@ public class ViewController implements Observer {
 		double errorLabelY = viewProperties.getDoubleProperty("error_label_y");
 		canvasActions = new CanvasActions(canvasX, canvasY, canvasWidth, canvasHeight, canvasLayoutX, canvasLayoutY,
 				errorLabelX, errorLabelY);
-		sceneRoot.getChildren().addAll(canvasActions.getPane());
+		return canvasActions.getPane();
 	}
 
 	private void initializeSettingsController() {
@@ -99,7 +124,7 @@ public class ViewController implements Observer {
 
 	}
 
-	private void createListPastCommands() {
+	private Node createListPastCommands() {
 		myListPastCommands = new ListView<String>();
 		pastCommands = FXCollections.observableArrayList();
 		myListPastCommands.setItems(pastCommands);
@@ -125,10 +150,10 @@ public class ViewController implements Observer {
 			}
 		});
 
-		sceneRoot.getChildren().add(myListPastCommands);
+		return myListPastCommands;
 	}
 
-	private void createCommandInputter() {
+	private Node createCommandInputter() {
 		EventHandler<ActionEvent> runCommandHandler = event -> {
 			String currentCommandLine = inputPanel.getCurrentCommandLine();
 			if (!(currentCommandLine == null) && !(currentCommandLine.length() == 0)) {
@@ -137,13 +162,13 @@ public class ViewController implements Observer {
 		};
 
 		inputPanel = new InputPanel(viewProperties, runCommandHandler);
-		sceneRoot.getChildren().addAll(inputPanel);
+		return inputPanel;
 	}
 
-	private void createErrorConsole() {
+	private Node createErrorConsole() {
 		errorConsole = new ErrorConsole(viewProperties.getDoubleProperty("error_label_x"),
-				viewProperties.getDoubleProperty("error_label_y"),viewProperties.getDoubleProperty("error_font_size"));
-		sceneRoot.getChildren().add(errorConsole.getErrorMessage());
+				viewProperties.getDoubleProperty("error_label_y"), viewProperties.getDoubleProperty("error_font_size"));
+		return errorConsole.getErrorMessage();
 
 	}
 
