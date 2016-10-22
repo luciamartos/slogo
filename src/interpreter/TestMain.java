@@ -6,7 +6,7 @@ import model.TurtleStateController;
 
 public class TestMain extends Application{
 	
-	String input = "less? pendown? 100";
+	String input = "asdfasdf sum 10 20";
 	
 	public static void main(String[] args){
 		launch(args);

@@ -63,8 +63,9 @@ public class MainInterpreter {
 		}
 		
 		else{
-			System.out.println("Invalid argument!");
-			return 0;
+			System.out.println("Invalid argument detected: '" + input[searchStartIndex]
+					+"' is not a valid command!");
+			throw new IllegalArgumentException();
 		}
 		
 	}
@@ -74,7 +75,6 @@ public class MainInterpreter {
 	IllegalArgumentException, InvocationTargetException{
 		double[] param;
 		Class interpreterClass = Class.forName(rb.getString("TurtleCommandInterpreterLabel"));
-//		Object obj = interpreterClass.newInstance();
 		Object obj = interpreterClass.getDeclaredConstructor(SlogoUpdate.class).newInstance(model);
 		Class[] args;
 		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model);
