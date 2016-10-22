@@ -24,6 +24,12 @@ public abstract class SubInterpreter {
 		return input.equalsIgnoreCase(rb.getString("towards")) || input.equalsIgnoreCase(rb.getString("setxy"));
 	}
 	
+	boolean isTurtleQuery(String input){
+		return input.equalsIgnoreCase(rb.getString("xcor")) || input.equalsIgnoreCase(rb.getString("ycor")) ||
+				input.equalsIgnoreCase(rb.getString("heading")) || input.equalsIgnoreCase(rb.getString("ispendown")) ||
+				input.equalsIgnoreCase(rb.getString("isshowing"));
+	}
+	
 	boolean isNonInputMathExpression(String input){
 		return input.equalsIgnoreCase(rb.getString("pi"));
 	}

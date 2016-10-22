@@ -3,11 +3,10 @@ package interpreter;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import model.TurtleStateController;
-import model.TurtleStateDataSource;
 
 public class TestMain extends Application{
 	
-	String input = "fd sum 50 less? 10 1";
+	String input = "less? pendown? 100";
 	
 	public static void main(String[] args){
 		launch(args);

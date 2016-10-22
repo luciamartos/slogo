@@ -49,6 +49,10 @@ public class MainInterpreter {
 			return interpretTurtleCommand(input, keyword, searchStartIndex);
 		}
 		
+		else if(decideCommand.isTurtleQuery(keyword)){
+			return interpretTurtleQuery(input, keyword, searchStartIndex);
+		}
+		
 		else if(decideCommand.isNonInputMathExpression(keyword) || decideCommand.isUnaryMathExpression(keyword) || 
 				decideCommand.isBinaryMathExpression(keyword)){
 			return interpretMathCommand(input, keyword, searchStartIndex);
@@ -76,12 +80,7 @@ public class MainInterpreter {
 		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model);
 		
 		if(interpreter.isNonInputTurtleCommand(keyword)){
-			args = createDoubleArgs(0);
-			Method method = interpreterClass.getDeclaredMethod(keyword, args);
-			System.out.println(method.invoke(obj));
-			double res =  (double) method.invoke(obj);
-			model = interpreter.getModel();
-			return res;
+			return handleNonInputKeywordWithModel(keyword, interpreterClass, obj, interpreter);
 		}
 		else if(interpreter.isUnaryTurtleCommand(keyword)){
 			param = parseParam(input, searchStartIndex+1, 1);
@@ -103,6 +102,17 @@ public class MainInterpreter {
 		}
 		else throw new IllegalArgumentException();
 	}
+
+	
+	private double interpretTurtleQuery(String[] input, String keyword, int searchStartIndex) throws ClassNotFoundException, 
+	InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
+		double[] param;
+		Class interpreterClass = Class.forName(rb.getString("TurtleQueryInterpreterLabel"));
+		Object obj = interpreterClass.getDeclaredConstructor(SlogoUpdate.class).newInstance(model);
+		Class[] args;
+		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model);
+		return handleNonInputKeywordWithModel(keyword, interpreterClass, obj, interpreter);
+	}
 	
 	private double interpretMathCommand(String[] input, String keyword, int searchStartIndex) throws ClassNotFoundException, InstantiationException, 
 	IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException{
@@ -113,26 +123,13 @@ public class MainInterpreter {
 		MathInterpreter interpreter = new MathInterpreter();
 		
 		if(interpreter.isNonInputMathExpression(keyword)){
-			args = createDoubleArgs(0);
-			Method method = interpreterClass.getDeclaredMethod(keyword, args);
-			System.out.println(method.invoke(obj));
-			return (double) method.invoke(obj);
+			return handleNonInputKeyword(keyword, interpreterClass, obj);
 		}
-		
 		else if(interpreter.isUnaryMathExpression(keyword)){
-			param = parseParam(input, searchStartIndex+1, 1);
-			args = createDoubleArgs(1);
-			Method method = interpreterClass.getDeclaredMethod(keyword, args);
-			System.out.println(method.invoke(obj, param[0]));
-			return (double) method.invoke(obj, param[0]);
+			return handleUnaryKeyword(input, keyword, searchStartIndex, interpreterClass, obj);
 		}
-		
 		else if(interpreter.isBinaryMathExpression(keyword)){
-			param = parseParam(input, searchStartIndex+1, 2);
-			args = createDoubleArgs(2);
-			Method method = interpreterClass.getDeclaredMethod(keyword, args);
-			System.out.println(method.invoke(obj, param[0], param[1]));
-			return (double) method.invoke(obj, param[0], param[1]);
+			return handleBinaryKeyword(input, keyword, searchStartIndex, interpreterClass, obj);
 		}
 		else throw new IllegalArgumentException();
 	}
@@ -144,24 +141,62 @@ public class MainInterpreter {
 		Object obj = interpreterClass.newInstance();
 		Class[] args;
 		BooleanInterpreter interpreter = new BooleanInterpreter();
-		
+
 		if(interpreter.isUnaryBooleanExpression(keyword)){
-			param = parseParam(input, searchStartIndex+1, 1);
-			args = createDoubleArgs(1);
-			Method method = interpreterClass.getDeclaredMethod(keyword, args);
-			System.out.println(method.invoke(obj, param[0]));
-			return (double) method.invoke(obj, param[0]);
+			return handleUnaryKeyword(input, keyword, searchStartIndex, interpreterClass, obj);
 		}
 		
 		else if(interpreter.isBinaryBooleanExpression(keyword)){
-			param = parseParam(input, searchStartIndex+1, 2); //last index is exclusive
-			args = createDoubleArgs(2);
-			Method method = interpreterClass.getDeclaredMethod(keyword, args);
-			System.out.println(method.invoke(obj, param[0], param[1]));
-			return (double) method.invoke(obj, param[0], param[1]);
+			return handleBinaryKeyword(input, keyword, searchStartIndex, interpreterClass, obj);
 		}
 		else throw new IllegalArgumentException();
 	}
+	
+	private double handleNonInputKeywordWithModel(String keyword, Class interpreterClass, Object obj,
+			TurtleCommandInterpreter interpreter)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		Class[] args;
+		args = createDoubleArgs(0);
+		Method method = interpreterClass.getDeclaredMethod(keyword, args);
+		System.out.println(method.invoke(obj));
+		double res =  (double) method.invoke(obj);
+		model = interpreter.getModel();
+		return res;
+	}
+
+	private double handleBinaryKeyword(String[] input, String keyword, int searchStartIndex, Class interpreterClass,
+			Object obj) throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
+			IllegalAccessException, InvocationTargetException {
+		double[] param;
+		Class[] args;
+		param = parseParam(input, searchStartIndex+1, 2);
+		args = createDoubleArgs(2);
+		Method method = interpreterClass.getDeclaredMethod(keyword, args);
+		System.out.println(method.invoke(obj, param[0], param[1]));
+		return (double) method.invoke(obj, param[0], param[1]);
+	}
+
+	private double handleUnaryKeyword(String[] input, String keyword, int searchStartIndex, Class interpreterClass,
+			Object obj) throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
+			IllegalAccessException, InvocationTargetException {
+		double[] param;
+		Class[] args;
+		param = parseParam(input, searchStartIndex+1, 1);
+		args = createDoubleArgs(1);
+		Method method = interpreterClass.getDeclaredMethod(keyword, args);
+		System.out.println(method.invoke(obj, param[0]));
+		return (double) method.invoke(obj, param[0]);
+	}
+
+	private double handleNonInputKeyword(String keyword, Class interpreterClass, Object obj)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		Class[] args;
+		args = createDoubleArgs(0);
+		Method method = interpreterClass.getDeclaredMethod(keyword, args);
+		System.out.println(method.invoke(obj));
+		return (double) method.invoke(obj);
+	}
+	
 	
 	private double[] parseParam(String[] input, int startSearchIndex, int numOfParams) throws ClassNotFoundException, 
 	NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, 
@@ -173,8 +208,7 @@ public class MainInterpreter {
 				double temp = Double.parseDouble(input[i]);
 				res[index++] = temp;
 			}
-			
-			//recursive part of parsing input statement
+			//recursive parsing of input statement
 			else{
 				res[index++] = interpretCommand(input, parsed, i);
 			}
@@ -213,7 +247,6 @@ public class MainInterpreter {
 			return false;
 		}
 	}
-	
 	
 	public SlogoUpdate getModel(){
 		return model;
