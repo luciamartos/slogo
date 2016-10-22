@@ -1,4 +1,4 @@
-package model;
+package interpreter;
 
 public interface TurtleStateDataSource {
 	public double getXCoordinate();

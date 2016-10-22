@@ -3,7 +3,6 @@ package model;
 import java.util.Observable;
 
 public class TurtleState extends Observable {
-	//TODO: Split into getters/setters
 	private double xCoordinate;
 	private double yCoordinate;
 	private double angle;

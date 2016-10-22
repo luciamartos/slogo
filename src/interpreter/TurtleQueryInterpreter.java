@@ -1,7 +1,5 @@
 package interpreter;
 
-import model.TurtleStateDataSource;
-
 public class TurtleQueryInterpreter{
 	
 	private SlogoUpdate model;
