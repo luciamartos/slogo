@@ -18,7 +18,8 @@ public class MainInterpreter {
 	
 	private SlogoUpdate model;
 	private ResourceBundle rb;
-	private Class interpreterClass;
+//	private Class interpreterClass;
+	private String[] parsed;
 	
 	public MainInterpreter(){
 		model = new SlogoUpdate();
@@ -29,49 +30,50 @@ public class MainInterpreter {
 		String[] split = input.split("\\s+");
 		ProgramParser lang = new ProgramParser();
 		lang = addPatterns(lang);
-		String[] parsed = createParsedArray(split, lang);
-//		for(String elem: parsed){
-//			System.out.println(elem);
-//		}
+		parsed = createParsedArray(split, lang);
+		for(String elem: parsed){
+			System.out.println(elem);
+		}
 		//split is the original input, parsed is the translated version (translated with ProgramParser)
-		interpretCommand(split, parsed);
+		interpretCommand(split, parsed, 0);
 	}
 	
-	private void interpretCommand(String[] input, String[] parsed) throws ClassNotFoundException, NoSuchMethodException, 
+	private double interpretCommand(String[] input, String[] parsed, int searchStartIndex) throws ClassNotFoundException, NoSuchMethodException, 
 	SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		GeneralInterpreter decideCommand = new GeneralInterpreter();
-		String keyword = parsed[0].toLowerCase();
+		String keyword = parsed[searchStartIndex].toLowerCase();
 		
 		if(decideCommand.isNonInputTurtleCommand(keyword) || decideCommand.isUnaryTurtleCommand(keyword) || 
 				decideCommand.isBinaryTurtleCommand(keyword)){
-			interpretTurtleCommand(input, keyword);
+			return interpretTurtleCommand(input, keyword, searchStartIndex);
 		}
 		
 		else if(decideCommand.isNonInputMathExpression(keyword) || decideCommand.isUnaryMathExpression(keyword) || 
 				decideCommand.isBinaryMathExpression(keyword)){
-			interpretMathCommand(input, keyword);
+			return interpretMathCommand(input, keyword, searchStartIndex);
 		}
 		
 		else if(decideCommand.isUnaryBooleanExpression(keyword) || decideCommand.isBinaryBooleanExpression(keyword)){
-			interpretBooleanCommand(input, keyword);
+			return interpretBooleanCommand(input, keyword, searchStartIndex);
 		}
 		
 		else{
 			System.out.println("Invalid argument!");
-//			throw new IllegalArgumentException();
+			return 0;
 		}
 		
 	}
 	
-	private void interpretTurtleCommand(String[] input, String keyword){
+	private double interpretTurtleCommand(String[] input, String keyword, int searchStartIndex){
 		System.out.println("You've reached turtlecommand!");
+		return 0;
 	}
 	
-	private void interpretMathCommand(String[] input, String keyword) throws ClassNotFoundException, InstantiationException, 
+	private double interpretMathCommand(String[] input, String keyword, int searchStartIndex) throws ClassNotFoundException, InstantiationException, 
 	IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException{
 		double[] param;
-		interpreterClass = Class.forName(rb.getString("MathInterpreterLabel"));
+		Class interpreterClass = Class.forName(rb.getString("MathInterpreterLabel"));
 		Object obj = interpreterClass.newInstance();
 		Class[] args;
 		MathInterpreter interpreter = new MathInterpreter();
@@ -80,54 +82,71 @@ public class MainInterpreter {
 			args = createDoubleArgs(0);
 			Method method = interpreterClass.getDeclaredMethod(keyword, args);
 			System.out.println(method.invoke(obj));
+			return (double) method.invoke(obj);
 		}
 		
 		else if(interpreter.isUnaryMathExpression(keyword)){
 			//TODO: parseParam assumes that all inputs are already doubles. What if they're not? ex: less? sum 10 20 50
-			param = parseParam(Arrays.copyOfRange(input, 1, 2));
+			param = parseParam(input, searchStartIndex+1, 1);
 			args = createDoubleArgs(1);
 			Method method = interpreterClass.getDeclaredMethod(keyword, args);
 			System.out.println(method.invoke(obj, param[0]));
+			return (double) method.invoke(obj, param[0]);
 		}
 		
 		else if(interpreter.isBinaryMathExpression(keyword)){
-			param = parseParam(Arrays.copyOfRange(input, 1, 3)); //last index is exclusive
+			param = parseParam(input, searchStartIndex+1, 2);
 			args = createDoubleArgs(2);
 			Method method = interpreterClass.getDeclaredMethod(keyword, args);
 			System.out.println(method.invoke(obj, param[0], param[1]));
+			return (double) method.invoke(obj, param[0], param[1]);
 		}
+		else throw new IllegalArgumentException();
 	}
 	
-	private void interpretBooleanCommand(String[] input, String keyword) throws ClassNotFoundException, InstantiationException, 
+	private double interpretBooleanCommand(String[] input, String keyword, int searchStartIndex) throws ClassNotFoundException, InstantiationException, 
 	IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException{
 		double[] param;
-		interpreterClass = Class.forName(rb.getString("BooleanInterpreterLabel"));
+		Class interpreterClass = Class.forName(rb.getString("BooleanInterpreterLabel"));
 		Object obj = interpreterClass.newInstance();
 		Class[] args;
 		BooleanInterpreter interpreter = new BooleanInterpreter();
 		
 		if(interpreter.isUnaryBooleanExpression(keyword)){
-			param = parseParam(Arrays.copyOfRange(input, 1, 2));
+			param = parseParam(input, searchStartIndex+1, 1);
 			args = createDoubleArgs(1);
 			Method method = interpreterClass.getDeclaredMethod(keyword, args);
 			System.out.println(method.invoke(obj, param[0]));
+			return (double) method.invoke(obj, param[0]);
 		}
 		
 		else if(interpreter.isBinaryBooleanExpression(keyword)){
-			param = parseParam(Arrays.copyOfRange(input, 1, 3)); //last index is exclusive
+			param = parseParam(input, searchStartIndex+1, 2); //last index is exclusive
+			for(double elem: param){
+				System.out.println("xxx: "+ elem);
+			}
 			args = createDoubleArgs(2);
 			Method method = interpreterClass.getDeclaredMethod(keyword, args);
 			System.out.println(method.invoke(obj, param[0], param[1]));
+			return (double) method.invoke(obj, param[0], param[1]);
 		}
+		else throw new IllegalArgumentException();
 	}
 	
-	private double[] parseParam(String[] params){
-		double[] res = new double[params.length];
-		int index = 0;
-		for(String elem: params){
-			if(isDouble(elem)){
-				double temp = Double.parseDouble(elem);
+	private double[] parseParam(String[] input, int startSearchIndex, int numOfParams) throws ClassNotFoundException, 
+	NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException{
+		double[] res = new double[numOfParams];
+		int index=0;
+		for(int i=startSearchIndex;i<startSearchIndex+numOfParams;i++){
+			if(isDouble(input[i])){
+				double temp = Double.parseDouble(input[i]);
 				res[index++] = temp;
+			}
+			
+			//recursive part of parsing input statement
+			else{
+				res[index++] = interpretCommand(input, parsed, i);
 			}
 		}
 		return res;
