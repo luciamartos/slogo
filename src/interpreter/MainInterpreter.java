@@ -2,7 +2,6 @@ package interpreter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 import model.TurtleStateDataSource;
 
@@ -10,7 +9,6 @@ import regularExpression.ProgramParser;
 
 public class MainInterpreter {
 	
-	private final String WHITESPACE = "\\p{Space}";
 	private final String DEFAULT_RESOURCE_LANGUAGE = "resources/languages/";
 	private final String DEFAULT_RESOURCE_PACKAGE = "resources/properties/";
 	private final String PROPERTIES_TITLE = "Interpreter";
@@ -18,24 +16,37 @@ public class MainInterpreter {
 			"Portuguese","Russian","Spanish","Syntax"};
 	
 	private SlogoUpdate model;
+	private TurtleStateDataSource stateDataSource;
+	
+	//this should be another interface called TurtleStateUpdater
+	private TurtleStateDataSource stateUpdater;
 	private ResourceBundle rb;
 	private String[] parsed;
 	
-	public MainInterpreter(TurtleStateDataSource source){
-		model = new SlogoUpdate(source);
+	public MainInterpreter(){
 		rb = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+PROPERTIES_TITLE);
 	}
 	
-	public void parseInput(String input) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	public void parseInput(String input, TurtleStateDataSource source) throws ClassNotFoundException, NoSuchMethodException, 
+	SecurityException, InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException{
+		model = new SlogoUpdate(source);
+		stateDataSource = source;
+		
 		String[] split = input.split("\\s+");
 		ProgramParser lang = new ProgramParser();
 		lang = addPatterns(lang);
 		parsed = createParsedArray(split, lang);
+		
 //		for(String elem: parsed){
 //			System.out.println(elem);
 //		}
+		
 		//split is the original input, parsed is the translated version (translated with ProgramParser)
-		interpretCommand(split, parsed, 0);
+		interpretCommand(split, parsed, 0);   //first search(non-recursive) begins at index 0;
+		
+		//This command is to be called at the very end of each input parsing
+//		stateUpdater.applyChanges(model);
 	}
 	
 	private double interpretCommand(String[] input, String[] parsed, int searchStartIndex) throws ClassNotFoundException, NoSuchMethodException, 

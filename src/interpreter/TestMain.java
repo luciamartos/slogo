@@ -6,7 +6,7 @@ import model.TurtleStateController;
 
 public class TestMain extends Application{
 	
-	String input = "asdfasdf sum 10 20";
+	String input = "+ 100 sum 100 sum 100 sum 100 sum 100 100";
 	
 	public static void main(String[] args){
 		launch(args);
@@ -15,8 +15,7 @@ public class TestMain extends Application{
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		TurtleStateController controller = new TurtleStateController();
-//		TurtleState state = new TurtleState();
-		MainInterpreter main = new MainInterpreter(controller);
-		main.parseInput(input);
+		MainInterpreter main = new MainInterpreter();
+		main.parseInput(input, controller);
 	}
 }
