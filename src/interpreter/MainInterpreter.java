@@ -64,9 +64,42 @@ public class MainInterpreter {
 		
 	}
 	
-	private double interpretTurtleCommand(String[] input, String keyword, int searchStartIndex){
-		System.out.println("You've reached turtlecommand!");
-		return 0;
+	private double interpretTurtleCommand(String[] input, String keyword, int searchStartIndex) throws ClassNotFoundException, 
+	InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, 
+	IllegalArgumentException, InvocationTargetException{
+		double[] param;
+		Class interpreterClass = Class.forName(rb.getString("TurtleCommandInterpreterLabel"));
+		Object obj = interpreterClass.newInstance();
+		Class[] args;
+		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model);
+		
+		if(interpreter.isNonInputTurtleCommand(keyword)){
+			args = createDoubleArgs(0);
+			Method method = interpreterClass.getDeclaredMethod(keyword, args);
+			System.out.println(method.invoke(obj));
+			double res =  (double) method.invoke(obj);
+			model = interpreter.getModel();
+			return res;
+		}
+		else if(interpreter.isUnaryTurtleCommand(keyword)){
+			param = parseParam(input, searchStartIndex+1, 1);
+			args = createDoubleArgs(1);
+			Method method = interpreterClass.getDeclaredMethod(keyword, args);
+			System.out.println(method.invoke(obj, param[0]));
+			double res = (double) method.invoke(obj, param[0]);
+			model = interpreter.getModel();
+			return res;
+		}
+		else if(interpreter.isBinaryTurtleCommand(keyword)){
+			param = parseParam(input, searchStartIndex+1, 2);
+			args = createDoubleArgs(2);
+			Method method = interpreterClass.getDeclaredMethod(keyword, args);
+			System.out.println(method.invoke(obj, param[0], param[1]));
+			double res = (double) method.invoke(obj, param[0], param[1]);
+			model = interpreter.getModel();
+			return res;
+		}
+		else throw new IllegalArgumentException();
 	}
 	
 	private double interpretMathCommand(String[] input, String keyword, int searchStartIndex) throws ClassNotFoundException, InstantiationException, 
@@ -85,7 +118,6 @@ public class MainInterpreter {
 		}
 		
 		else if(interpreter.isUnaryMathExpression(keyword)){
-			//TODO: parseParam assumes that all inputs are already doubles. What if they're not? ex: less? sum 10 20 50
 			param = parseParam(input, searchStartIndex+1, 1);
 			args = createDoubleArgs(1);
 			Method method = interpreterClass.getDeclaredMethod(keyword, args);
