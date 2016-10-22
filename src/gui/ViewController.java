@@ -75,7 +75,6 @@ public class ViewController implements Observer {
 		box4.getChildren().add(createCanvas());
 		box4.getChildren().add(createCommandInputter());
 
-		initializeSettingsController();
 		setupStage(stage);
 	}
 
