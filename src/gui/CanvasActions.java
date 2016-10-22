@@ -23,7 +23,11 @@ public class CanvasActions {
 	private GraphicsContext gc;
 	private Canvas canvas;
 	private Pane pane;
-	private TurtleView myTurtle;
+	private Color myColor;
+	private ImageView turtleImgView;
+	private boolean penDown;
+	private boolean showTurtle;
+
 
 	public CanvasActions(double canvasX, double canvasY, double canvasWidth, double canvasHeight, double canvasLayoutX,
 			double canvasLayoutY, double errorLabelX, double errorLabelY) {
@@ -64,27 +68,48 @@ public class CanvasActions {
 	public Canvas getCanvas() {
 		return canvas;
 	}
+	
+	public void updateCanvasActions(){
+		removeTurtle();
+		setShowTurtle();
+		setPenDown();
+		setPenColor();
+		addTurtleAtXY();
+		drawPath();
+		
+	}
 
 	private void initializeTurtle() {
-		Image turtleImg = new Image(IMAGE_PATH + "turtle.png", 50, 50, true, true);
-		myTurtle = new TurtleView(canvas.getWidth() / 2, canvas.getHeight() / 2, turtleImg, true, Color.BLACK);
-		// better way to get the lengths and sizes
+		turtleImgView = new ImageView(new Image(IMAGE_PATH + "turtle.png", 50, 50, true, true));
+	//	myTurtle = new TurtleView(canvas.getWidth() / 2, canvas.getHeight() / 2, turtleImg, true, Color.BLACK);
 		addTurtleAtXY();
 	}
 
 	public void changeImage(Image image) {
 		setTurtleImage(image);
 	}
+	
+	private void drawPath(){
+		int[] myCords = myController.getPathCordinates();
+		if(!penDown){
+	        gc.setStroke(myColor);
+	        for(int i = 0; i<myCords.length; i+=4){
+		        gc.strokeLine(myCords[i], myCords[i+1], myCords[i+2], myCords[i+3]);
+	        }
+		}	
+	}
 
 	private void addTurtleAtXY() {
-		ImageView turtleImage = myTurtle.getMyImageView();
-		turtleImage.setTranslateX(myTurtle.getXPos());
-		turtleImage.setTranslateY(myTurtle.getYPos());
-		pane.getChildren().add(turtleImage);
+		//note that when initialised myController cannot be null
+		turtleImgView.setTranslateX(myController.getXLocation());
+		turtleImgView.setTranslateY(myController.getYLocation());
+		if(showTurtle){
+			pane.getChildren().add(turtleImgView);
+		}
 	}
 
 	public void removeTurtle() {
-		pane.getChildren().remove(myTurtle.getMyImageView());
+		pane.getChildren().remove(turtleImgView);
 	}
 
 	public void moveTurtle(double x, double y) {
@@ -92,32 +117,27 @@ public class CanvasActions {
 		addTurtleAtXY();
 	}
 
-	public void hideTurtle() {
-		myTurtle.setShowTurtle(false);
+	public void setShowTurtle(){
+		showTurtle = myController.isShowing();
 		removeTurtle();
+		if(showTurtle){
+			addTurtleAtXY();
+		}
 	}
 
-	public void showTurtle() {
-		myTurtle.setShowTurtle(true);
-		addTurtleAtXY();
+	public void setPenDown() {
+		penDown = myController.isPenDown();
 	}
 
-	public void putPenDown() {
-		myTurtle.setPenDown(true);
-	}
-
-	public void putPenUp() {
-		myTurtle.setPenDown(false);
-	}
-
+	//where is the method that takes in the string?
 	public void setTurtleImage(Image image) {
 		removeTurtle();
-		myTurtle.setImage(image);
+		turtleImgView = new ImageView(new Image(IMAGE_PATH + image, 50, 50, true, true));
 		addTurtleAtXY();
 	}
 
-	public void setPenColor(Color myColor) {
-		myTurtle.setPenColor(myColor);
+	public void setPenColor() {
+		myColor = myController.getPenColor();
 	}
 
 }
