@@ -12,8 +12,7 @@ public class MainInterpreter {
 	private final String DEFAULT_RESOURCE_LANGUAGE = "resources/languages/";
 	private final String DEFAULT_RESOURCE_PACKAGE = "resources/properties/";
 	private final String PROPERTIES_TITLE = "Interpreter";
-	private final String[] languages = {"Chinese","English","French","German","Italian",
-			"Portuguese","Russian","Spanish","Syntax"};
+	private String[] languages = {"English", "Syntax"};
 	
 	private SlogoUpdate model;
 	private TurtleStateDataSource stateDataSource;
@@ -122,7 +121,10 @@ public class MainInterpreter {
 		Object obj = interpreterClass.getDeclaredConstructor(SlogoUpdate.class).newInstance(model);
 		Class[] args;
 		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model);
-		return handleNonInputKeywordWithModel(keyword, interpreterClass, obj, interpreter);
+		if(interpreter.isTurtleQuery(keyword)){
+			return handleNonInputKeywordWithModel(keyword, interpreterClass, obj, interpreter);
+		}
+		else throw new IllegalArgumentException();
 	}
 	
 	private double interpretMathCommand(String[] input, String keyword, int searchStartIndex) throws ClassNotFoundException, InstantiationException, 
@@ -257,6 +259,11 @@ public class MainInterpreter {
 		} catch (NumberFormatException e) {
 			return false;
 		}
+	}
+	
+	public void setLanguage(String language){
+		String[] temp = {language, "Syntax"};
+		languages = temp;
 	}
 	
 	public SlogoUpdate getModel(){
