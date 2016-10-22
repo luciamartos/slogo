@@ -5,16 +5,16 @@ import model.TurtleStateDataSource;
 public class SlogoUpdate {
 	private Boolean turtleShouldDraw;
 	private Boolean turtleShouldShow;
-	private Double newXCoordinate;
-	private Double newYCoordinate;
+	private Double xCoordinate;
+	private Double yCoordinate;
 	private Double newAngle;
 	
 	public SlogoUpdate(TurtleStateDataSource source){
 		newAngle = source.getAngle();
 		turtleShouldDraw = source.getTurtleIsDrawing();
 		turtleShouldShow = source.getTurtleIsShowing();
-		newXCoordinate = source.getXCoordinate();
-		newYCoordinate = source.getYCoordinate();
+		xCoordinate = source.getXCoordinate();
+		yCoordinate = source.getYCoordinate();
 	}
 	
 	public Boolean getTurtleShouldDraw(){
@@ -26,11 +26,11 @@ public class SlogoUpdate {
 	}
 	
 	public Double getNewXCoordinate(){
-		return newXCoordinate;
+		return xCoordinate;
 	}
 	
 	public Double getNewYCoordinate(){
-		return newYCoordinate;
+		return yCoordinate;
 	}
 	
 	public Double getNewAngle(){
@@ -65,8 +65,8 @@ public class SlogoUpdate {
 	}
 	
 	public void moveTo(double x, double y){
-		newXCoordinate = x;
-		newYCoordinate = y;
+		xCoordinate = x;
+		yCoordinate = y;
 	}
 	
 	public void turnToward(double x, double y){
