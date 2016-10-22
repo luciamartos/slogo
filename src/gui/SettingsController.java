@@ -1,6 +1,7 @@
 package gui;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.Observable;
 
 import general.Properties;
@@ -13,16 +14,21 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class SettingsController extends Observable{
+public class SettingsController extends Observable {
 
 	private Properties viewProperties;
 	private VBox vBox;
 	private Button imageButton;
 
-	public SettingsController(Stage stage, Properties viewProperties){
+	private String newBackgroundColor;
+	private Color newPenColor;
+	private File newImage;
+
+	public SettingsController(Stage stage, Properties viewProperties) {
 		this.viewProperties = viewProperties;
 		initializeVBox();
 		initializePenColorSetting();
@@ -38,39 +44,48 @@ public class SettingsController extends Observable{
 
 	private void initializePenColorSetting() {
 		HBox hBox = new HBox(viewProperties.getDoubleProperty("padding"));
-
-		// set the text box
-		TextField colorInput = createTextBox("Change Pen Color",200);
-
-		// set the run button
-		Button colorButton = createButton("Set",viewProperties.getDoubleProperty("run_button_width"));
-		//TODO: make the prompt text equal to current setting?
-		// colorButton.setOnAction(event -> {
-		// currentCommandLine = colorInput.getText();
-		// runCommandHandler.handle(event);
-		// colorInput.clear();
-		// });
-		hBox.getChildren().addAll(colorInput, colorButton);
-		vBox.getChildren().add(hBox);
-	}
-	
-	private void initializeBackgroundColorSetting() {
-		HBox hBox = new HBox(viewProperties.getDoubleProperty("padding"));
-
-		// set the text box
-		TextField colorInput = createTextBox("Change Background Color",200);
-
-		// set the run button
-		Button colorButton = createButton("Set",viewProperties.getDoubleProperty("run_button_width"));
+		TextField colorInput = createTextBox("Change Pen Color", 200);
+		Button colorButton = createButton("Set", viewProperties.getDoubleProperty("run_button_width"));
 		colorButton.setOnAction(event -> {
+			try {
+				Field field = Class.forName("javafx.scene.paint.Color").getField(colorInput.getText().toUpperCase());
+				newPenColor = (Color) field.get(null);
+				notifyObservers();
+			} catch (Exception e) {
+				notifyObservers("Invalid Color");
+			}
 			setChanged();
-			notifyObservers("Background color: "+colorInput.getText());
 			colorInput.clear();
 		});
 		hBox.getChildren().addAll(colorInput, colorButton);
 		vBox.getChildren().add(hBox);
 	}
-	
+
+	private void initializeBackgroundColorSetting() {
+		HBox hBox = new HBox(viewProperties.getDoubleProperty("padding"));
+
+		// set the text box
+		TextField colorInput = createTextBox("Change Background Color", 200);
+
+		// set the run button
+		Button colorButton = createButton("Set", viewProperties.getDoubleProperty("run_button_width"));
+		colorButton.setOnAction(event -> {
+			try {
+				Field field = Class.forName("javafx.scene.paint.Color").getField(colorInput.getText().toUpperCase());
+				Color tempColor = (Color) field.get(null);
+				newBackgroundColor = colorInput.getText().toLowerCase();
+				notifyObservers();
+				
+			} catch (Exception e) {
+				notifyObservers("Invalid Color");
+			}
+			setChanged();
+			colorInput.clear();
+		});
+		hBox.getChildren().addAll(colorInput, colorButton);
+		vBox.getChildren().add(hBox);
+	}
+
 	private void initializeTurtleImageSetting(Stage stage) {
 		imageButton = createButton("Change Turtle Image", 200);
 		vBox.getChildren().add(imageButton);
@@ -80,23 +95,24 @@ public class SettingsController extends Observable{
 				FileChooser fileChooser = new FileChooser();
 				File file = fileChooser.showOpenDialog(stage);
 				if (file != null && file.isFile()) {
+					newImage = file;
 					setChanged();
-				    notifyObservers(file);
+					notifyObservers();
 				}
 			}
 		};
 		imageButton.setOnAction(event);
 
 	}
-	
-	private TextField createTextBox(String text, double width){
+
+	private TextField createTextBox(String text, double width) {
 		TextField textField = new TextField();
 		textField.setPromptText(text);
 		textField.setPrefWidth(width); // CHANGE TO COMMAND BUTTON WIDTH
 		return textField;
 	}
-	
-	private Button createButton(String text, double width){
+
+	private Button createButton(String text, double width) {
 		Button button = new Button(text);
 		button.setPrefWidth(width);
 		return button;
@@ -104,6 +120,18 @@ public class SettingsController extends Observable{
 
 	public VBox getVBox() {
 		return vBox;
+	}
+
+	public String getNewBackgroundColor() {
+		return newBackgroundColor;
+	}
+
+	public Color getNewPenColor() {
+		return newPenColor;
+	}
+
+	public File getNewImage() {
+		return newImage;
 	}
 
 }
