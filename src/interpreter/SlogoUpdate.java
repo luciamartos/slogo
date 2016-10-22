@@ -79,6 +79,7 @@ public class SlogoUpdate {
 	}
 	
 	public void turnToward(double x, double y){
+		//TODO: This is probably not the right function?
 		newAngle = 0.0;
 	}
 	
