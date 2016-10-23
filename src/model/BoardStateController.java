@@ -94,5 +94,11 @@ public class BoardStateController implements TurtleStateDataSource, BoardStateDa
 	public String getUserDefinedVariable(String key) {
 		return BoardState.getCurrentState().getUserDefinedVariables().get(key);
 	}
+
+	@Override
+	public void resetBoard() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
