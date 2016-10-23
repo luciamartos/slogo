@@ -6,7 +6,7 @@ public class TurtleStateController implements TurtleStateDataSource{
 
 	public void applyChanges(SlogoUpdate changes){
 		
-		TurtleState modelToUpdate = TurtleState.getCurrentState();
+		BoardState modelToUpdate = BoardState.getCurrentState();
 		double currentAngle = modelToUpdate.getAngle();
 		double currentX = modelToUpdate.getXCoordinate();
 		double currentY = modelToUpdate.getYCoordinate();
@@ -61,27 +61,27 @@ public class TurtleStateController implements TurtleStateDataSource{
  */
 	@Override
 	public double getXCoordinate() {
-		return TurtleState.getCurrentState().getXCoordinate();
+		return BoardState.getCurrentState().getXCoordinate();
 	}
 
 	@Override
 	public double getYCoordinate() {
-		return TurtleState.getCurrentState().getYCoordinate();
+		return BoardState.getCurrentState().getYCoordinate();
 	}
 
 	@Override
 	public double getAngle() {
-		return TurtleState.getCurrentState().getAngle();
+		return BoardState.getCurrentState().getAngle();
 	}
 
 	@Override
 	public boolean getTurtleIsShowing() {
-		return TurtleState.getCurrentState().isShowing();
+		return BoardState.getCurrentState().isShowing();
 	}
 
 	@Override
 	public boolean getTurtleIsDrawing() {
-		return TurtleState.getCurrentState().isDrawing();
+		return BoardState.getCurrentState().isDrawing();
 	}
 	
 }
