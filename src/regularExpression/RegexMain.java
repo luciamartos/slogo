@@ -60,24 +60,23 @@ public class RegexMain {
             "[",
             "]",
             "(",
-            ")",
-            "less"
+            ")"
         };
         ProgramParser lang = new ProgramParser();
         // these are more specific, so add them first to ensure they are checked first
         lang.addPatterns("resources/languages/English");
         lang.addPatterns("resources/languages/Syntax");
-//        try {
-//            String userInput = "fd 50 rt 90 BACK :distance Left :angle";
-//            String fileInput = readFileToString("/Users/yrsong/Documents/workspace/slogo_team18/data/examples/variables/square.logo");
-            // try against different inputs
+        try {
+            String userInput = "fd 50 rt 90 BACK :distance Left :angle";
+            String fileInput = readFileToString("/Users/yrsong/Documents/workspace/slogo_team18/data/examples/variables/square.logo");
+//             try against different inputs
             parseText(lang, examples);
-//            parseText(lang, userInput.split(WHITESPACE));
-//            parseText(lang, fileInput.split(WHITESPACE));
-//        }
-//        catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//            System.err.println(String.format("Could not load pattern file %s", e.getMessage()));
-//        }
+            parseText(lang, userInput.split(WHITESPACE));
+            parseText(lang, fileInput.split(WHITESPACE));
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.err.println(String.format("Could not load pattern file %s", e.getMessage()));
+        }
     }
 }
