@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Observable;
 
 public class BoardState extends Observable {
@@ -9,6 +11,8 @@ public class BoardState extends Observable {
 	private double distanceMoved;
 	private boolean drawing;
 	private boolean showing;
+	private ArrayList<PathLine> lineCoordinates;
+	private HashMap<String, String> userDefinedVariables;
 	
 	private static BoardState currentState;
 	
@@ -81,4 +85,17 @@ public class BoardState extends Observable {
 	public void setShowing(boolean turtleShouldShow) {
 		this.showing = turtleShouldShow;
 	}
+	
+	public ArrayList<PathLine> getLineCoordinates(){
+		return lineCoordinates;
+	}
+	
+	public void addLineCoordinates(PathLine line){
+		lineCoordinates.add(line);
+	}
+	
+	public HashMap<String, String> getUserDefinedVariables(){
+		return userDefinedVariables;
+	}
+	
 }
