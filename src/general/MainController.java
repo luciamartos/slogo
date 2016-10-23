@@ -1,6 +1,7 @@
 package general;
 import gui.ViewController;
 import javafx.stage.Stage;
+import model.BoardStateController;
 
 /**
  * 
@@ -9,11 +10,12 @@ import javafx.stage.Stage;
 public class MainController {
 	
 	private ViewController viewController;
-//	private ModelController modelController;
+	private BoardStateController modelController;
 
 	public MainController(Stage stage) {
     	viewController = new ViewController(stage);
-//    	modelController = new ModelController();
+    	modelController = new BoardStateController();
+    	viewController.setDataSource(modelController);
 	}
 
 }

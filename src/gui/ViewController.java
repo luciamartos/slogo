@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -52,6 +53,7 @@ public class ViewController implements Observer {
 	private ErrorConsole errorConsole;
 	private TableColumn userDefinedCommandNames;
 	private TableColumn userDefinedCommandValues;
+	private BoardStateDataSource dataSource;
 	
 
 	public ViewController(Stage stage) {
@@ -194,7 +196,7 @@ public class ViewController implements Observer {
 	
 	//WHERE DO I CALL THIS METHOD SO IT UPDATES WHEN NECCESARY?
 	private void updateUserDefinedVariableHashMap(){
-		HashMap<String, String> myMap = BoardStateDataSource.getUserDefinedVariables();
+		Map<String, String> myMap = dataSource.getUserDefinedVariables();
 		for(String elem:myMap.keySet()){
 			userDefinedCommandNames.getColumns().add(elem);
 			userDefinedCommandValues.getColumns().add(myMap.get(elem));
@@ -249,10 +251,10 @@ public class ViewController implements Observer {
 	
 	public void update(MainController obs, Object o){
 		canvasActions.removeTurtle();
-		canvasActions.setShowTurtle(BoardStateDataSource.isShowing());
-		canvasActions.setPenDown(BoardStateDataSource.isPenDown());
-		canvasActions.addTurtleAtXY(BoardStateDataSource.getXLocation(), BoardStateDataSource.getYLocation());
-		canvasActions.drawPath(BoardStateDataSource.getLineCordinates());
+		canvasActions.setShowTurtle(dataSource.getTurtleIsShowing());
+		canvasActions.setPenDown(dataSource.getTurtleIsDrawing());
+		canvasActions.addTurtleAtXY(dataSource.getXCoordinate(), dataSource.getYCoordinate());
+		canvasActions.drawPath(dataSource.getLineCoordinates());
 	}
 
 	public void update(SettingsController obs, Object o) {
@@ -261,10 +263,14 @@ public class ViewController implements Observer {
 			return;
 		}
 		if (settingsController.getNewImage() != null)
-			canvasActions.changeImage(settingsController.getNewImage(),BoardStateDataSource.getXLocation(),BoardStateDataSource.getYLocation());
+			canvasActions.changeImage(settingsController.getNewImage(),dataSource.getXCoordinate(),dataSource.getYCoordinate());
 		if (settingsController.getNewBackgroundColor() != null)
 			canvasActions.setBackgroundColorCanvas(settingsController.getNewBackgroundColor());
 		if (settingsController.getNewPenColor() != null)
 			canvasActions.setPenColor(settingsController.getNewPenColor());
+	}
+	
+	public void setDataSource(BoardStateDataSource source){
+		this.dataSource = source;
 	}
 }
