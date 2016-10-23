@@ -3,9 +3,11 @@ package interpreter;
 public class TurtleCommandInterpreter extends SubInterpreter{
 	
 	private SlogoUpdate model;
+	private TurtleStateUpdater stateUpdater;
 	
-	TurtleCommandInterpreter(SlogoUpdate model){
+	TurtleCommandInterpreter(SlogoUpdate model, TurtleStateUpdater stateUpdater){
 		this.model = model;
+		this.stateUpdater = stateUpdater;
 	}
 	
 	double forward(double pixels){
