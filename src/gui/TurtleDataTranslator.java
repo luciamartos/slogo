@@ -16,16 +16,16 @@ public class TurtleDataTranslator {
 	
 	public TurtleDataTranslator(double canvasWidth, double canvasHeight) {
 		// TODO Auto-generated constructor stub
-		canvasWidth = width;
-		canvasHeight = height;
+		width = canvasWidth;
+		height = canvasHeight;
 	}
 	
 	public double convertXCordinate(double xCor){
-		return xCor + width/2;
+			return width/2 + xCor;
 	}
 	
 	public double convertYCordinate(double yCor){
-		return yCor + height/2;
+			return height/2 - yCor;
 	}
 	
 	public List<PathLine> convertLineCordinates(List<PathLine> myPath){
