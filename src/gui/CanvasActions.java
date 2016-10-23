@@ -40,10 +40,9 @@ public class CanvasActions{
 	private double yLoc;
 
 
-	public CanvasActions(double canvasX, double canvasY, double canvasWidth, double canvasHeight, double canvasLayoutX,
-			double canvasLayoutY, double errorLabelX, double errorLabelY){
-		initializePane(canvasWidth, canvasHeight, canvasLayoutX, canvasLayoutY);
-		initializeCanvas(canvasX, canvasY, canvasWidth, canvasHeight, canvasLayoutX, canvasLayoutY);
+	public CanvasActions(double canvasWidth, double canvasHeight){
+		initializePane(canvasWidth, canvasHeight);
+		initializeCanvas(canvasWidth, canvasHeight);
 		pane.getChildren().addAll(canvas);
 		gc = canvas.getGraphicsContext2D(); // TODO: make a more descriptive
 											// name
@@ -54,22 +53,17 @@ public class CanvasActions{
 		pane.setBackground(new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY)));
 	}
 
-	private void initializeCanvas(double canvasX, double canvasY, double canvasWidth, double canvasHeight,
-			double canvasLayoutX, double canvasLayoutY) {
+	private void initializeCanvas(double canvasWidth, double canvasHeight) {
 		//TODO: delete all x and y's
-		canvas = new Canvas(canvasX, canvasY);
+		canvas = new Canvas();
 		canvas.setWidth(canvasWidth);
 		canvas.setHeight(canvasHeight);
-		canvas.setLayoutX(canvasLayoutX);
-		canvas.setLayoutY(canvasLayoutY);
 	}
 
-	private void initializePane(double canvasWidth, double canvasHeight, double canvasLayoutX, double canvasLayoutY) {
+	private void initializePane(double canvasWidth, double canvasHeight) {
 		pane = new Pane();
 		setBackgroundColorCanvas(COLOR_CANVAS);
 		pane.setPrefSize(canvasWidth, canvasHeight);
-		pane.setLayoutX(canvasLayoutX);
-		pane.setLayoutY(canvasLayoutY);
 	}
 
 	public Pane getPane() {

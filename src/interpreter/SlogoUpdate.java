@@ -1,5 +1,7 @@
 package interpreter;
-
+/**
+ * @author Andrew Bihl
+ */
 public class SlogoUpdate {
 	private boolean turtleShouldDraw;
 	private boolean turtleShouldShow;
@@ -47,11 +49,17 @@ public class SlogoUpdate {
 	}
 	
 	public void moveForward(double pixels){
-		
+		double theta = getAngle();
+		theta = Math.toRadians(theta);
+		this.yCoordinate += pixels * Math.sin(theta);
+		this.xCoordinate += pixels * Math.cos(theta);
 	}
 	
 	public void moveBackward(double pixels){
-		
+		double theta = getAngle();
+		theta = Math.toRadians(theta);
+		this.xCoordinate -= pixels * Math.cos(theta);
+		this.yCoordinate -= pixels * Math.sin(theta);
 	}
 	
 	public void show(){
