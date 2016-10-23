@@ -5,13 +5,19 @@ import java.lang.reflect.Field;
 import java.util.Observable;
 
 import general.Properties;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
@@ -24,11 +30,13 @@ public class SettingsController extends Observable {
 
 	private static final String IMAGE_PATH = "resources/images/";
 
+	private static final int PADDING = 4;
+
 	private Properties viewProperties;
 	private HBox hBox;
 	private Button imageButton;
 
-	private String newBackgroundColor;
+	private Color newBackgroundColor;
 	private Color newPenColor;
 	private Image newImage;
 	private String newLanguage;
@@ -41,106 +49,78 @@ public class SettingsController extends Observable {
 		hBox.getChildren().add(initializeLanguageSetting());
 		hBox.getChildren().add(initializeTurtleImageSetting(stage));
 	}
-
-
+	
 	private Node initializePenColorSetting() {
-		TextField colorInput = createTextBox("Change Pen Color", 150);
-		Button colorButton = createButton("Set", viewProperties.getDoubleProperty("run_button_width"));
-		colorButton.setOnAction(event -> {
-			Color tempColor = checkValidColor(colorInput.getText());
-			setChanged();
-			if (tempColor == null) {
-				notifyObservers("Invalid Pen Color: " + colorInput.getText());
-			} else {
-				newPenColor = tempColor;
+		ColorPicker penColorPicker = new ColorPicker();
+		penColorPicker.setValue(Color.BLACK);
+		penColorPicker.setOnAction(new EventHandler() {
+			public void handle(Event t) {
+				setChanged();
+				newPenColor = penColorPicker.getValue();
 				notifyObservers();
 			}
-			colorInput.clear();
 		});
-		HBox tempBox =  new HBox();
-		tempBox.getChildren().addAll(colorInput, colorButton);
+		VBox tempBox = makeLabelForComboBox(penColorPicker, "Pen color");
 		return tempBox;
 	}
 
 	private Node initializeBackgroundColorSetting() {
-		// set the text box
-		TextField colorInput = createTextBox("Change Background Color", 200);
-
-		// set the run button
-		Button colorButton = createButton("Set", viewProperties.getDoubleProperty("run_button_width"));
-		colorButton.setOnAction(event -> {
-			setChanged();
-			if (checkValidColor(colorInput.getText()) == null) {
-				notifyObservers("Invalid Background Color: " + colorInput.getText());
-			} else {
-				newBackgroundColor = colorInput.getText().toLowerCase();
+		ColorPicker backgroundColorPicker = new ColorPicker();
+		backgroundColorPicker.setValue(Color.WHITE);
+		backgroundColorPicker.setOnAction(new EventHandler() {
+			public void handle(Event t) {
+				setChanged();
+				newBackgroundColor = backgroundColorPicker.getValue();
 				notifyObservers();
 			}
-			colorInput.clear();
 		});
-		HBox tempBox =  new HBox();
-		tempBox.getChildren().addAll(colorInput, colorButton);
+		VBox tempBox = makeLabelForComboBox(backgroundColorPicker, "Background color");
 		return tempBox;
 	}
 
-	private Color checkValidColor(String colorText) {
-		try {
-			Field field = Class.forName("javafx.scene.paint.Color").getField(colorText.toUpperCase());
-			return (Color) field.get(null);
-		} catch (Exception e) {
-			return null;
-		}
-	}
-	
-	private Node initializeLanguageSetting() {
-		// set the text box
-		TextField languageInput = createTextBox("Change Language", 180);
 
-		// set the run button
-		Button languageButton = createButton("Set", viewProperties.getDoubleProperty("run_button_width"));
-		//TODO: implement language button
-//		languageButton.setOnAction(event -> {
-//			setChanged();
-//			if (checkValidColor(languageInput.getText()) == null) {
-//				notifyObservers("Invalid Background Color: " + languageInput.getText());
-//			} else {
-//				newBackgroundColor = languageInput.getText().toLowerCase();
-//				notifyObservers();
-//			}
-//			languageInput.clear();
-//		});
-		HBox tempBox =  new HBox();
-		tempBox.getChildren().addAll(languageInput, languageButton);
+	private Node initializeLanguageSetting() {
+		ComboBox<String> languageSelect = new ComboBox<String>();
+		languageSelect.getItems().addAll("English", "Chinese", "French", "Spanish");
+		languageSelect.setValue("English");
+		languageSelect.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue ov, String t, String t1) {
+				setChanged();
+				newLanguage = languageSelect.getValue();
+				notifyObservers();
+			}
+		});
+		VBox tempBox = makeLabelForComboBox(languageSelect, "Set language");
 		return tempBox;
 	}
 
 	private Node initializeTurtleImageSetting(Stage stage) {
 		ComboBox<String> shapesComboBox = new ComboBox<String>();
-		shapesComboBox.getItems().addAll("Elephant", "Turtle", "Pig");
-		shapesComboBox.setValue("Turtle");
-		
-		
-		imageButton = createButton("Change Image", 120);
-		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(final ActionEvent e) {
-				
-				
-//				FileChooser fileChooser = new FileChooser();
-//				File file = fileChooser.showOpenDialog(stage);
-//				setChanged();
-//				try {
-//					Image image = new Image(IMAGE_PATH + file.getName(), 50, 50, true, true);
-//					newImage = image;
-//					notifyObservers();
-//				} catch (Exception ex) {
-//					notifyObservers("The file you selected is not a valid image file: " + file.getName());
-//				}
-			}
-		};
-	//	imageButton.setOnAction(event);
-		return imageButton;
+		shapesComboBox.getItems().addAll("elephant", "turtle", "pig", "frog");
+		shapesComboBox.setValue("Change Shape");
 
+		shapesComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue ov, String t, String t1) {
+				if(t1!=null){
+				setChanged();
+				Image image = new Image(getClass().getClassLoader().getResourceAsStream(t1+".png"), 50, 50, true, true);
+				newImage = image;
+				notifyObservers();
+				}
+			}
+		});
+		return shapesComboBox;
+
+	}
+	
+	private VBox makeLabelForComboBox(Node backgroundColorPicker, String text) {
+		Label lbl = new Label();
+		lbl.setText(text);
+		VBox tempBox = new VBox(PADDING);
+		tempBox.getChildren().addAll(backgroundColorPicker,lbl);
+		return tempBox;
 	}
 
 	private TextField createTextBox(String text, double width) {
@@ -160,12 +140,16 @@ public class SettingsController extends Observable {
 		return hBox;
 	}
 
-	public String getNewBackgroundColor() {
+	public Color getNewBackgroundColor() {
 		return newBackgroundColor;
 	}
 
 	public Color getNewPenColor() {
 		return newPenColor;
+	}
+	
+	public String getNewLanguage(){
+		return newLanguage;
 	}
 
 	public Image getNewImage() {
