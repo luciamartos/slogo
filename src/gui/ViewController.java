@@ -1,7 +1,9 @@
 package gui;
 
+import java.awt.Canvas;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,10 +57,12 @@ public class ViewController implements Observer {
 	private TableColumn userDefinedCommandValues;
 	private BoardStateDataSource dataSource;
 	private SlogoCommandInterpreter interpreter;
+	private TurtleDataTranslator turtleTranslator; 
 
 	public ViewController(Stage stage) {
 		viewProperties = new Properties(VIEW_PROPERTIES_PACKAGE + "View");
 		sceneRoot = new Group();
+		turtleTranslator = new TurtleDataTranslator(viewProperties.getDoubleProperty("canvas_width"), viewProperties.getDoubleProperty("canvas_height"));
 
 		//HBox box1 = new HBox(15);
 		//box1.setPadding(new Insets(15, 15, 15, 15));
@@ -222,7 +226,13 @@ public class ViewController implements Observer {
 			String currentCommandLine = inputPanel.getCurrentCommandLine();
 			if (!(currentCommandLine == null) && !(currentCommandLine.length() == 0)) {
 				pastCommands.add(currentCommandLine);
-				interpreter.parseInput(currentCommandLine);
+				try {
+					interpreter.parseInput(currentCommandLine);
+				} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
+						| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		};
 
@@ -252,10 +262,11 @@ public class ViewController implements Observer {
 	public void update(MainController obs, Object o){
 		canvasActions.removeTurtle();
 		canvasActions.setShowTurtle(dataSource.getTurtleIsShowing());
+		canvasActions.setHeading(turtleTranslator.convertAngle(dataSource.getAngle()));
 		canvasActions.setPenDown(dataSource.getTurtleIsDrawing());
-		canvasActions.setXandYLoc(dataSource.getXCoordinate(), dataSource.getYCoordinate());
+		canvasActions.setXandYLoc(turtleTranslator.convertXCordinate(dataSource.getXCoordinate()), turtleTranslator.convertYCordinate(dataSource.getYCoordinate()));
 		canvasActions.addTurtleAtXY();
-		canvasActions.drawPath(dataSource.getLineCoordinates());
+		canvasActions.drawPath(turtleTranslator.convertLineCordinates(dataSource.getLineCoordinates()));
 	}
 
 	public void update(SettingsController obs, Object o) {
