@@ -42,7 +42,6 @@ public class InputPanel extends HBox {
 		getChildren().addAll(commandInput, runButton);
 	}
 
-	// Is this good design..?
 	public String getCurrentCommandLine() {
 		return currentCommandLine;
 	}

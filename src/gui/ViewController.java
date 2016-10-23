@@ -242,11 +242,9 @@ public class ViewController implements Observer {
 			Method update = getClass().getMethod("update", obs.getClass(), Object.class);
 			update.invoke(this, obs, o);
 		} 
-		
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 	
 	public void update(MainController obs, Object o){
