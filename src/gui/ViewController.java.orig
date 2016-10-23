@@ -54,7 +54,12 @@ public class ViewController implements Observer {
 	private TableColumn userDefinedCommandNames;
 	private TableColumn userDefinedCommandValues;
 	private BoardStateDataSource dataSource;
+<<<<<<< HEAD
 	private SlogoCommandInterpreter interpreter;
+	
+=======
+	private String currentCommandLine;
+>>>>>>> lucia
 
 	public ViewController(Stage stage) {
 		viewProperties = new Properties(VIEW_PROPERTIES_PACKAGE + "View");
@@ -215,14 +220,17 @@ public class ViewController implements Observer {
 		
 		return new String[][]{userDefinedVars,userDefinedNames};
 	}
-
+	
+	public String getCurrentCommandLine(){
+		return currentCommandLine;
+	}
 
 	private Node createCommandInputter() {
 		EventHandler<ActionEvent> runCommandHandler = event -> {
-			String currentCommandLine = inputPanel.getCurrentCommandLine();
+			currentCommandLine = inputPanel.getCurrentCommandLine();
+			
 			if (!(currentCommandLine == null) && !(currentCommandLine.length() == 0)) {
 				pastCommands.add(currentCommandLine);
-				interpreter.parseInput(currentCommandLine);
 			}
 		};
 
@@ -253,8 +261,7 @@ public class ViewController implements Observer {
 		canvasActions.removeTurtle();
 		canvasActions.setShowTurtle(dataSource.getTurtleIsShowing());
 		canvasActions.setPenDown(dataSource.getTurtleIsDrawing());
-		canvasActions.setXandYLoc(dataSource.getXCoordinate(), dataSource.getYCoordinate());
-		canvasActions.addTurtleAtXY();
+		canvasActions.addTurtleAtXY(dataSource.getXCoordinate(), dataSource.getYCoordinate());
 		canvasActions.drawPath(dataSource.getLineCoordinates());
 	}
 
@@ -273,9 +280,5 @@ public class ViewController implements Observer {
 	
 	public void setDataSource(BoardStateDataSource source){
 		this.dataSource = source;
-	}
-	
-	public void setInterpreter(SlogoCommandInterpreter interpreter){
-		this.interpreter = interpreter;
 	}
 }

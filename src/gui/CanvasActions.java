@@ -32,6 +32,8 @@ public class CanvasActions{
 	private boolean penDown;
 	private boolean showTurtle;
 	private double heading;
+	private double xLoc;
+	private double yLoc;
 
 
 	public CanvasActions(double canvasX, double canvasY, double canvasWidth, double canvasHeight, double canvasLayoutX,
@@ -76,9 +78,13 @@ public class CanvasActions{
 
 	private void initializeTurtle() {
 		showTurtle = true;
+		heading = 0;
+		xLoc = canvas.getWidth() / 2;
+		yLoc = canvas.getHeight() / 2;
+		
 		turtleImgView = new ImageView(new Image(IMAGE_PATH + "turtle.png", 50, 50, true, true));
 	//	myTurtle = new TurtleView(canvas.getWidth() / 2, canvas.getHeight() / 2, turtleImg, true, Color.BLACK);
-		addTurtleAtXY(canvas.getWidth() / 2, canvas.getHeight() / 2);
+		addTurtleAtXY();
 	}
 
 	public void changeImage(Image image, double xLoc, double yLoc) {
@@ -86,7 +92,12 @@ public class CanvasActions{
 	}
 	
 	public void setHeading(double degrees){
-		
+		heading = degrees;
+	}
+	
+	public void setXandYLoc(double xLocation, double yLocation){
+		xLoc = xLocation;
+		yLoc = yLocation;
 	}
 	
 	public void drawPath(List<PathLine> myCords){
@@ -98,8 +109,10 @@ public class CanvasActions{
 		}	
 	}
 
-	public void addTurtleAtXY(double xLoc, double yLoc) {
+	public void addTurtleAtXY() {
 		//note that when initialised myController cannot be null
+	//	 turtleImgView = new ImageView( new Image(Main.class.getResourceAsStream("a.jpg")));
+		turtleImgView.setRotate(heading);
 		turtleImgView.setTranslateX(xLoc);
 		turtleImgView.setTranslateY(yLoc);
 		if(showTurtle){
@@ -112,9 +125,9 @@ public class CanvasActions{
 	}
 
 	//METHOD NEVER BEING CALLED RN
-	public void moveTurtle(double xLoc, double yLoc) {
+	public void moveTurtle() {
 		removeTurtle();
-		addTurtleAtXY(xLoc, yLoc);
+		addTurtleAtXY();
 	}
 
 	public void setShowTurtle(boolean isShowing){
@@ -129,7 +142,7 @@ public class CanvasActions{
 	public void setTurtleImage(Image image, double xLoc, double yLoc) {
 		removeTurtle();
 		turtleImgView = new ImageView(new Image(IMAGE_PATH + image, 50, 50, true, true));
-		addTurtleAtXY(xLoc, yLoc);
+		addTurtleAtXY();
 	}
 
 	public void setPenColor(Color color) {
