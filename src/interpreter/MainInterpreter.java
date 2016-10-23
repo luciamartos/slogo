@@ -4,10 +4,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
+import gui.SlogoCommandInterpreter;
 //import model.TurtleStateDataSource;
 import regularExpression.ProgramParser;
 
-public class MainInterpreter {
+public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	private final String DEFAULT_RESOURCE_LANGUAGE = "resources/languages/";
 	private final String DEFAULT_RESOURCE_PACKAGE = "resources/properties/";
