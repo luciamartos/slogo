@@ -76,8 +76,14 @@ public class SlogoUpdate {
 	}
 	
 	public void turnToward(double x, double y){
-		//TODO: This is probably not the right function?
-		angle = 0.0;
+		double yDiff = y - yCoordinate;
+		double xDiff = x - xCoordinate;
+		double arcTan = Math.atan(yDiff/xDiff);
+		arcTan = Math.toDegrees(arcTan);
+		if (arcTan < 0){
+			arcTan = 180 - arcTan;
+		}
+		angle = arcTan;
 	}
 	
 	public void setAngle(double newAngle){
