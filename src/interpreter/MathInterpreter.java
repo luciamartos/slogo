@@ -33,19 +33,19 @@ public class MathInterpreter extends SubInterpreter{
 	}
 	
 	double sine(double degrees){
-		return Math.sin(Math.toRadians(convertAngle(degrees)));
+		return Math.sin(Math.toRadians(degrees));
 	}
 	
 	double cosine(double degrees){
-		return Math.cos(Math.toRadians(convertAngle(degrees)));
+		return Math.cos(Math.toRadians(degrees));
 	}
 	
 	double tangent(double degrees){
-		return Math.tan(Math.toRadians(convertAngle(degrees)));
+		return Math.tan(Math.toRadians(degrees));
 	}
 	
 	double arctangent(double degrees){
-		return Math.atan(Math.toRadians(convertAngle(degrees)));
+		return Math.atan(Math.toRadians(degrees));
 	}
 	
 	double naturallog(double a){

@@ -41,11 +41,11 @@ public class SlogoUpdate {
 	
 	//TODO: Implement methods.
 	public void rotateClockwise(double degrees){
-		angle -= degrees;
+		angle = convertAngle(angle - degrees);
 	}
 	
 	public void rotateCounterClockwise(double degrees){
-		angle += degrees;
+		angle = convertAngle(angle + degrees);
 	}
 	
 	public void moveForward(double pixels){
@@ -75,7 +75,7 @@ public class SlogoUpdate {
 		yCoordinate = y;
 	}
 	
-	public void turnToward(double x, double y){
+	public double turnToward(double x, double y){
 		double yDiff = y - yCoordinate;
 		double xDiff = x - xCoordinate;
 		double arcTan = Math.atan(yDiff/xDiff);
@@ -83,11 +83,15 @@ public class SlogoUpdate {
 		if (arcTan < 0){
 			arcTan = 180 - arcTan;
 		}
+		double angleDelta = Math.abs(angle - arcTan);
 		angle = arcTan;
+		return angleDelta;
 	}
 	
-	public void setAngle(double newAngle){
-		angle = newAngle;
+	public double setAngle(double newAngle){
+		double angleDelta = angle - newAngle;
+		angle = convertAngle(newAngle);
+		return convertAngle(angleDelta);
 	}
 	
 	public void putPenDown(){
@@ -96,6 +100,23 @@ public class SlogoUpdate {
 	
 	public void putPenUp(){
 		turtleShouldDraw = false;
+	}
+	
+	/**
+	 * @param unconvertedAngle
+	 * @return The angle converted to a positive value between 0.0 and 360.0
+	 */
+	private static double convertAngle(double unconvertedAngle){
+		double numerator = unconvertedAngle;
+		double denominator = 360;
+		int multiplier = (int)(numerator / denominator);
+		//multiplier is negative if numerator < (-1 * denominator)
+		//Get numerator in range [-denominator, denominator]
+		numerator -= (multiplier * denominator);
+		if (numerator < 0){
+			numerator = denominator + numerator;
+		}		
+		return numerator;
 	}
 	
 }
