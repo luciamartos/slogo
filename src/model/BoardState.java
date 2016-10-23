@@ -32,6 +32,7 @@ public class BoardState extends Observable {
 		setAngle(0.0);
 		setDrawing(false);
 		setShowing(true);
+		setChanged();
 	}
 	
 	
@@ -50,7 +51,11 @@ public class BoardState extends Observable {
 	}
 
 	public void setXCoordinate(double xCoordinate) {
-		this.xCoordinate = xCoordinate;
+		if (this.xCoordinate != xCoordinate){
+			this.xCoordinate = xCoordinate;
+			setChanged();
+		}
+	
 	}
 
 	public double getYCoordinate() {
@@ -58,7 +63,10 @@ public class BoardState extends Observable {
 	}
 
 	public void setYCoordinate(double yCoordinate) {
-		this.yCoordinate = yCoordinate;
+		if (this.yCoordinate != yCoordinate){
+			this.yCoordinate = yCoordinate;
+			setChanged();
+		}
 	}
 
 	public double getAngle() {
@@ -66,7 +74,10 @@ public class BoardState extends Observable {
 	}
 
 	public void setAngle(double angle) {
-		this.angle = angle;
+		if (this.angle != angle){
+			this.angle = angle;
+			setChanged();
+		}
 	}
 
 	public boolean isDrawing() {
@@ -90,7 +101,10 @@ public class BoardState extends Observable {
 	}
 
 	public void setShowing(boolean turtleShouldShow) {
-		this.showing = turtleShouldShow;
+		if (this.showing != turtleShouldShow){
+			this.showing = turtleShouldShow;
+			setChanged();
+		}
 	}
 	
 	public List<PathLine> getLineCoordinates(){
@@ -99,10 +113,12 @@ public class BoardState extends Observable {
 	
 	public void addLineCoordinates(PathLine line){
 		lineCoordinates.add(line);
+		setChanged();
 	}
 	
 	public void addUserDefinedVariable(String varName, String userInput){
 		this.userDefinedVariables.put(varName, userInput);
+		setChanged();
 	}
 	
 	public HashMap<String, String> getUserDefinedVariables(){
