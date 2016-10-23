@@ -27,6 +27,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -35,6 +36,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import model.BoardStateController;
 
 /**
  * 
@@ -53,41 +55,45 @@ public class ViewController implements Observer {
 	private SettingsController settingsController;
 	private Stage stage;
 	private ErrorConsole errorConsole;
-	private TableColumn userDefinedCommandNames;
-	private TableColumn userDefinedCommandValues;
-	private BoardStateDataSource dataSource;
+	private BoardStateDataSource modelController;
 	private SlogoCommandInterpreter interpreter;
-	private TurtleDataTranslator turtleTranslator; 
+	private TurtleDataTranslator turtleTranslator;
+
+	// private TableColumn userDefinedCommandNames;
+	// private TableColumn userDefinedCommandValues;
+	// private TableColumn variableNames;
+	// private TableColumn variableValues;
+
+	TableView<Variable> tableView;
 
 	public ViewController(Stage stage) {
 		viewProperties = new Properties(VIEW_PROPERTIES_PACKAGE + "View");
 		sceneRoot = new Group();
-		turtleTranslator = new TurtleDataTranslator(viewProperties.getDoubleProperty("canvas_width"), viewProperties.getDoubleProperty("canvas_height"));
-
-		//HBox box1 = new HBox(15);
-		//box1.setPadding(new Insets(15, 15, 15, 15));
-		VBox box2 = new VBox(15);
-		box2.setPadding(new Insets(15, 15, 15, 15));
-		HBox box3 = new HBox(15);
-
-		VBox box4 = new VBox(15);
-
-		sceneRoot.getChildren().add(box2);
-
-
-		box2.getChildren().add(createTitleBox());
-		box2.getChildren().add(box3);
-		box2.getChildren().add(initializeSettingsController());
-		box2.getChildren().add(createErrorConsole());
-
-		box3.getChildren().add(box4);
-		box3.getChildren().add(createPastCommandsListView());
-		box3.getChildren().add(createTableView());
-
-		box4.getChildren().add(createCanvas());
-		box4.getChildren().add(createCommandInputter());
-
+		turtleTranslator = new TurtleDataTranslator(viewProperties.getDoubleProperty("canvas_width"),
+				viewProperties.getDoubleProperty("canvas_height"));
+		sceneRoot.getChildren().add(setupBoxes());
 		setupStage(stage);
+	}
+
+	private Node setupBoxes() {
+		VBox box1 = new VBox(15);
+		HBox box2 = new HBox(15);
+		VBox box3 = new VBox(15);
+
+		box1.setPadding(new Insets(15, 15, 15, 15));
+		box1.getChildren().add(createTitleBox());
+		box1.getChildren().add(box2);
+		box1.getChildren().add(initializeSettingsController());
+		box1.getChildren().add(createErrorConsole());
+
+		box2.getChildren().add(box3);
+		box2.getChildren().add(createPastCommandsListView());
+		box2.getChildren().add(createTableView());
+
+		box3.getChildren().add(createCanvas());
+		box3.getChildren().add(createCommandInputter());
+
+		return box1;
 	}
 
 	private void setupStage(Stage stage) {
@@ -151,75 +157,23 @@ public class ViewController implements Observer {
 	}
 
 	private Node createTableView() {
-		TableView tableView = new TableView();
-		TableColumn variables = new TableColumn("Environment\nVariables");
-		TableColumn userDefinedCommands = new TableColumn("User-Defined\nCommands");
-		tableView.getColumns().addAll(variables, userDefinedCommands);
-		
-		TableColumn variableNames = new TableColumn("Name");
-		TableColumn variableValues = new TableColumn("Value");
-		variables.getColumns().addAll(variableNames, variableValues);
-        
-		//tableView.setItems(data);
-		userDefinedCommandNames = new TableColumn("Name");
-		userDefinedCommandValues = new TableColumn("Value");
-		
-		userDefinedCommands.getColumns().addAll(userDefinedCommandNames, userDefinedCommandValues);
-		
-//		userDefinedCommandNames.setCellValueFactory((p)->{
-//	        String[] x = getUserDefinedVariableNamesAndVars()[0];
-//	        return new SimpleStringProperty(x != null && x.length>0 ? x[0] : "<no name>");
-//		});
-//
-//		userDefinedCommandValues.setCellValueFactory((p)->{
-//	        String[] x = p.getValue();
-//	        return new SimpleStringProperty(x != null && x.length>1 ? x[1] : "<no value>");
-//		});
-		
-		//updateUserDefinedVariableHashMap();
-		
-		// turtleVariables = FXCollections.observableArrayList();
-//		pastCommandsListView.setItems(pastCommands);
-//
-//		pastCommandsListView.setPrefWidth(viewProperties.getDoubleProperty("past_command_list_width"));
-//		pastCommandsListView.setPrefHeight(viewProperties.getDoubleProperty("past_command_list_height"));
-//		pastCommandsListView.setLayoutX(viewProperties.getDoubleProperty("past_command_list_x"));
-//		pastCommandsListView.setLayoutY(viewProperties.getDoubleProperty("past_command_list_y"));
-//
-//		// handle user clicking on an value of the list
-//		pastCommandsListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-//			public void changed(ObservableValue<? extends String> ov, String old_val, String curCommand) {
-//				// not actually an error
-//				errorConsole.displayErrorMessage("Run: " + curCommand);
-//				// TODO: RUN COMMAND OF STRING
-//			}
-//		});
+		tableView = new TableView<Variable>();
 
 		return tableView;
 	}
-	
-	//WHERE DO I CALL THIS METHOD SO IT UPDATES WHEN NECCESARY?
-	private void updateUserDefinedVariableHashMap(){
-		Map<String, String> myMap = dataSource.getUserDefinedVariables();
-		for(String elem:myMap.keySet()){
-			userDefinedCommandNames.getColumns().add(elem);
-			userDefinedCommandValues.getColumns().add(myMap.get(elem));
-		}
-	}
-	
-	private String[][] getUserDefinedVariableNamesAndVars(HashMap<String, String> myMap){
+
+	private String[][] getUserDefinedVariableNamesAndVars(HashMap<String, String> myMap) {
 		String[] userDefinedVars = new String[myMap.size()];
 		String[] userDefinedNames = new String[myMap.size()];
-		int i =0;
-		for(String elem:myMap.keySet()){
+		int i = 0;
+		for (String elem : myMap.keySet()) {
 			userDefinedVars[i] = elem;
 			userDefinedNames[i] = myMap.get(elem);
 			i++;
 		}
-		
-		return new String[][]{userDefinedVars,userDefinedNames};
-	}
 
+		return new String[][] { userDefinedVars, userDefinedNames };
+	}
 
 	private Node createCommandInputter() {
 		EventHandler<ActionEvent> runCommandHandler = event -> {
@@ -253,20 +207,20 @@ public class ViewController implements Observer {
 		try {
 			Method update = getClass().getMethod("update", obs.getClass(), Object.class);
 			update.invoke(this, obs, o);
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void update(MainController obs, Object o){
+
+	public void update(MainController obs, Object o) {
 		canvasActions.removeTurtle();
-		canvasActions.setShowTurtle(dataSource.getTurtleIsShowing());
-		canvasActions.setHeading(turtleTranslator.convertAngle(dataSource.getAngle()));
-		canvasActions.setPenDown(dataSource.getTurtleIsDrawing());
-		canvasActions.setXandYLoc(turtleTranslator.convertXCordinate(dataSource.getXCoordinate()), turtleTranslator.convertYCordinate(dataSource.getYCoordinate()));
+		canvasActions.setShowTurtle(modelController.getTurtleIsShowing());
+		canvasActions.setHeading(turtleTranslator.convertAngle(modelController.getAngle()));
+		canvasActions.setPenDown(modelController.getTurtleIsDrawing());
+		canvasActions.setXandYLoc(turtleTranslator.convertXCordinate(modelController.getXCoordinate()),
+				turtleTranslator.convertYCordinate(modelController.getYCoordinate()));
 		canvasActions.addTurtleAtXY();
-		canvasActions.drawPath(turtleTranslator.convertLineCordinates(dataSource.getLineCoordinates()));
+		canvasActions.drawPath(turtleTranslator.convertLineCordinates(modelController.getLineCoordinates()));
 	}
 
 	public void update(SettingsController obs, Object o) {
@@ -275,18 +229,55 @@ public class ViewController implements Observer {
 			return;
 		}
 		if (settingsController.getNewImage() != null)
-			canvasActions.changeImage(settingsController.getNewImage(),dataSource.getXCoordinate(),dataSource.getYCoordinate());
+			canvasActions.changeImage(settingsController.getNewImage(), modelController.getXCoordinate(),
+					modelController.getYCoordinate());
 		if (settingsController.getNewBackgroundColor() != null)
 			canvasActions.setBackgroundColorCanvas(settingsController.getNewBackgroundColor());
 		if (settingsController.getNewPenColor() != null)
 			canvasActions.setPenColor(settingsController.getNewPenColor());
 	}
-	
-	public void setDataSource(BoardStateDataSource source){
-		this.dataSource = source;
+
+	public void setModelController(BoardStateController modelController) {
+		this.modelController = modelController;
+		setupEnvironmentVariables();
 	}
-	
-	public void setInterpreter(SlogoCommandInterpreter interpreter){
+
+	private void setupEnvironmentVariables() {
+		
+		TableColumn variables = new TableColumn("Environment\nVariables");
+		TableColumn userDefinedCommands = new TableColumn("User-Defined\nCommands");
+
+		TableColumn variableNames = new TableColumn("Name");
+		TableColumn variableValues = new TableColumn("Value");
+		variables.getColumns().addAll(variableNames, variableValues);
+
+		// tableView.setItems(data);
+		TableColumn userDefinedCommandNames = new TableColumn("Name");
+		TableColumn userDefinedCommandValues = new TableColumn("Value");
+		userDefinedCommands.getColumns().addAll(userDefinedCommandNames, userDefinedCommandValues);
+
+		ObservableList<Variable> environmentVariableList = createEnvironmentVariablesList();
+		variableNames.setCellValueFactory(new PropertyValueFactory<Variable, String>("name"));
+		variableValues.setCellValueFactory(new PropertyValueFactory<Variable, String>("value"));
+
+		
+		tableView.setItems(environmentVariableList);
+		tableView.getColumns().addAll(variables, userDefinedCommands);
+
+	}
+
+	private ObservableList<Variable> createEnvironmentVariablesList() {
+		
+		ObservableList<Variable> data = FXCollections.observableArrayList();
+		data.add(new Variable("X Coordinate", Double.toString(modelController.getXCoordinate())));
+		data.add(new Variable("Y Coordinate", Double.toString(modelController.getYCoordinate())));
+		data.add(new Variable("Angle", Double.toString(modelController.getAngle())));
+		data.add(new Variable("Turtle is Showing", Boolean.toString(modelController.getTurtleIsShowing())));
+		data.add(new Variable("Pen is Down", Boolean.toString(modelController.getTurtleIsDrawing())));
+		return data;
+	}
+
+	public void setInterpreter(SlogoCommandInterpreter interpreter) {
 		this.interpreter = interpreter;
 	}
 }

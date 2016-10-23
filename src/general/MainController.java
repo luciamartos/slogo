@@ -15,11 +15,11 @@ public class MainController {
 	private MainInterpreter interpreter;
 
 	public MainController(Stage stage) {
-    	viewController = new ViewController(stage);
     	modelController = new BoardStateController();
+    	viewController = new ViewController(stage);
     	interpreter = new MainInterpreter();
     	
-    	viewController.setDataSource(modelController);
+    	viewController.setModelController(modelController);
     	viewController.setInterpreter(interpreter);
     	
     	modelController.addBoardStateListener(viewController);

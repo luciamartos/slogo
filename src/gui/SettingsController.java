@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -30,23 +31,20 @@ public class SettingsController extends Observable {
 	private String newBackgroundColor;
 	private Color newPenColor;
 	private Image newImage;
+	private String newLanguage;
 
 	public SettingsController(Stage stage, Properties viewProperties) {
 		this.viewProperties = viewProperties;
-		initializeHBox();
-		initializePenColorSetting();
-		initializeBackgroundColorSetting();
-		initializeTurtleImageSetting(stage);
-	}
-
-	private void initializeHBox() {
 		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
-		hBox.setLayoutX(viewProperties.getDoubleProperty("settings_x"));
-		hBox.setLayoutY(viewProperties.getDoubleProperty("settings_y"));
+		hBox.getChildren().add(initializePenColorSetting());
+		hBox.getChildren().add(initializeBackgroundColorSetting());
+		hBox.getChildren().add(initializeLanguageSetting());
+		hBox.getChildren().add(initializeTurtleImageSetting(stage));
 	}
 
-	private void initializePenColorSetting() {
-		TextField colorInput = createTextBox("Change Pen Color", 200);
+
+	private Node initializePenColorSetting() {
+		TextField colorInput = createTextBox("Change Pen Color", 150);
 		Button colorButton = createButton("Set", viewProperties.getDoubleProperty("run_button_width"));
 		colorButton.setOnAction(event -> {
 			Color tempColor = checkValidColor(colorInput.getText());
@@ -59,10 +57,12 @@ public class SettingsController extends Observable {
 			}
 			colorInput.clear();
 		});
-		hBox.getChildren().addAll(colorInput, colorButton);
+		HBox tempBox =  new HBox();
+		tempBox.getChildren().addAll(colorInput, colorButton);
+		return tempBox;
 	}
 
-	private void initializeBackgroundColorSetting() {
+	private Node initializeBackgroundColorSetting() {
 		// set the text box
 		TextField colorInput = createTextBox("Change Background Color", 200);
 
@@ -78,7 +78,9 @@ public class SettingsController extends Observable {
 			}
 			colorInput.clear();
 		});
-		hBox.getChildren().addAll(colorInput, colorButton);
+		HBox tempBox =  new HBox();
+		tempBox.getChildren().addAll(colorInput, colorButton);
+		return tempBox;
 	}
 
 	private Color checkValidColor(String colorText) {
@@ -89,10 +91,31 @@ public class SettingsController extends Observable {
 			return null;
 		}
 	}
+	
+	private Node initializeLanguageSetting() {
+		// set the text box
+		TextField languageInput = createTextBox("Change Language", 180);
 
-	private void initializeTurtleImageSetting(Stage stage) {
-		imageButton = createButton("Change Turtle Image", 200);
-		hBox.getChildren().add(imageButton);
+		// set the run button
+		Button languageButton = createButton("Set", viewProperties.getDoubleProperty("run_button_width"));
+		//TODO: implement language button
+//		languageButton.setOnAction(event -> {
+//			setChanged();
+//			if (checkValidColor(languageInput.getText()) == null) {
+//				notifyObservers("Invalid Background Color: " + languageInput.getText());
+//			} else {
+//				newBackgroundColor = languageInput.getText().toLowerCase();
+//				notifyObservers();
+//			}
+//			languageInput.clear();
+//		});
+		HBox tempBox =  new HBox();
+		tempBox.getChildren().addAll(languageInput, languageButton);
+		return tempBox;
+	}
+
+	private Node initializeTurtleImageSetting(Stage stage) {
+		imageButton = createButton("Change Image", 120);
 		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(final ActionEvent e) {
@@ -109,6 +132,7 @@ public class SettingsController extends Observable {
 			}
 		};
 		imageButton.setOnAction(event);
+		return imageButton;
 
 	}
 
