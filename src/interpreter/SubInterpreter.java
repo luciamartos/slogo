@@ -56,4 +56,22 @@ public abstract class SubInterpreter {
 				input.equalsIgnoreCase(rb.getString("equal")) || input.equalsIgnoreCase(rb.getString("notequal")) ||
 				input.equalsIgnoreCase(rb.getString("and")) || input.equalsIgnoreCase(rb.getString("or"));
 	}
+	
+	
+	/**
+	 * @param unconvertedAngle
+	 * @return The angle converted to a positive value between 0.0 and 360.0
+	 */
+	static double convertAngle(double unconvertedAngle){
+		double numerator = unconvertedAngle;
+		double denominator = 360;
+		int multiplier = (int)(numerator / denominator);
+		//multiplier is negative if numerator < (-1 * denominator)
+		//Get numerator in range [-denominator, denominator]
+		numerator -= (multiplier * denominator);
+		if (numerator < 0){
+			numerator = denominator + numerator;
+		}		
+		return numerator;
+	}
 }

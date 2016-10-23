@@ -19,25 +19,26 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 	}
 	
 	double left(double degrees){
-		model.rotateCounterClockwise(degrees);
+		model.rotateCounterClockwise(convertAngle(degrees));
 		return degrees;
 	}
 	
 	double right(double degrees){
-		model.rotateClockwise(degrees);
+		model.rotateClockwise(convertAngle(degrees));
 		return degrees;
 	}
 	
 	double setheading(double degrees){
 		double temp = model.getAngle();
-		model.setAngle(degrees);
-		return Math.abs(temp-degrees);
+		model.setAngle(convertAngle(degrees));
+		return Math.abs(temp-convertAngle(degrees));
 	}
 	
 	double settowards(double x, double y){
+		double tempX = model.getXCoordinate();
+		double tempY = model.getYCoordinate();
 		model.turnToward(x, y);
-		//TODO: return number of degrees that turtle turned
-		return 0;
+		return angleBetweenTwoPoints(tempX, tempY, x, y);
 	}
 	
 	double setxy(double x, double y){
@@ -83,24 +84,19 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 		return Math.abs(tempX) + Math.abs(tempY);
 	}
 	
+	/**
+	 * Calculated the angle created by two points and the origin(0,0).
+	 * @author Ray Song (ys101)
+	 */
+	private double angleBetweenTwoPoints(double point1X, double point1Y, 
+	        double point2X, double point2Y) {
+	    double angle1 = Math.atan2(point1Y, point1X);
+	    double angle2 = Math.atan2(point2Y, point2X);
+	    return Math.toDegrees(angle1 - angle2); 
+	}
+	
 	SlogoUpdate getModel(){
 		return model;
-	}
-	
-	boolean isNonInputTurtleCommand(String input){
-		return input.equalsIgnoreCase(rb.getString("pd")) || input.equalsIgnoreCase(rb.getString("pu")) ||
-				input.equalsIgnoreCase(rb.getString("st")) || input.equalsIgnoreCase(rb.getString("ht")) ||
-				input.equalsIgnoreCase(rb.getString("home")) || input.equalsIgnoreCase(rb.getString("cs"));
-	}
-	
-	boolean isUnaryTurtleCommand(String input){
-		return input.equalsIgnoreCase(rb.getString("fd")) || input.equalsIgnoreCase(rb.getString("bk")) ||
-				input.equalsIgnoreCase(rb.getString("lt")) || input.equalsIgnoreCase(rb.getString("rt")) ||
-				input.equalsIgnoreCase(rb.getString("seth"));
-	}
-	
-	boolean isBinaryTurtleCommand(String input){
-		return input.equalsIgnoreCase(rb.getString("towards")) || input.equalsIgnoreCase(rb.getString("setxy"));
 	}
 
 }
