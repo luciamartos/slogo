@@ -1,5 +1,4 @@
 package model;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -7,8 +6,9 @@ import gui.BoardStateDataSource;
 import interpreter.SlogoUpdate;
 import interpreter.TurtleStateDataSource;
 import interpreter.TurtleStateUpdater;
+import interpreter.UserVariablesDataSource;
 
-public class BoardStateController implements TurtleStateDataSource, BoardStateDataSource, TurtleStateUpdater {
+public class BoardStateController implements TurtleStateDataSource, BoardStateDataSource, TurtleStateUpdater, UserVariablesDataSource {
 
 	public void applyChanges(SlogoUpdate changes){
 		BoardState modelToUpdate = BoardState.getCurrentState();
@@ -68,7 +68,10 @@ public class BoardStateController implements TurtleStateDataSource, BoardStateDa
 	public Map<String, String> getUserDefinedVariables() {
 		return BoardState.getCurrentState().getUserDefinedVariables();
 	}
-
+	
+/*
+ * interpreter.UserVariablesDataSource
+ */
 	@Override
 	public void addUserDefinedVariable(String varName, String userInput) {
 		BoardState.getCurrentState().addUserDefinedVariable(varName, userInput);
