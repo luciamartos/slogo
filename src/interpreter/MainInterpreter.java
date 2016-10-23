@@ -128,7 +128,8 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	IllegalArgumentException, InvocationTargetException{
 		double[] param;
 		Class interpreterClass = Class.forName(rb.getString("TurtleCommandInterpreterLabel"));
-		Object obj = interpreterClass.getDeclaredConstructor(SlogoUpdate.class).newInstance(model);
+		Object obj = interpreterClass.getDeclaredConstructor(SlogoUpdate.class, TurtleStateUpdater.class)
+				.newInstance(model, stateUpdater);
 		Class[] args;
 		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model, stateUpdater);
 		
