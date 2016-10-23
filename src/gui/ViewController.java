@@ -36,7 +36,6 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import model.BoardStateController;
 
 /**
  * 
@@ -234,14 +233,25 @@ public class ViewController implements Observer {
 	// DOES THIS ACCOUNT FOR MY UPDATE THING TOO?
 	public void update(Observable obs, Object o) {
 		try {
-			Method update = getClass().getMethod("update", obs.getClass(), Object.class);
-			update.invoke(this, obs, o);
+			Method update;
+			if (o != null){
+				for (Class c : o.getClass().getInterfaces()){
+					if (c.equals(BoardStateDataSource.class)){
+						update = getClass().getMethod("update", Object.class, BoardStateDataSource.class);
+						update.invoke(this, obs, o);
+					}
+				}
+			}
+			else{
+				update = getClass().getMethod("update", obs.getClass(), Object.class);
+				update.invoke(this, obs, o);
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			e.printStackTrace();	
 		}
 	}
 
-	public void update(MainController obs, Object o) {
+	public void update(Object obs, BoardStateDataSource o) {
 		canvasActions.removeTurtle();
 		canvasActions.setShowTurtle(modelController.getTurtleIsShowing());
 		canvasActions.setHeading(turtleTranslator.convertAngle(modelController.getAngle()));
@@ -268,7 +278,7 @@ public class ViewController implements Observer {
 			canvasActions.setPenColor(settingsController.getNewPenColor());
 	}
 
-	public void setModelController(BoardStateController modelController) {
+	public void setModelController(BoardStateDataSource modelController) {
 		this.modelController = modelController;
 		updateVariables();
 	}
