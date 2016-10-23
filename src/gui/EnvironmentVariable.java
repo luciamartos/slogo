@@ -2,11 +2,11 @@ package gui;
 
 import javafx.beans.property.SimpleStringProperty;
 
-public class Variable {
+public class EnvironmentVariable {
 	private final SimpleStringProperty name;
     private final SimpleStringProperty value;
  
-    public Variable(String name, String value) {
+    public EnvironmentVariable(String name, String value) {
         this.name = new SimpleStringProperty(name);
         this.value = new SimpleStringProperty(value);
     }
