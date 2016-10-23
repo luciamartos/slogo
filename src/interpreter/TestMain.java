@@ -6,9 +6,9 @@ import model.BoardStateController;
 
 public class TestMain extends Application{
 	
-	String input = "setxy [ sum 5 5 ]";
+	String input = "repeat 5 [ sum 5 5 ]";
 	String input2 = "set :apple fd 5";
-	String input3 = "fd 50";
+//	String input3 = "sum 5 5";
 //	String language = "Chinese";
 	
 	public static void main(String[] args){
@@ -26,8 +26,8 @@ public class TestMain extends Application{
 		main.setVarDataSource(controller);
 		
 //		main.setLanguage(language);
-//		main.parseInput(input);  
+		main.parseInput(input);  
 //		main.parseInput(input2);  
-		main.parseInput(input3);  
+//		main.parseInput(input3);  
 	}
 }
