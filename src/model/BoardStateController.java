@@ -76,5 +76,10 @@ public class BoardStateController implements TurtleStateDataSource, BoardStateDa
 	public void addUserDefinedVariable(String varName, String userInput) {
 		BoardState.getCurrentState().addUserDefinedVariable(varName, userInput);
 	}
+
+	@Override
+	public String getUserDefinedVariable(String key) {
+		return BoardState.getCurrentState().getUserDefinedVariables().get(key);
+	}
 	
 }
