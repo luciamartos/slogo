@@ -2,9 +2,11 @@ package interpreter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.LinkedList;
 import java.util.MissingResourceException;
+import java.util.Queue;
 import java.util.ResourceBundle;
-import java.util.Stack;
+
 
 import gui.SlogoCommandInterpreter;
 import regularExpression.ProgramParser;
@@ -22,12 +24,13 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private UserVariablesDataSource varDataSource;
 	private ResourceBundle rb;
 	private String[] parsed;
-	private Stack<String[]> loopList;
+	private Queue<String[]> commandQueue;
 	
 	private int repCount;
 	
 	public MainInterpreter(){
 		rb = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+PROPERTIES_TITLE);
+		commandQueue = new LinkedList();
 	}
 	
 	public void parseInput(String input) throws ClassNotFoundException, NoSuchMethodException, 
@@ -39,9 +42,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		lang = addPatterns(lang);
 		parsed = createParsedArray(split, lang);
 		
-		for(String elem: parsed){
-			System.out.println(elem);
-		}
+//		for(String elem: parsed){
+//			System.out.println(elem);
+//		}
 		
 		interpretCommand(split, parsed, 0);   //first search(non-recursive) begins at index 0;
 		
@@ -80,17 +83,31 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			return interpretControl(input, parsed, keyword, searchStartIndex);
 		}
 		
-		else{
+		//recursive search for a variable
+		else if(keyword.equalsIgnoreCase(rb.getString("VariableLabel"))){
 			String newKeyword = input[searchStartIndex].toLowerCase();
 			if(varDataSource.getUserDefinedVariable(newKeyword) != null){
 				return Double.parseDouble(varDataSource.getUserDefinedVariable(newKeyword));
 			}
-			
-			else{
-				System.out.println("Invalid argument detected: '" + input[searchStartIndex]
-						+"' is not a valid command!");
-				throw new IllegalArgumentException();
+			else return 0;  //By definition, unassigned variables have a value of 0.
+		}
+		
+		else if(keyword.equalsIgnoreCase(rb.getString("ListStartLabel"))){
+			StringBuilder sb = new StringBuilder();
+			searchStartIndex++;
+			while(parsed[searchStartIndex].equalsIgnoreCase(rb.getString("ListEndLabel"))){
+				sb.append(input[searchStartIndex]);
+				sb.append(" ");
+				searchStartIndex++;
 			}
+//			commandQueue.add(sb.toString());
+			return 0;
+		}
+			
+		else{
+			System.out.println("Invalid argument detected: '" + input[searchStartIndex]
+					+"' is not a valid command!");
+			throw new IllegalArgumentException();
 		}
 		
 	}
