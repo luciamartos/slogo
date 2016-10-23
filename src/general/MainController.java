@@ -22,6 +22,8 @@ public class MainController {
     	viewController.setDataSource(modelController);
     	viewController.setInterpreter(interpreter);
     	
+    	modelController.addBoardStateListener(viewController);
+    	
     	interpreter.setStateDataSource(modelController);
     	interpreter.setVarDataSource(modelController);
     	interpreter.setStateUpdater(modelController);

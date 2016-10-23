@@ -1,6 +1,7 @@
 package model;
 import java.util.List;
 import java.util.Map;
+import java.util.Observer;
 
 import gui.BoardStateDataSource;
 import interpreter.SlogoUpdate;
@@ -31,6 +32,10 @@ public class BoardStateController implements TurtleStateDataSource, BoardStateDa
 		modelToUpdate.setXCoordinate(changes.getXCoordinate());
 		modelToUpdate.setYCoordinate(changes.getYCoordinate());
 		modelToUpdate.notifyObservers();
+	}
+	
+	public void addBoardStateListener(Observer o){
+		BoardState.getCurrentState().addObserver(o);
 	}
 	
 /*
