@@ -31,11 +31,13 @@ public class BoardStateController implements TurtleStateDataSource, BoardStateDa
 		}
 		modelToUpdate.setXCoordinate(changes.getXCoordinate());
 		modelToUpdate.setYCoordinate(changes.getYCoordinate());
-		modelToUpdate.notifyObservers();
+		//TODO: Update distance covered
+		modelToUpdate.notifyObservers(this);
 	}
 	
 	public void addBoardStateListener(Observer o){
 		BoardState.getCurrentState().addObserver(o);
+		BoardState.getCurrentState().notifyObservers(this);
 	}
 	
 /*
