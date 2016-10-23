@@ -120,7 +120,7 @@ public class SettingsController extends Observable {
 		shapesComboBox.setValue("Turtle");
 		
 		
-		//imageButton = createButton("Change Image", 120);
+		imageButton = createButton("Change Image", 120);
 		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(final ActionEvent e) {
