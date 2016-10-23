@@ -67,10 +67,21 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			return interpretBooleanCommand(input, keyword, searchStartIndex);
 		}
 		
+		else if(decideCommand.isControl(keyword)){
+			return interpretControl(input, keyword, searchStartIndex);
+		}
+		
 		else{
-			System.out.println("Invalid argument detected: '" + input[searchStartIndex]
-					+"' is not a valid command!");
-			throw new IllegalArgumentException();
+			String newKeyword = input[searchStartIndex].toLowerCase();
+			if(varDataSource.getUserDefinedVariable(newKeyword) != null){
+				return Double.parseDouble(varDataSource.getUserDefinedVariable(newKeyword));
+			}
+			
+			else{
+				System.out.println("Invalid argument detected: '" + input[searchStartIndex]
+						+"' is not a valid command!");
+				throw new IllegalArgumentException();
+			}
 		}
 		
 	}
@@ -111,10 +122,8 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	private double interpretTurtleQuery(String[] input, String keyword, int searchStartIndex) throws ClassNotFoundException, 
 	InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
-		double[] param;
 		Class interpreterClass = Class.forName(rb.getString("TurtleQueryInterpreterLabel"));
 		Object obj = interpreterClass.getDeclaredConstructor(SlogoUpdate.class).newInstance(model);
-		Class[] args;
 		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model);
 		if(interpreter.isTurtleQuery(keyword)){
 			return handleNonInputKeywordWithModel(keyword, interpreterClass, obj, interpreter);
@@ -124,10 +133,8 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	private double interpretMathCommand(String[] input, String keyword, int searchStartIndex) throws ClassNotFoundException, InstantiationException, 
 	IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException{
-		double[] param;
 		Class interpreterClass = Class.forName(rb.getString("MathInterpreterLabel"));
 		Object obj = interpreterClass.newInstance();
-		Class[] args;
 		MathInterpreter interpreter = new MathInterpreter();
 		
 		if(interpreter.isNonInputMathExpression(keyword)){
@@ -144,10 +151,8 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	private double interpretBooleanCommand(String[] input, String keyword, int searchStartIndex) throws ClassNotFoundException, InstantiationException, 
 	IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException{
-		double[] param;
 		Class interpreterClass = Class.forName(rb.getString("BooleanInterpreterLabel"));
 		Object obj = interpreterClass.newInstance();
-		Class[] args;
 		BooleanInterpreter interpreter = new BooleanInterpreter();
 
 		if(interpreter.isUnaryBooleanExpression(keyword)){
@@ -157,6 +162,21 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			return handleBinaryKeyword(input, keyword, searchStartIndex, interpreterClass, obj);
 		}
 		else throw new IllegalArgumentException();
+	}
+	
+	private double interpretControl(String[] input, String keyword, int searchStartIndex) throws ClassNotFoundException, 
+	NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException{
+		double[] param;
+		if(keyword.equalsIgnoreCase(rb.getString("makevar"))){
+			param = parseParam(input, searchStartIndex+2, 1);
+			varDataSource.addUserDefinedVariable(input[searchStartIndex+1], Double.toString(param[0]));
+			System.out.println(param[0]);
+			return param[0];
+		}
+		
+		//TODO: Implement other controls other than set
+		else return 0;
 	}
 	
 	private double handleNonInputKeywordWithModel(String keyword, Class interpreterClass, Object obj,
@@ -215,8 +235,8 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 				double temp = Double.parseDouble(input[i]);
 				res[index++] = temp;
 			}
-			//recursive parsing of input statement
 			else{
+				//recursive parsing of input statement
 				res[index++] = interpretCommand(input, parsed, i);
 			}
 		}
