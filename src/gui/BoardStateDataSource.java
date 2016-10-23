@@ -2,7 +2,9 @@ package gui;
 import java.util.List;
 import java.util.Map;
 import model.PathLine;
-
+/**
+ * @author Andrew Bihl
+ */
 public interface BoardStateDataSource {
 	public double getXCoordinate();
 	public double getYCoordinate();

@@ -1,6 +1,8 @@
 package interpreter;
-
 import java.util.Map;
+/**
+ * @author Andrew Bihl
+ */
 
 public interface UserVariablesDataSource {
 	public Map<String, String> getUserDefinedVariables();
