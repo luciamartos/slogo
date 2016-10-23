@@ -279,6 +279,9 @@ public class ViewController implements Observer {
 			canvasActions.setBackgroundColorCanvas(settingsController.getNewBackgroundColor());
 		if (settingsController.getNewPenColor() != null)
 			canvasActions.setPenColor(settingsController.getNewPenColor());
+		if (settingsController.getNewLanguage() != null)
+			interpreter.setLanguage(settingsController.getNewLanguage());
+			
 	}
 
 	public void setModelController(BoardStateDataSource modelController) {

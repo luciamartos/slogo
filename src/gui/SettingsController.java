@@ -53,8 +53,9 @@ public class SettingsController extends Observable {
 	private Node initializePenColorSetting() {
 		ColorPicker penColorPicker = new ColorPicker();
 		penColorPicker.setValue(Color.BLACK);
-		penColorPicker.setOnAction(new EventHandler() {
-			public void handle(Event t) {
+		penColorPicker.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent t) {
 				setChanged();
 				newPenColor = penColorPicker.getValue();
 				notifyObservers();
@@ -67,8 +68,9 @@ public class SettingsController extends Observable {
 	private Node initializeBackgroundColorSetting() {
 		ColorPicker backgroundColorPicker = new ColorPicker();
 		backgroundColorPicker.setValue(Color.WHITE);
-		backgroundColorPicker.setOnAction(new EventHandler() {
-			public void handle(Event t) {
+		backgroundColorPicker.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent t) {
 				setChanged();
 				newBackgroundColor = backgroundColorPicker.getValue();
 				notifyObservers();
@@ -105,7 +107,9 @@ public class SettingsController extends Observable {
 			public void changed(ObservableValue ov, String t, String t1) {
 				if(t1!=null){
 				setChanged();
-				Image image = new Image(getClass().getClassLoader().getResourceAsStream(t1+".png"), 50, 50, true, true);
+//				Image image = new Image(getClass().getClassLoader().getResourceAsStream(t1+".png"), 50, 50, true, true);
+				System.out.println(IMAGE_PATH+t1+".png");
+				Image image = new Image(IMAGE_PATH+t1+".png", 50, 50, true, true);
 				newImage = image;
 				notifyObservers();
 				}
