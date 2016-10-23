@@ -1,22 +1,6 @@
 package interpreter;
 
 public class TurtleCommandInterpreter extends SubInterpreter{
-
-	/**
-	 * fd=Forward
-		bk=Backward
-		lt=Left
-		rt=Right
-		seth=SetHeading
-		towards=SetTowards
-		setxy=SetPosition
-		pd=PenDown
-		pu=PenUp
-		st=ShowTurtle
-		ht=HideTurtle
-		home=Home
-		cs=ClearScreen
-	 */
 	
 	private SlogoUpdate model;
 	
@@ -45,9 +29,9 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 	}
 	
 	double setheading(double degrees){
+		double temp = model.getAngle();
 		model.setAngle(degrees);
-		//TODO: difference between curr angle and new angle; how do I get curr angle?
-		return Math.abs(0-degrees);
+		return Math.abs(temp-degrees);
 	}
 	
 	double settowards(double x, double y){
@@ -57,9 +41,10 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 	}
 	
 	double setxy(double x, double y){
+		double tempX = model.getXCoordinate();
+		double tempY = model.getYCoordinate();
 		model.moveTo(x, y);
-		//TODO: replace 0 with (x,y) coordinate of when the turtle first started.
-		return Math.abs(x-0) + Math.abs(y-0);
+		return Math.abs(x-tempX) + Math.abs(y-tempY);
 	}
 	
 	double penup(){
@@ -83,18 +68,19 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 	}
 	
 	double home(){
+		double tempX = model.getXCoordinate();
+		double tempY = model.getYCoordinate();
 		model.moveTo(0, 0);
-		//TODO: replace 1 with where turtle first started off
-		return Math.abs(1-0) + Math.abs(1-0);
+		return Math.abs(tempX) + Math.abs(tempY);
 	}
 	
 	
 	double clearScreen(){
 		//TODO: how do I erase the turtle trail?
-		
+		double tempX = model.getXCoordinate();
+		double tempY = model.getYCoordinate();
 		model.moveTo(0, 0);
-		//TODO: replace 1 with where turtle first started off
-		return Math.abs(1-0) + Math.abs(1-0);
+		return Math.abs(tempX) + Math.abs(tempY);
 	}
 	
 	SlogoUpdate getModel(){
