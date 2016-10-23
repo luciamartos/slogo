@@ -9,5 +9,5 @@ public interface BoardStateDataSource {
 	public boolean getTurtleIsShowing();
 	public boolean getTurtleIsDrawing();
 	public List getLineCoordinates();
-	public Map<String, String> getUserCreatedVariables();
+	public Map<String, String> getUserDefinedVariables();
 }
