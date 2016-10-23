@@ -6,7 +6,8 @@ import model.BoardStateController;
 
 public class TestMain extends Application{
 	
-	String input = "less? ";
+	String input = "set potato 100";
+	String input2 = "sum potato 2";
 //	String language = "Chinese";
 	
 	public static void main(String[] args){
@@ -23,5 +24,6 @@ public class TestMain extends Application{
 		main.setVarDataSource(controller);
 //		main.setLanguage(language);
 		main.parseInput(input);  
+		main.parseInput(input2);  
 	}
 }

@@ -57,6 +57,12 @@ public abstract class SubInterpreter {
 				input.equalsIgnoreCase(rb.getString("and")) || input.equalsIgnoreCase(rb.getString("or"));
 	}
 	
+	boolean isControl(String input){
+		return input.equalsIgnoreCase(rb.getString("makevar")) || input.equalsIgnoreCase(rb.getString("repeat")) ||
+				input.equalsIgnoreCase(rb.getString("dotimes")) || input.equalsIgnoreCase(rb.getString("for")) ||
+				input.equalsIgnoreCase(rb.getString("if")) || input.equalsIgnoreCase(rb.getString("ifelse"))|| 
+				input.equalsIgnoreCase(rb.getString("to")) ;
+	}
 	
 	/**
 	 * @param unconvertedAngle
