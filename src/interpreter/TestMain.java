@@ -16,9 +16,9 @@ public class TestMain extends Application{
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		BoardStateController controller = new BoardStateController();
-		MainInterpreter main = new MainInterpreter();
+		//controller is passed in three times because there are three different interfaces
+		MainInterpreter main = new MainInterpreter(controller, controller, controller);
 //		main.setLanguage(language);
-		main.parseInput(input, controller, controller, controller);  //controller is passed in three times
-																	 //because there are three different interfaces
+		main.parseInput(input);  
 	}
 }
