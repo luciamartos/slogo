@@ -19,7 +19,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-public class CanvasActions implements Observer{
+public class CanvasActions{
 	private static final String COLOR_CANVAS = "white";
 	private static final String IMAGE_PATH = "resources/images/";
 	private GraphicsContext gc;
@@ -74,15 +74,14 @@ public class CanvasActions implements Observer{
 	private void initializeTurtle() {
 		turtleImgView = new ImageView(new Image(IMAGE_PATH + "turtle.png", 50, 50, true, true));
 	//	myTurtle = new TurtleView(canvas.getWidth() / 2, canvas.getHeight() / 2, turtleImg, true, Color.BLACK);
-		addTurtleAtXY();
+		addTurtleAtXY((int) canvas.getWidth() / 2, (int) canvas.getHeight() / 2);
 	}
 
-	public void changeImage(Image image) {
-		setTurtleImage(image);
+	public void changeImage(Image image, int xLoc, int yLoc) {
+		setTurtleImage(image, xLoc, yLoc);
 	}
 	
-	private void drawPath(){
-		int[] myCords = myController.getPathCordinates();
+	public void drawPath(int[] myCords){
 		if(!penDown){
 	        gc.setStroke(myColor);
 	        for(int i = 0; i<myCords.length; i+=4){
@@ -91,10 +90,10 @@ public class CanvasActions implements Observer{
 		}	
 	}
 
-	private void addTurtleAtXY() {
+	public void addTurtleAtXY(int xLoc, int yLoc) {
 		//note that when initialised myController cannot be null
-		turtleImgView.setTranslateX(myController.getXLocation());
-		turtleImgView.setTranslateY(myController.getYLocation());
+		turtleImgView.setTranslateX(xLoc);
+		turtleImgView.setTranslateY(yLoc);
 		if(showTurtle){
 			pane.getChildren().add(turtleImgView);
 		}
@@ -104,43 +103,29 @@ public class CanvasActions implements Observer{
 		pane.getChildren().remove(turtleImgView);
 	}
 
-	public void moveTurtle() {
+	//METHOD NEVER BEING CALLED RN
+	public void moveTurtle(int xLoc, int yLoc) {
 		removeTurtle();
-		addTurtleAtXY();
+		addTurtleAtXY(xLoc, yLoc);
 	}
 
-	public void setShowTurtle(){
-		showTurtle = myController.isShowing();
-		removeTurtle();
-		if(showTurtle){
-			addTurtleAtXY();
-		}
+	public void setShowTurtle(boolean isShowing){
+		showTurtle = isShowing;
 	}
 
-	public void setPenDown() {
-		penDown = myController.isPenDown();
+	public void setPenDown(boolean penPos) {
+		penDown = penPos;
 	}
 
 	//where is the method that takes in the string?
-	public void setTurtleImage(Image image) {
+	public void setTurtleImage(Image image, int xLoc, int yLoc) {
 		removeTurtle();
 		turtleImgView = new ImageView(new Image(IMAGE_PATH + image, 50, 50, true, true));
-		addTurtleAtXY();
+		addTurtleAtXY(xLoc, yLoc);
 	}
 
-	public void setPenColor() {
-		myColor = myController.getPenColor();
-	}
-
-	//check with eric if this is ok?
-	@Override
-	public void update(Observable o, Object arg) {
-		removeTurtle();
-		setShowTurtle();
-		setPenDown();
-		setPenColor();
-		addTurtleAtXY();
-		drawPath();
+	public void setPenColor(Color color) {
+		myColor = color;
 	}
 
 }
