@@ -3,9 +3,11 @@ package interpreter;
 public class TurtleCommandInterpreter extends SubInterpreter{
 	
 	private SlogoUpdate model;
+	private TurtleStateUpdater stateUpdater;
 	
-	TurtleCommandInterpreter(SlogoUpdate model){
+	TurtleCommandInterpreter(SlogoUpdate model, TurtleStateUpdater stateUpdater){
 		this.model = model;
+		this.stateUpdater = stateUpdater;
 	}
 	
 	double forward(double pixels){
@@ -33,8 +35,8 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 	}
 	
 	double settowards(double x, double y){
-		double tempX = model.getXCoordinate();
-		double tempY = model.getYCoordinate();
+//		double tempX = model.getXCoordinate();
+//		double tempY = model.getYCoordinate();
 		return model.turnToward(x, y);
 	}
 	
@@ -74,22 +76,11 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 	
 	
 	double clearScreen(){
-		//TODO: how do I erase the turtle trail?
 		double tempX = model.getXCoordinate();
 		double tempY = model.getYCoordinate();
 		model.moveTo(0, 0);
+		stateUpdater.resetBoard();  //this will clear the trail of paths
 		return Math.abs(tempX) + Math.abs(tempY);
-	}
-	
-	/**
-	 * Calculated the angle created by two points and the origin(0,0).
-	 * @author Ray Song (ys101)
-	 */
-	private double angleBetweenTwoPoints(double point1X, double point1Y, 
-	        double point2X, double point2Y) {
-	    double angle1 = Math.atan2(point1Y, point1X);
-	    double angle2 = Math.atan2(point2Y, point2X);
-	    return Math.toDegrees(angle1 - angle2); 
 	}
 	
 	SlogoUpdate getModel(){

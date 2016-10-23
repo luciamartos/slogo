@@ -63,7 +63,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		GeneralInterpreter decideCommand = new GeneralInterpreter();
 		String keyword = parsed[searchStartIndex].toLowerCase();
 		
-		System.out.println("xxx: " + keyword);
+//		System.out.println("xxx: " + keyword);
 		//scan for list first before anything else
 		searchForList(input, parsed);
 		
@@ -128,9 +128,10 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	IllegalArgumentException, InvocationTargetException{
 		double[] param;
 		Class interpreterClass = Class.forName(rb.getString("TurtleCommandInterpreterLabel"));
-		Object obj = interpreterClass.getDeclaredConstructor(SlogoUpdate.class).newInstance(model);
+		Object obj = interpreterClass.getDeclaredConstructor(SlogoUpdate.class, TurtleStateUpdater.class)
+				.newInstance(model, stateUpdater);
 		Class[] args;
-		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model);
+		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model, stateUpdater);
 		
 		if(interpreter.isNonInputTurtleCommand(keyword)){
 			return handleNonInputKeywordWithModel(keyword, interpreterClass, obj, interpreter);
@@ -163,7 +164,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
 		Class interpreterClass = Class.forName(rb.getString("TurtleQueryInterpreterLabel"));
 		Object obj = interpreterClass.getDeclaredConstructor(SlogoUpdate.class).newInstance(model);
-		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model);
+		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model, stateUpdater);
 		if(interpreter.isTurtleQuery(keyword)){
 			return handleNonInputKeywordWithModel(keyword, interpreterClass, obj, interpreter);
 		}

@@ -2,6 +2,8 @@ package gui;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Observable;
 
 import general.Properties;
@@ -83,7 +85,11 @@ public class SettingsController extends Observable {
 
 	private Node initializeLanguageSetting() {
 		ComboBox<String> languageSelect = new ComboBox<String>();
-		languageSelect.getItems().addAll("English", "Chinese", "French", "Spanish");
+		languageSelect.setVisibleRowCount(3);
+		String rawLanguage = viewProperties.getStringProperty("languages");
+		rawLanguage = rawLanguage.replaceAll("\\s","");
+		List<String> languages = Arrays.asList(rawLanguage.split(","));
+		languageSelect.getItems().addAll(languages);
 		languageSelect.setValue("English");
 		languageSelect.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -99,6 +105,7 @@ public class SettingsController extends Observable {
 
 	private Node initializeTurtleImageSetting(Stage stage) {
 		ComboBox<String> shapesComboBox = new ComboBox<String>();
+		shapesComboBox.setVisibleRowCount(3);
 		shapesComboBox.getItems().addAll("elephant", "turtle", "pig", "frog");
 		shapesComboBox.setValue("Change Shape");
 
@@ -107,9 +114,7 @@ public class SettingsController extends Observable {
 			public void changed(ObservableValue ov, String t, String t1) {
 				if(t1!=null){
 				setChanged();
-//				Image image = new Image(getClass().getClassLoader().getResourceAsStream(t1+".png"), 50, 50, true, true);
-				System.out.println(IMAGE_PATH+t1+".png");
-				Image image = new Image(IMAGE_PATH+t1+".png", 50, 50, true, true);
+				Image image = ViewImageChooser.selectImage(IMAGE_PATH+t1+".png", 50, 50);
 				newImage = image;
 				notifyObservers();
 				}
