@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
 import gui.SlogoCommandInterpreter;
-//import model.TurtleStateDataSource;
 import regularExpression.ProgramParser;
 
 public class MainInterpreter implements SlogoCommandInterpreter {
@@ -16,24 +15,20 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private String[] languages = {"English", "Syntax"};  //default language is English
 	
 	private SlogoUpdate model;
-	private TurtleStateDataSource source;
+	private TurtleStateDataSource stateDatasource;
 	private TurtleStateUpdater stateUpdater;
 	private UserVariablesDataSource varDataSource;
 	private ResourceBundle rb;
 	private String[] parsed;
 	
-	public MainInterpreter(TurtleStateDataSource source, TurtleStateUpdater stateUpdater, 
-			UserVariablesDataSource varDataSource){
+	public MainInterpreter(){
 		rb = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+PROPERTIES_TITLE);
-		this.source = source;
-		this.stateUpdater = stateUpdater;
-		this.varDataSource = varDataSource;
 	}
 	
 	public void parseInput(String input) throws ClassNotFoundException, NoSuchMethodException, 
 			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
 			InvocationTargetException{
-		model = new SlogoUpdate(source);
+		model = new SlogoUpdate(stateDatasource);
 		String[] split = input.split("\\s+");
 		ProgramParser lang = new ProgramParser();
 		lang = addPatterns(lang);
@@ -43,7 +38,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 //			System.out.println(elem);
 //		}
 		
-		//split is the original input, parsed is the translated version (translated with ProgramParser)
 		interpretCommand(split, parsed, 0);   //first search(non-recursive) begins at index 0;
 		
 		stateUpdater.applyChanges(model);
@@ -264,6 +258,18 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	public void setLanguage(String language){
 		String[] temp = {language, "Syntax"};
 		languages = temp;
+	}
+	
+	public void setStateDataSource(TurtleStateDataSource stateDataSource){
+		this.stateDatasource = stateDataSource;
+	}
+	
+	public void setStateUpdater(TurtleStateUpdater stateUpdater){
+		this.stateUpdater = stateUpdater;
+	}
+	
+	public void setVarDataSource(UserVariablesDataSource varDataSource){
+		this.varDataSource = varDataSource;
 	}
 	
 	public SlogoUpdate getModel(){
