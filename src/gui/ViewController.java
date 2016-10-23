@@ -55,7 +55,7 @@ public class ViewController implements Observer {
 	private TableColumn userDefinedCommandValues;
 	private BoardStateDataSource dataSource;
 	private SlogoCommandInterpreter interpreter;
-	
+	private String currentCommandLine;
 
 	public ViewController(Stage stage) {
 		viewProperties = new Properties(VIEW_PROPERTIES_PACKAGE + "View");
@@ -216,10 +216,15 @@ public class ViewController implements Observer {
 		
 		return new String[][]{userDefinedVars,userDefinedNames};
 	}
+	
+	public String getCurrentCommandLine(){
+		return currentCommandLine;
+	}
 
 	private Node createCommandInputter() {
 		EventHandler<ActionEvent> runCommandHandler = event -> {
-			String currentCommandLine = inputPanel.getCurrentCommandLine();
+			currentCommandLine = inputPanel.getCurrentCommandLine();
+			
 			if (!(currentCommandLine == null) && !(currentCommandLine.length() == 0)) {
 				pastCommands.add(currentCommandLine);
 			}
@@ -243,11 +248,9 @@ public class ViewController implements Observer {
 			Method update = getClass().getMethod("update", obs.getClass(), Object.class);
 			update.invoke(this, obs, o);
 		} 
-		
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 	
 	public void update(MainController obs, Object o){

@@ -31,6 +31,7 @@ public class CanvasActions{
 	private ImageView turtleImgView;
 	private boolean penDown;
 	private boolean showTurtle;
+	private double heading;
 
 
 	public CanvasActions(double canvasX, double canvasY, double canvasWidth, double canvasHeight, double canvasLayoutX,
@@ -82,6 +83,10 @@ public class CanvasActions{
 
 	public void changeImage(Image image, double xLoc, double yLoc) {
 		setTurtleImage(image, xLoc, yLoc);
+	}
+	
+	public void setHeading(double degrees){
+		
 	}
 	
 	public void drawPath(List<PathLine> myCords){
