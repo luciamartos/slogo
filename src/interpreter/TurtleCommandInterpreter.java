@@ -41,7 +41,7 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 		return angleBetweenTwoPoints(tempX, tempY, x, y);
 	}
 	
-	double setxy(double x, double y){
+	double setposition(double x, double y){
 		double tempX = model.getXCoordinate();
 		double tempY = model.getYCoordinate();
 		model.moveTo(x, y);

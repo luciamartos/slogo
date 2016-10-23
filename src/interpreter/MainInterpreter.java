@@ -2,7 +2,9 @@ package interpreter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.Stack;
 
 import gui.SlogoCommandInterpreter;
 import regularExpression.ProgramParser;
@@ -20,6 +22,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private UserVariablesDataSource varDataSource;
 	private ResourceBundle rb;
 	private String[] parsed;
+	private Stack<String[]> loopList;
+	
+	private int repCount;
 	
 	public MainInterpreter(){
 		rb = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+PROPERTIES_TITLE);
@@ -34,13 +39,17 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		lang = addPatterns(lang);
 		parsed = createParsedArray(split, lang);
 		
-//		for(String elem: parsed){
-//			System.out.println(elem);
-//		}
+		for(String elem: parsed){
+			System.out.println(elem);
+		}
 		
 		interpretCommand(split, parsed, 0);   //first search(non-recursive) begins at index 0;
 		
 		stateUpdater.applyChanges(model);
+//		if(commandQueue.size()>0){
+//			String s = commandQueue.pop();
+//			parseInput(s);
+//		}
 	}
 	
 	private double interpretCommand(String[] input, String[] parsed, int searchStartIndex) throws ClassNotFoundException, NoSuchMethodException, 
@@ -68,7 +77,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		}
 		
 		else if(decideCommand.isControl(keyword)){
-			return interpretControl(input, keyword, searchStartIndex);
+			return interpretControl(input, parsed, keyword, searchStartIndex);
 		}
 		
 		else{
@@ -164,15 +173,31 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		else throw new IllegalArgumentException();
 	}
 	
-	private double interpretControl(String[] input, String keyword, int searchStartIndex) throws ClassNotFoundException, 
+	private double interpretControl(String[] input, String[] parsed, String keyword, int searchStartIndex) throws ClassNotFoundException, 
 	NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, 
 	IllegalArgumentException, InvocationTargetException{
 		double[] param;
 		if(keyword.equalsIgnoreCase(rb.getString("makevar"))){
 			param = parseParam(input, searchStartIndex+2, 1);
-			varDataSource.addUserDefinedVariable(input[searchStartIndex+1], Double.toString(param[0]));
-			System.out.println(param[0]);
-			return param[0];
+			if(parsed[searchStartIndex+1].equalsIgnoreCase(rb.getString("VariableLabel"))){
+//			if(isVariable(input[searchStartIndex+1])){
+				varDataSource.addUserDefinedVariable(input[searchStartIndex+1], Double.toString(param[0]));
+				System.out.println(param[0]);
+				return param[0];
+			}
+			else{
+				System.out.println("Illegal Variable detected: '" + input[searchStartIndex+1] + "' is not a variable!");
+				throw new IllegalArgumentException();
+			}
+		}
+		else if(keyword.equalsIgnoreCase(rb.getString("repeat"))){
+			repCount = 0;
+			param = parseParam(input, searchStartIndex+1, 1);
+			for(int i=0;i<param[0];i++){
+				
+				repCount++;
+			}
+			return 0;
 		}
 		
 		//TODO: Implement other controls other than set
@@ -275,9 +300,21 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		}
 	}
 	
+	public int getRepCount(){
+		return repCount;
+	}
+	
 	public void setLanguage(String language){
-		String[] temp = {language, "Syntax"};
-		languages = temp;
+		ProgramParser checkLang = new ProgramParser();
+		try{
+			checkLang.addPatterns(DEFAULT_RESOURCE_LANGUAGE+language);
+			String[] temp = {language, "Syntax"};
+			languages = temp;
+		} catch(MissingResourceException e){
+			System.out.println(language+" is not a valid language! \n"
+					+ "Set to English by default.");
+		}
+
 	}
 	
 	public void setStateDataSource(TurtleStateDataSource stateDataSource){
