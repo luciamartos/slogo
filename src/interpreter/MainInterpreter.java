@@ -2,6 +2,7 @@ package interpreter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.MissingResourceException;
 import java.util.Queue;
@@ -18,19 +19,20 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private final String PROPERTIES_TITLE = "Interpreter";
 	private String[] languages = {"English", "Syntax"};  //default language is English
 	
+	private ProgramParser lang;
 	private SlogoUpdate model;
 	private TurtleStateDataSource stateDatasource;
 	private TurtleStateUpdater stateUpdater;
 	private UserVariablesDataSource varDataSource;
 	private ResourceBundle rb;
-	private String[] parsed;
-	private Queue<String[]> commandQueue;
+//	private String[] parsed;
+	private Queue<String[]> listQueue;
 	
 	private int repCount;
 	
 	public MainInterpreter(){
 		rb = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+PROPERTIES_TITLE);
-		commandQueue = new LinkedList();
+		listQueue = new LinkedList();
 	}
 	
 	public void parseInput(String input) throws ClassNotFoundException, NoSuchMethodException, 
@@ -38,15 +40,14 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			InvocationTargetException{
 		model = new SlogoUpdate(stateDatasource);
 		String[] split = input.split("\\s+");
-		ProgramParser lang = new ProgramParser();
+		lang = new ProgramParser();
 		lang = addPatterns(lang);
-		parsed = createParsedArray(split, lang);
 		
-//		for(String elem: parsed){
+//		for(String elem: split){
 //			System.out.println(elem);
 //		}
 		
-		interpretCommand(split, parsed, 0);   //first search(non-recursive) begins at index 0;
+		interpretCommand(split, 0);   //first search(non-recursive) begins at index 0;
 		
 		stateUpdater.applyChanges(model);
 //		if(commandQueue.size()>0){
@@ -55,8 +56,10 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 //		}
 	}
 	
-	private double interpretCommand(String[] input, String[] parsed, int searchStartIndex) throws ClassNotFoundException, NoSuchMethodException, 
+	private double interpretCommand(String[] input, int searchStartIndex) throws ClassNotFoundException, NoSuchMethodException, 
 	SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		
+		String[] parsed = createParsedArray(input, lang);
 		
 		GeneralInterpreter decideCommand = new GeneralInterpreter();
 		String keyword = parsed[searchStartIndex].toLowerCase();
@@ -93,14 +96,13 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		}
 		
 		else if(keyword.equalsIgnoreCase(rb.getString("ListStartLabel"))){
-			StringBuilder sb = new StringBuilder();
 			searchStartIndex++;
-			while(parsed[searchStartIndex].equalsIgnoreCase(rb.getString("ListEndLabel"))){
-				sb.append(input[searchStartIndex]);
-				sb.append(" ");
+			int listStartIndex = searchStartIndex;
+			while(!parsed[searchStartIndex].equalsIgnoreCase(rb.getString("ListEndLabel"))){	
 				searchStartIndex++;
 			}
-//			commandQueue.add(sb.toString());
+			int listEndIndex = searchStartIndex-1;  //searchStartIndex is currently at index of ']'.
+			listQueue.add(Arrays.copyOfRange(input, listStartIndex, listEndIndex));
 			return 0;
 		}
 			
@@ -128,8 +130,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			param = parseParam(input, searchStartIndex+1, 1);
 			args = createDoubleArgs(1);
 			Method method = interpreterClass.getDeclaredMethod(keyword, args);
-			System.out.println(method.invoke(obj, param[0]));
+//			System.out.println(method.invoke(obj, param[0]));
 			double res = (double) method.invoke(obj, param[0]);
+			System.out.println(res);
 			model = interpreter.getModel();
 			return res;
 		}
@@ -137,8 +140,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			param = parseParam(input, searchStartIndex+1, 2);
 			args = createDoubleArgs(2);
 			Method method = interpreterClass.getDeclaredMethod(keyword, args);
-			System.out.println(method.invoke(obj, param[0], param[1]));
+//			System.out.println(method.invoke(obj, param[0], param[1]));
 			double res = (double) method.invoke(obj, param[0], param[1]);
+			System.out.println(res);
 			model = interpreter.getModel();
 			return res;
 		}
@@ -197,7 +201,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		if(keyword.equalsIgnoreCase(rb.getString("makevar"))){
 			param = parseParam(input, searchStartIndex+2, 1);
 			if(parsed[searchStartIndex+1].equalsIgnoreCase(rb.getString("VariableLabel"))){
-//			if(isVariable(input[searchStartIndex+1])){
 				varDataSource.addUserDefinedVariable(input[searchStartIndex+1], Double.toString(param[0]));
 				System.out.println(param[0]);
 				return param[0];
@@ -211,7 +214,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			repCount = 0;
 			param = parseParam(input, searchStartIndex+1, 1);
 			for(int i=0;i<param[0];i++){
-				
+				interpretCommand(listQueue.poll(), 0);
 				repCount++;
 			}
 			return 0;
@@ -227,8 +230,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		Class[] args;
 		args = createDoubleArgs(0);
 		Method method = interpreterClass.getDeclaredMethod(keyword, args);
-		System.out.println(method.invoke(obj));
+//		System.out.println(method.invoke(obj));
 		double res =  (double) method.invoke(obj);
+		System.out.println(res);
 		model = interpreter.getModel();
 		return res;
 	}
@@ -241,8 +245,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		param = parseParam(input, searchStartIndex+1, 2);
 		args = createDoubleArgs(2);
 		Method method = interpreterClass.getDeclaredMethod(keyword, args);
-		System.out.println(method.invoke(obj, param[0], param[1]));
-		return (double) method.invoke(obj, param[0], param[1]);
+//		System.out.println(method.invoke(obj, param[0], param[1]));
+		double res = (double) method.invoke(obj, param[0], param[1]);
+		return res;
 	}
 
 	private double handleUnaryKeyword(String[] input, String keyword, int searchStartIndex, Class interpreterClass,
@@ -253,8 +258,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		param = parseParam(input, searchStartIndex+1, 1);
 		args = createDoubleArgs(1);
 		Method method = interpreterClass.getDeclaredMethod(keyword, args);
-		System.out.println(method.invoke(obj, param[0]));
-		return (double) method.invoke(obj, param[0]);
+//		System.out.println(method.invoke(obj, param[0]));
+		double res = (double) method.invoke(obj, param[0]);
+		return res;
 	}
 
 	private double handleNonInputKeyword(String keyword, Class interpreterClass, Object obj)
@@ -262,8 +268,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		Class[] args;
 		args = createDoubleArgs(0);
 		Method method = interpreterClass.getDeclaredMethod(keyword, args);
-		System.out.println(method.invoke(obj));
-		return (double) method.invoke(obj);
+//		System.out.println(method.invoke(obj));
+		double res = (double) method.invoke(obj);
+		return res;
 	}
 	
 	
@@ -279,7 +286,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			}
 			else{
 				//recursive parsing of input statement
-				res[index++] = interpretCommand(input, parsed, i);
+				res[index++] = interpretCommand(input, i);
 			}
 		}
 		return res;
