@@ -2,7 +2,7 @@ package model;
 import interpreter.SlogoUpdate;
 import interpreter.TurtleStateDataSource;
 
-public class TurtleStateController implements TurtleStateDataSource{
+public class BoardStateController implements TurtleStateDataSource{
 
 	public void applyChanges(SlogoUpdate changes){
 		

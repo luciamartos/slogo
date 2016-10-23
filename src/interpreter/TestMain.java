@@ -2,7 +2,7 @@ package interpreter;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import model.TurtleStateController;
+import model.BoardStateController;
 
 public class TestMain extends Application{
 	
@@ -14,7 +14,7 @@ public class TestMain extends Application{
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		TurtleStateController controller = new TurtleStateController();
+		BoardStateController controller = new BoardStateController();
 		MainInterpreter main = new MainInterpreter();
 		main.parseInput(input, controller);
 	}
