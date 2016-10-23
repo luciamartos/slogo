@@ -103,10 +103,12 @@ public class SettingsController extends Observable {
 		shapesComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue ov, String t, String t1) {
+				if(t1!=null){
 				setChanged();
-				Image image = new Image(IMAGE_PATH + t1 + ".png", 50, 50, true, true);
+				Image image = new Image(getClass().getClassLoader().getResourceAsStream(t1+".png"), 50, 50, true, true);
 				newImage = image;
 				notifyObservers();
+				}
 			}
 		});
 		return shapesComboBox;
