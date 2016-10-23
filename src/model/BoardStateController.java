@@ -1,8 +1,12 @@
 package model;
+import java.util.List;
+import java.util.Map;
+
+import gui.BoardStateDataSource;
 import interpreter.SlogoUpdate;
 import interpreter.TurtleStateDataSource;
 
-public class BoardStateController implements TurtleStateDataSource{
+public class BoardStateController implements TurtleStateDataSource, BoardStateDataSource{
 
 	public void applyChanges(SlogoUpdate changes){
 		
@@ -82,6 +86,16 @@ public class BoardStateController implements TurtleStateDataSource{
 	@Override
 	public boolean getTurtleIsDrawing() {
 		return BoardState.getCurrentState().isDrawing();
+	}
+
+	@Override
+	public List getLineCoordinates() {
+		return BoardState.getCurrentState().getLineCoordinates();
+	}
+
+	@Override
+	public Map<String, String> getUserDefinedVariables() {
+		return BoardState.getCurrentState().getUserDefinedVariables();
 	}
 	
 }
