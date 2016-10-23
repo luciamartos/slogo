@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.Observable;
 import java.util.Observer;
 
+import general.MainController;
 import general.Properties;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -153,6 +154,7 @@ public class ViewController implements Observer {
 		userDefinedCommands.getColumns().addAll(userDefinedCommandNames, userDefinedCommandValues);
 		
 		
+		
 		// turtleVariables = FXCollections.observableArrayList();
 //		pastCommandsListView.setItems(pastCommands);
 //
@@ -193,14 +195,27 @@ public class ViewController implements Observer {
 	}
 
 	// currently only observable this controller observes is settingsController
+	// DOES THIS ACCOUNT FOR MY UPDATE THING TOO?
 	public void update(Observable obs, Object o) {
 		try {
 			Method update = getClass().getMethod("update", obs.getClass(), Object.class);
 			update.invoke(this, obs, o);
-		} catch (Exception e) {
+		} 
+		
+		catch (Exception e) {
+			
 			e.printStackTrace();
 		}
 
+	}
+	
+	public void update(MainController obs, Object o){
+		canvasActions.removeTurtle();
+		canvasActions.setShowTurtle(myController.isShowing());
+		canvasActions.setPenDown(myController.isPenDown());
+		canvasActions.setPenColor(myController.getPenColor());
+		canvasActions.addTurtleAtXY(myController.getXLocation(), myController.getYLocation());
+		canvasActions.drawPath(myController.getPathCordinates());
 	}
 
 	public void update(SettingsController obs, Object o) {
@@ -210,11 +225,12 @@ public class ViewController implements Observer {
 			return;
 		}
 		if (settingsController.getNewImage() != null)
-			canvasActions.changeImage(settingsController.getNewImage());
+			canvasActions.changeImage(settingsController.getNewImage(),myController.getXLocation(),myController.getYLocation());
 		if (settingsController.getNewBackgroundColor() != null)
 			canvasActions.setBackgroundColorCanvas(settingsController.getNewBackgroundColor());
 		if (settingsController.getNewPenColor() != null)
 			canvasActions.setPenColor(settingsController.getNewPenColor());
 
+		
 	}
 }
