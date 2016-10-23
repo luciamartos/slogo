@@ -19,26 +19,23 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 	}
 	
 	double left(double degrees){
-		model.rotateCounterClockwise(convertAngle(degrees));
+		model.rotateCounterClockwise(degrees);
 		return degrees;
 	}
 	
 	double right(double degrees){
-		model.rotateClockwise(convertAngle(degrees));
+		model.rotateClockwise(degrees);
 		return degrees;
 	}
 	
 	double setheading(double degrees){
-		double temp = model.getAngle();
-		model.setAngle(convertAngle(degrees));
-		return Math.abs(temp-convertAngle(degrees));
+		return model.setAngle(degrees);
 	}
 	
 	double settowards(double x, double y){
 		double tempX = model.getXCoordinate();
 		double tempY = model.getYCoordinate();
-		model.turnToward(x, y);
-		return angleBetweenTwoPoints(tempX, tempY, x, y);
+		return model.turnToward(x, y);
 	}
 	
 	double setposition(double x, double y){
