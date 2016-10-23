@@ -86,12 +86,12 @@ public class BoardState extends Observable {
 		this.showing = turtleShouldShow;
 	}
 	
-	public ArrayList getLineCoordinates(){
+	public ArrayList<PathLine> getLineCoordinates(){
 		return lineCoordinates;
 	}
 	
-	public void addLineCoordinates(int x1, int y1, int x2, int y2){
-		
+	public void addLineCoordinates(PathLine line){
+		lineCoordinates.add(line);
 	}
 	
 	public HashMap<String, String> getUserDefinedVariables(){
