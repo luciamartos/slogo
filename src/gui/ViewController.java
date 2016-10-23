@@ -152,13 +152,28 @@ public class ViewController implements Observer {
 
 	private Node createEnvironmentTableView() {
 		environmentTableView = new TableView<EnvironmentVariable>();
+		environmentTableView.setEditable(true);
 		TableColumn<EnvironmentVariable, String> variables = new TableColumn<EnvironmentVariable, String>(
 				"Environment\nVariables");
+		variables.setEditable(true);
+		
 
 		TableColumn<EnvironmentVariable, String> variableNames = new TableColumn<EnvironmentVariable, String>("Name");
 		variableNames.setCellValueFactory(new PropertyValueFactory<EnvironmentVariable, String>("name"));
 		TableColumn<EnvironmentVariable, String> variableValues = new TableColumn<EnvironmentVariable, String>("Value");
 		variableValues.setCellValueFactory(new PropertyValueFactory<EnvironmentVariable, String>("value"));
+		variableValues.setEditable(true);
+//		
+//		variableValues.setOnEditCommit(
+//			    new EventHandler<ActionEvent>() {
+//			        @Override
+//			        public void handle() {
+//			            
+//			        }
+//			    }
+//			);
+		
+		
 		variables.getColumns().addAll(variableNames, variableValues);
 
 		environmentTableView.getColumns().add(variables);
@@ -179,26 +194,13 @@ public class ViewController implements Observer {
 		TableColumn<UserDefinedVariable, String> userDefinedCommandValues = new TableColumn<UserDefinedVariable, String>(
 				"Value");
 		userDefinedCommandValues.setCellValueFactory(new PropertyValueFactory<UserDefinedVariable, String>("value"));
+		userDefinedCommandValues.setEditable(true);
 		userDefinedCommands.getColumns().addAll(userDefinedCommandNames, userDefinedCommandValues);
 
 		userDefinedTableView.getColumns().add(userDefinedCommands);
 		userDefinedTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		return userDefinedTableView;
 	}
-	//
-	// private String[][] getUserDefinedVariableNamesAndVars(HashMap<String,
-	// String> myMap) {
-	// String[] userDefinedVars = new String[myMap.size()];
-	// String[] userDefinedNames = new String[myMap.size()];
-	// int i = 0;
-	// for (String elem : myMap.keySet()) {
-	// userDefinedVars[i] = elem;
-	// userDefinedNames[i] = myMap.get(elem);
-	// i++;
-	// }
-	//
-	// return new String[][] { userDefinedVars, userDefinedNames };
-	// }
 
 	private Node createCommandInputter() {
 		EventHandler<ActionEvent> runCommandHandler = event -> {
@@ -277,6 +279,9 @@ public class ViewController implements Observer {
 			canvasActions.setBackgroundColorCanvas(settingsController.getNewBackgroundColor());
 		if (settingsController.getNewPenColor() != null)
 			canvasActions.setPenColor(settingsController.getNewPenColor());
+		if (settingsController.getNewLanguage() != null)
+			interpreter.setLanguage(settingsController.getNewLanguage());
+			
 	}
 
 	public void setModelController(BoardStateDataSource modelController) {
@@ -310,7 +315,7 @@ public class ViewController implements Observer {
 
 		ObservableList<UserDefinedVariable> data = FXCollections.observableArrayList();
 		for (String s : map.keySet()) {
-			data.add(new UserDefinedVariable(s, map.get(s)));
+			data.add(new UserDefinedVariable(s.substring(1), map.get(s)));
 		}
 		return data;
 
