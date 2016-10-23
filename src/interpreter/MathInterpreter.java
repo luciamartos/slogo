@@ -56,9 +56,25 @@ public class MathInterpreter extends SubInterpreter{
 		return Math.pow(base, exp);
 	}
 	
-	
 	double pi(){
 		return PI;
+	}
+	
+	/**
+	 * @param unconvertedAngle
+	 * @return The angle converted to a positive value between 0.0 and 360.0
+	 */
+	private static double convertAngle(double unconvertedAngle){
+		double numerator = unconvertedAngle;
+		double denominator = 360;
+		int multiplier = (int)(numerator / denominator);
+		//multiplier is negative if numerator < (-1 * denominator)
+		//Get numerator in range [-denominator, denominator]
+		numerator -= (multiplier * denominator);
+		if (numerator < 0){
+			numerator = denominator + numerator;
+		}		
+		return numerator;
 	}
 
 	

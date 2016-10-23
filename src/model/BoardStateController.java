@@ -23,11 +23,12 @@ public class BoardStateController implements TurtleStateDataSource{
 		}
 	}
 	
-	private double calculateNewAngle(double currentAngle, double angleDelta){
-		currentAngle += angleDelta;
-		currentAngle = convertAngle(currentAngle);
-		return 0.0;
-	}
+	//deleted
+//	private double calculateNewAngle(double currentAngle, double angleDelta){
+//		currentAngle += angleDelta;
+//		currentAngle = convertAngle(currentAngle);
+//		return 0.0;
+//	}
 	
 	private double calculateNewXCoordinate(double currentX, double currentAngle, double movementDelta){
 		
@@ -39,22 +40,6 @@ public class BoardStateController implements TurtleStateDataSource{
 		return 0.0;
 	}
 	
-	/**
-	 * @param unconvertedAngle
-	 * @return The angle converted to a positive value between 0.0 and 360.0
-	 */
-	private static double convertAngle(double unconvertedAngle){
-		double numerator = unconvertedAngle;
-		double denominator = 360;
-		int multiplier = (int)(numerator / denominator);
-		//multiplier is negative if numerator < (-1 * denominator)
-		//Get numerator in range [-denominator, denominator]
-		numerator -= (multiplier * denominator);
-		if (numerator < 0){
-			numerator = denominator + numerator;
-		}		
-		return numerator;
-	}
 	
 /*
  * TurtleQueryDataSource interface methods

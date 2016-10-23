@@ -12,13 +12,11 @@ public class MainInterpreter {
 	private final String DEFAULT_RESOURCE_LANGUAGE = "resources/languages/";
 	private final String DEFAULT_RESOURCE_PACKAGE = "resources/properties/";
 	private final String PROPERTIES_TITLE = "Interpreter";
-	private String[] languages = {"English", "Syntax"};
+	private String[] languages = {"English", "Syntax"};  //default language is English
 	
 	private SlogoUpdate model;
-	private TurtleStateDataSource stateDataSource;
-	
-	//this should be another interface called TurtleStateUpdater
-	private TurtleStateDataSource stateUpdater;
+//	private TurtleStateDataSource stateDataSource;
+	private TurtleStateUpdater stateUpdater;
 	private ResourceBundle rb;
 	private String[] parsed;
 	
@@ -30,7 +28,7 @@ public class MainInterpreter {
 	SecurityException, InstantiationException, IllegalAccessException, 
 	IllegalArgumentException, InvocationTargetException{
 		model = new SlogoUpdate(source);
-		stateDataSource = source;
+//		stateDataSource = source;
 		
 		String[] split = input.split("\\s+");
 		ProgramParser lang = new ProgramParser();
@@ -44,8 +42,7 @@ public class MainInterpreter {
 		//split is the original input, parsed is the translated version (translated with ProgramParser)
 		interpretCommand(split, parsed, 0);   //first search(non-recursive) begins at index 0;
 		
-		//This command is to be called at the very end of each input parsing
-//		stateUpdater.applyChanges(model);
+		stateUpdater.applyChanges(model);
 	}
 	
 	private double interpretCommand(String[] input, String[] parsed, int searchStartIndex) throws ClassNotFoundException, NoSuchMethodException, 
