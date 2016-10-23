@@ -22,6 +22,7 @@ public class InputPanel extends HBox {
 		super(INPUT_PANEL_PADDING);
 		setPrefHeight(inputPanelHeight);
 
+
 		// set the text box
 		commandInput = new TextField();
 		commandInput.setPromptText("Enter your command here...");
@@ -31,17 +32,16 @@ public class InputPanel extends HBox {
 		// set the run button
 		runButton = new Button("Run");
 		runButton.setPrefWidth(runButtonWidth);
-		runButton.setOnAction(event -> {
-			currentCommandLine = commandInput.getText();
-			runCommandHandler.handle(event);
-			commandInput.clear();
-		});
+		runButton.setOnAction(runCommandHandler);
 
 		getChildren().addAll(commandInput, runButton);
 	}
 
-	public String getCurrentCommandLine() {
-		return currentCommandLine;
+	public String getText() {
+		return commandInput.getText();
+	}
+	public void clear(){
+		commandInput.clear();
 	}
 
 }
