@@ -23,7 +23,7 @@ public class BoardState extends Observable {
 	
 	protected BoardState(){
 		this.lineCoordinates= new ArrayList<PathLine>();
-		userDefinedVariables = new HashMap<String, String>();
+		this.userDefinedVariables = new HashMap<String, String>();
 	}
 	
 	private void setToDefaultValues(){
