@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import general.Properties;
 import javafx.animation.SequentialTransition;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -16,13 +17,16 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import model.PathLine;
 
 public class CanvasActions{
-	private static final String COLOR_CANVAS = "white";
+	private static final Color COLOR_CANVAS = Color.WHITE;
 	private static final String IMAGE_PATH = "resources/images/";
 	private GraphicsContext gc;
 	private Canvas canvas;
@@ -46,8 +50,8 @@ public class CanvasActions{
 		initializeTurtle();
 	}
 
-	public void setBackgroundColorCanvas(String myColor) {
-		pane.setStyle("-fx-background-color: " + myColor + ";");
+	public void setBackgroundColorCanvas(Color color) {
+		pane.setBackground(new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY)));
 	}
 
 	private void initializeCanvas(double canvasX, double canvasY, double canvasWidth, double canvasHeight,
