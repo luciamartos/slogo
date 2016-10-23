@@ -3,6 +3,7 @@ package gui;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -153,6 +154,7 @@ public class ViewController implements Observer {
 		TableColumn userDefinedCommandValues = new TableColumn("Value");
 		userDefinedCommands.getColumns().addAll(userDefinedCommandNames, userDefinedCommandValues);
 		
+		HashMap<String, String> variableMap = BoardStateDataSource.getUserDefinedVariables();
 		
 		
 		// turtleVariables = FXCollections.observableArrayList();
@@ -173,6 +175,10 @@ public class ViewController implements Observer {
 //		});
 
 		return tableView;
+	}
+	
+	private void updateUserDefinedVariableHashMap(){
+		
 	}
 
 	private Node createCommandInputter() {
@@ -203,7 +209,6 @@ public class ViewController implements Observer {
 		} 
 		
 		catch (Exception e) {
-			
 			e.printStackTrace();
 		}
 
@@ -211,26 +216,22 @@ public class ViewController implements Observer {
 	
 	public void update(MainController obs, Object o){
 		canvasActions.removeTurtle();
-		canvasActions.setShowTurtle(myController.isShowing());
-		canvasActions.setPenDown(myController.isPenDown());
-		canvasActions.setPenColor(myController.getPenColor());
-		canvasActions.addTurtleAtXY(myController.getXLocation(), myController.getYLocation());
-		canvasActions.drawPath(myController.getPathCordinates());
+		canvasActions.setShowTurtle(BoardStateDataSource.isShowing());
+		canvasActions.setPenDown(BoardStateDataSource.isPenDown());
+		canvasActions.addTurtleAtXY(BoardStateDataSource.getXLocation(), BoardStateDataSource.getYLocation());
+		canvasActions.drawPath(BoardStateDataSource.getLineCordinates());
 	}
 
 	public void update(SettingsController obs, Object o) {
-
 		if (o != null) {
 			errorConsole.displayErrorMessage(o.toString());
 			return;
 		}
 		if (settingsController.getNewImage() != null)
-			canvasActions.changeImage(settingsController.getNewImage(),myController.getXLocation(),myController.getYLocation());
+			canvasActions.changeImage(settingsController.getNewImage(),BoardStateDataSource.getXLocation(),BoardStateDataSource.getYLocation());
 		if (settingsController.getNewBackgroundColor() != null)
 			canvasActions.setBackgroundColorCanvas(settingsController.getNewBackgroundColor());
 		if (settingsController.getNewPenColor() != null)
 			canvasActions.setPenColor(settingsController.getNewPenColor());
-
-		
 	}
 }
