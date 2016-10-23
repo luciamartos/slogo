@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Observable;
 
+/**
+ * @author Andrew Bihl
+ */
+
 public class BoardState extends Observable {
 	private double xCoordinate;
 	private double yCoordinate;

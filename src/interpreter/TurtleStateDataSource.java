@@ -1,5 +1,7 @@
 package interpreter;
-
+/**
+ * @author Andrew Bihl
+ */
 public interface TurtleStateDataSource {
 	public double getXCoordinate();
 	public double getYCoordinate();

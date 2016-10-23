@@ -1,5 +1,9 @@
 package model;
 
+/**
+ * @author Andrew Bihl
+ */
+
 public class PathLine {
 	private double x1, y1, x2, y2;
 	

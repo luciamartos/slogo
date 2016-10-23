@@ -1,9 +1,7 @@
 package gui;
 
-import java.awt.Canvas;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,13 +54,16 @@ public class ViewController implements Observer {
 	private TableColumn userDefinedCommandNames;
 	private TableColumn userDefinedCommandValues;
 	private BoardStateDataSource dataSource;
+<<<<<<< HEAD
 	private SlogoCommandInterpreter interpreter;
-	private TurtleDataTranslator turtleTranslator; 
+	
+=======
+	private String currentCommandLine;
+>>>>>>> lucia
 
 	public ViewController(Stage stage) {
 		viewProperties = new Properties(VIEW_PROPERTIES_PACKAGE + "View");
 		sceneRoot = new Group();
-		turtleTranslator = new TurtleDataTranslator(viewProperties.getDoubleProperty("canvas_width"), viewProperties.getDoubleProperty("canvas_height"));
 
 		//HBox box1 = new HBox(15);
 		//box1.setPadding(new Insets(15, 15, 15, 15));
@@ -219,20 +220,17 @@ public class ViewController implements Observer {
 		
 		return new String[][]{userDefinedVars,userDefinedNames};
 	}
-
+	
+	public String getCurrentCommandLine(){
+		return currentCommandLine;
+	}
 
 	private Node createCommandInputter() {
 		EventHandler<ActionEvent> runCommandHandler = event -> {
-			String currentCommandLine = inputPanel.getCurrentCommandLine();
+			currentCommandLine = inputPanel.getCurrentCommandLine();
+			
 			if (!(currentCommandLine == null) && !(currentCommandLine.length() == 0)) {
 				pastCommands.add(currentCommandLine);
-				try {
-					interpreter.parseInput(currentCommandLine);
-				} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-						| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 			}
 		};
 
@@ -262,11 +260,9 @@ public class ViewController implements Observer {
 	public void update(MainController obs, Object o){
 		canvasActions.removeTurtle();
 		canvasActions.setShowTurtle(dataSource.getTurtleIsShowing());
-		canvasActions.setHeading(turtleTranslator.convertAngle(dataSource.getAngle()));
 		canvasActions.setPenDown(dataSource.getTurtleIsDrawing());
-		canvasActions.setXandYLoc(turtleTranslator.convertXCordinate(dataSource.getXCoordinate()), turtleTranslator.convertYCordinate(dataSource.getYCoordinate()));
-		canvasActions.addTurtleAtXY();
-		canvasActions.drawPath(turtleTranslator.convertLineCordinates(dataSource.getLineCoordinates()));
+		canvasActions.addTurtleAtXY(dataSource.getXCoordinate(), dataSource.getYCoordinate());
+		canvasActions.drawPath(dataSource.getLineCoordinates());
 	}
 
 	public void update(SettingsController obs, Object o) {
@@ -284,9 +280,5 @@ public class ViewController implements Observer {
 	
 	public void setDataSource(BoardStateDataSource source){
 		this.dataSource = source;
-	}
-	
-	public void setInterpreter(SlogoCommandInterpreter interpreter){
-		this.interpreter = interpreter;
 	}
 }

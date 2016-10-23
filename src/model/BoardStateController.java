@@ -1,6 +1,7 @@
 package model;
 import java.util.List;
 import java.util.Map;
+import java.util.Observer;
 
 import gui.BoardStateDataSource;
 import interpreter.SlogoUpdate;
@@ -8,8 +9,13 @@ import interpreter.TurtleStateDataSource;
 import interpreter.TurtleStateUpdater;
 import interpreter.UserVariablesDataSource;
 
-public class BoardStateController implements TurtleStateDataSource, BoardStateDataSource, TurtleStateUpdater, UserVariablesDataSource {
+/**
+ * @author Andrew Bihl
+ */
 
+public class BoardStateController implements TurtleStateDataSource, BoardStateDataSource, TurtleStateUpdater, UserVariablesDataSource {
+	
+	
 	public void applyChanges(SlogoUpdate changes){
 		BoardState modelToUpdate = BoardState.getCurrentState();
 		modelToUpdate.setAngle(changes.getAngle());
@@ -25,6 +31,11 @@ public class BoardStateController implements TurtleStateDataSource, BoardStateDa
 		}
 		modelToUpdate.setXCoordinate(changes.getXCoordinate());
 		modelToUpdate.setYCoordinate(changes.getYCoordinate());
+		modelToUpdate.notifyObservers();
+	}
+	
+	public void addBoardStateListener(Observer o){
+		BoardState.getCurrentState().addObserver(o);
 	}
 	
 /*
