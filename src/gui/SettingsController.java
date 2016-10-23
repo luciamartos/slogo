@@ -115,23 +115,30 @@ public class SettingsController extends Observable {
 	}
 
 	private Node initializeTurtleImageSetting(Stage stage) {
-		imageButton = createButton("Change Image", 120);
+		ComboBox<String> shapesComboBox = new ComboBox<String>();
+		shapesComboBox.getItems().addAll("Elephant", "Turtle", "Pig");
+		shapesComboBox.setValue("Turtle");
+		
+		
+		//imageButton = createButton("Change Image", 120);
 		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(final ActionEvent e) {
-				FileChooser fileChooser = new FileChooser();
-				File file = fileChooser.showOpenDialog(stage);
-				setChanged();
-				try {
-					Image image = new Image(IMAGE_PATH + file.getName(), 50, 50, true, true);
-					newImage = image;
-					notifyObservers();
-				} catch (Exception ex) {
-					notifyObservers("The file you selected is not a valid image file: " + file.getName());
-				}
+				
+				
+//				FileChooser fileChooser = new FileChooser();
+//				File file = fileChooser.showOpenDialog(stage);
+//				setChanged();
+//				try {
+//					Image image = new Image(IMAGE_PATH + file.getName(), 50, 50, true, true);
+//					newImage = image;
+//					notifyObservers();
+//				} catch (Exception ex) {
+//					notifyObservers("The file you selected is not a valid image file: " + file.getName());
+//				}
 			}
 		};
-		imageButton.setOnAction(event);
+	//	imageButton.setOnAction(event);
 		return imageButton;
 
 	}
