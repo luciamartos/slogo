@@ -15,21 +15,24 @@ public class MainInterpreter {
 	private String[] languages = {"English", "Syntax"};  //default language is English
 	
 	private SlogoUpdate model;
-//	private TurtleStateDataSource stateDataSource;
+	private TurtleStateDataSource source;
 	private TurtleStateUpdater stateUpdater;
+	private UserVariablesDataSource varDataSource;
 	private ResourceBundle rb;
 	private String[] parsed;
 	
-	public MainInterpreter(){
+	public MainInterpreter(TurtleStateDataSource source, TurtleStateUpdater stateUpdater, 
+			UserVariablesDataSource varDataSource){
 		rb = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+PROPERTIES_TITLE);
+		this.source = source;
+		this.stateUpdater = stateUpdater;
+		this.varDataSource = varDataSource;
 	}
 	
-	public void parseInput(String input, TurtleStateDataSource source) throws ClassNotFoundException, NoSuchMethodException, 
-	SecurityException, InstantiationException, IllegalAccessException, 
-	IllegalArgumentException, InvocationTargetException{
+	public void parseInput(String input) throws ClassNotFoundException, NoSuchMethodException, 
+			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
+			InvocationTargetException{
 		model = new SlogoUpdate(source);
-//		stateDataSource = source;
-		
 		String[] split = input.split("\\s+");
 		ProgramParser lang = new ProgramParser();
 		lang = addPatterns(lang);
@@ -155,7 +158,6 @@ public class MainInterpreter {
 		if(interpreter.isUnaryBooleanExpression(keyword)){
 			return handleUnaryKeyword(input, keyword, searchStartIndex, interpreterClass, obj);
 		}
-		
 		else if(interpreter.isBinaryBooleanExpression(keyword)){
 			return handleBinaryKeyword(input, keyword, searchStartIndex, interpreterClass, obj);
 		}

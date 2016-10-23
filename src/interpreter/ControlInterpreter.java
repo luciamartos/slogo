@@ -11,4 +11,9 @@ public class ControlInterpreter extends SubInterpreter{
 		IfElse = ifelse
 		MakeUserInstruction = to
 	 */
+	
+	double makevariable(String var, double input){
+		return input;
+	}
+	
 }
