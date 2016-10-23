@@ -25,7 +25,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private TurtleStateUpdater stateUpdater;
 	private UserVariablesDataSource varDataSource;
 	private ResourceBundle rb;
-//	private String[] parsed;
 	private Queue<String[]> listQueue;
 	
 	private int repCount;
@@ -64,6 +63,10 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		GeneralInterpreter decideCommand = new GeneralInterpreter();
 		String keyword = parsed[searchStartIndex].toLowerCase();
 		
+		System.out.println("xxx: " + keyword);
+		//scan for list first before anything else
+		searchForList(input, parsed);
+		
 		if(decideCommand.isNonInputTurtleCommand(keyword) || decideCommand.isUnaryTurtleCommand(keyword) || 
 				decideCommand.isBinaryTurtleCommand(keyword)){
 			return interpretTurtleCommand(input, keyword, searchStartIndex);
@@ -86,7 +89,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			return interpretControl(input, parsed, keyword, searchStartIndex);
 		}
 		
-		//recursive search for a variable
+		//if current keyword is a variable
 		else if(keyword.equalsIgnoreCase(rb.getString("VariableLabel"))){
 			String newKeyword = input[searchStartIndex].toLowerCase();
 			if(varDataSource.getUserDefinedVariable(newKeyword) != null){
@@ -95,21 +98,27 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			else return 0;  //By definition, unassigned variables have a value of 0.
 		}
 		
-		else if(keyword.equalsIgnoreCase(rb.getString("ListStartLabel"))){
-			searchStartIndex++;
-			int listStartIndex = searchStartIndex;
-			while(!parsed[searchStartIndex].equalsIgnoreCase(rb.getString("ListEndLabel"))){	
-				searchStartIndex++;
-			}
-			int listEndIndex = searchStartIndex-1;  //searchStartIndex is currently at index of ']'.
-			listQueue.add(Arrays.copyOfRange(input, listStartIndex, listEndIndex));
-			return 0;
-		}
 			
 		else{
 			System.out.println("Invalid argument detected: '" + input[searchStartIndex]
 					+"' is not a valid command!");
 			throw new IllegalArgumentException();
+		}
+		
+	}
+
+	private void searchForList(String[] input, String[] parsed) {
+		for(int i=0;i<parsed.length;i++){
+			String keyword = parsed[i];
+			if(keyword.equalsIgnoreCase(rb.getString("ListStartLabel"))){
+				int temp = i+1;
+				int listStartIndex = temp;
+				while(!parsed[temp].equalsIgnoreCase(rb.getString("ListEndLabel"))){	
+					temp++;
+				}
+				int listEndIndex = temp;  //temp is currently at index of ']'.
+				listQueue.add(Arrays.copyOfRange(input, listStartIndex, listEndIndex));
+			}
 		}
 		
 	}
@@ -213,11 +222,18 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		else if(keyword.equalsIgnoreCase(rb.getString("repeat"))){
 			repCount = 0;
 			param = parseParam(input, searchStartIndex+1, 1);
+			double res = 0;
+			String[] temp = listQueue.peek();
+//			for(String elem: temp){
+//				System.out.println("ttt: " + elem);
+//			}
 			for(int i=0;i<param[0];i++){
-				interpretCommand(listQueue.poll(), 0);
+				res = interpretCommand(temp, 0);
 				repCount++;
 			}
-			return 0;
+			listQueue.remove();
+			System.out.println(res);
+			return res;
 		}
 		
 		//TODO: Implement other controls other than set
@@ -247,6 +263,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		Method method = interpreterClass.getDeclaredMethod(keyword, args);
 //		System.out.println(method.invoke(obj, param[0], param[1]));
 		double res = (double) method.invoke(obj, param[0], param[1]);
+		System.out.println(res);
 		return res;
 	}
 
@@ -260,6 +277,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		Method method = interpreterClass.getDeclaredMethod(keyword, args);
 //		System.out.println(method.invoke(obj, param[0]));
 		double res = (double) method.invoke(obj, param[0]);
+		System.out.println(res);
 		return res;
 	}
 
@@ -270,6 +288,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		Method method = interpreterClass.getDeclaredMethod(keyword, args);
 //		System.out.println(method.invoke(obj));
 		double res = (double) method.invoke(obj);
+		System.out.println(res);
 		return res;
 	}
 	
@@ -328,12 +347,14 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		return repCount;
 	}
 	
+	//TODO: currently only understands one language at a time; is this what we want?
 	public void setLanguage(String language){
 		ProgramParser checkLang = new ProgramParser();
 		try{
 			checkLang.addPatterns(DEFAULT_RESOURCE_LANGUAGE+language);
 			String[] temp = {language, "Syntax"};
 			languages = temp;
+			lang = checkLang;
 		} catch(MissingResourceException e){
 			System.out.println(language+" is not a valid language! \n"
 					+ "Set to English by default.");
