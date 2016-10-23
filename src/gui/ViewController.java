@@ -64,7 +64,8 @@ public class ViewController implements Observer {
 	// private TableColumn variableNames;
 	// private TableColumn variableValues;
 
-	TableView<Variable> tableView;
+	TableView<EnvironmentVariable> environmentTableView;
+	TableView<UserDefinedVariable> userDefinedTableView;
 
 	public ViewController(Stage stage) {
 		viewProperties = new Properties(VIEW_PROPERTIES_PACKAGE + "View");
@@ -88,7 +89,8 @@ public class ViewController implements Observer {
 
 		box2.getChildren().add(box3);
 		box2.getChildren().add(createPastCommandsListView());
-		box2.getChildren().add(createTableView());
+		box2.getChildren().add(createEnvironmentTableView());
+		box2.getChildren().add(createUserDefinedTableView());
 
 		box3.getChildren().add(createCanvas());
 		box3.getChildren().add(createCommandInputter());
@@ -156,24 +158,51 @@ public class ViewController implements Observer {
 		return pastCommandsListView;
 	}
 
-	private Node createTableView() {
-		tableView = new TableView<Variable>();
+	private Node createEnvironmentTableView() {
+		environmentTableView = new TableView<EnvironmentVariable>();
+		TableColumn<EnvironmentVariable, String> variables = new TableColumn<EnvironmentVariable, String>("Environment\nVariables");
 
-		return tableView;
+		TableColumn<EnvironmentVariable, String> variableNames = new TableColumn<EnvironmentVariable, String>("Name");
+		variableNames.setCellValueFactory(new PropertyValueFactory<EnvironmentVariable, String>("name"));
+		TableColumn<EnvironmentVariable, String> variableValues = new TableColumn<EnvironmentVariable, String>("Value");
+		variableValues.setCellValueFactory(new PropertyValueFactory<EnvironmentVariable, String>("value"));
+		variables.getColumns().addAll(variableNames, variableValues);
+
+		environmentTableView.getColumns().add(variables);
+		environmentTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+
+		return environmentTableView;
 	}
 
-	private String[][] getUserDefinedVariableNamesAndVars(HashMap<String, String> myMap) {
-		String[] userDefinedVars = new String[myMap.size()];
-		String[] userDefinedNames = new String[myMap.size()];
-		int i = 0;
-		for (String elem : myMap.keySet()) {
-			userDefinedVars[i] = elem;
-			userDefinedNames[i] = myMap.get(elem);
-			i++;
-		}
+	private Node createUserDefinedTableView() {
+		 userDefinedTableView = new TableView<UserDefinedVariable>();
+		TableColumn<UserDefinedVariable,String> userDefinedCommands = new TableColumn<UserDefinedVariable,String>("User-Defined\nVariables");
 
-		return new String[][] { userDefinedVars, userDefinedNames };
+		// tableView.setItems(data);
+		TableColumn<UserDefinedVariable,String> userDefinedCommandNames = new TableColumn<UserDefinedVariable,String>("Name");
+		userDefinedCommandNames.setCellValueFactory(new PropertyValueFactory<UserDefinedVariable, String>("name"));
+		TableColumn<UserDefinedVariable,String> userDefinedCommandValues = new TableColumn<UserDefinedVariable,String>("Value");
+		userDefinedCommandValues.setCellValueFactory(new PropertyValueFactory<UserDefinedVariable, String>("value"));
+		userDefinedCommands.getColumns().addAll(userDefinedCommandNames, userDefinedCommandValues);
+		
+		userDefinedTableView.getColumns().add(userDefinedCommands);
+		userDefinedTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		return userDefinedTableView;
 	}
+//
+//	private String[][] getUserDefinedVariableNamesAndVars(HashMap<String, String> myMap) {
+//		String[] userDefinedVars = new String[myMap.size()];
+//		String[] userDefinedNames = new String[myMap.size()];
+//		int i = 0;
+//		for (String elem : myMap.keySet()) {
+//			userDefinedVars[i] = elem;
+//			userDefinedNames[i] = myMap.get(elem);
+//			i++;
+//		}
+//
+//		return new String[][] { userDefinedVars, userDefinedNames };
+//	}
 
 	private Node createCommandInputter() {
 		EventHandler<ActionEvent> runCommandHandler = event -> {
@@ -221,6 +250,8 @@ public class ViewController implements Observer {
 				turtleTranslator.convertYCordinate(modelController.getYCoordinate()));
 		canvasActions.addTurtleAtXY();
 		canvasActions.drawPath(turtleTranslator.convertLineCordinates(modelController.getLineCoordinates()));
+		updateVariables();
+
 	}
 
 	public void update(SettingsController obs, Object o) {
@@ -239,42 +270,39 @@ public class ViewController implements Observer {
 
 	public void setModelController(BoardStateController modelController) {
 		this.modelController = modelController;
-		setupEnvironmentVariables();
+		updateVariables();
 	}
 
-	private void setupEnvironmentVariables() {
-		
-		TableColumn variables = new TableColumn("Environment\nVariables");
-		TableColumn userDefinedCommands = new TableColumn("User-Defined\nCommands");
+	private void updateVariables() {
 
-		TableColumn variableNames = new TableColumn("Name");
-		TableColumn variableValues = new TableColumn("Value");
-		variables.getColumns().addAll(variableNames, variableValues);
+		ObservableList<EnvironmentVariable> environmentVariableList = createEnvironmentVariablesList();
+		environmentTableView.setItems(environmentVariableList);
 
-		// tableView.setItems(data);
-		TableColumn userDefinedCommandNames = new TableColumn("Name");
-		TableColumn userDefinedCommandValues = new TableColumn("Value");
-		userDefinedCommands.getColumns().addAll(userDefinedCommandNames, userDefinedCommandValues);
-
-		ObservableList<Variable> environmentVariableList = createEnvironmentVariablesList();
-		variableNames.setCellValueFactory(new PropertyValueFactory<Variable, String>("name"));
-		variableValues.setCellValueFactory(new PropertyValueFactory<Variable, String>("value"));
-
-		
-		tableView.setItems(environmentVariableList);
-		tableView.getColumns().addAll(variables, userDefinedCommands);
+		ObservableList<UserDefinedVariable> userDefinedVariableList = createUserDefinedVariablesList();
+		userDefinedTableView.setItems(userDefinedVariableList);
 
 	}
 
-	private ObservableList<Variable> createEnvironmentVariablesList() {
-		
-		ObservableList<Variable> data = FXCollections.observableArrayList();
-		data.add(new Variable("X Coordinate", Double.toString(modelController.getXCoordinate())));
-		data.add(new Variable("Y Coordinate", Double.toString(modelController.getYCoordinate())));
-		data.add(new Variable("Angle", Double.toString(modelController.getAngle())));
-		data.add(new Variable("Turtle is Showing", Boolean.toString(modelController.getTurtleIsShowing())));
-		data.add(new Variable("Pen is Down", Boolean.toString(modelController.getTurtleIsDrawing())));
+	private ObservableList<EnvironmentVariable> createEnvironmentVariablesList() {
+
+		ObservableList<EnvironmentVariable> data = FXCollections.observableArrayList();
+		data.add(new EnvironmentVariable("X Coordinate", Double.toString(modelController.getXCoordinate())));
+		data.add(new EnvironmentVariable("Y Coordinate", Double.toString(modelController.getYCoordinate())));
+		data.add(new EnvironmentVariable("Angle", Double.toString(modelController.getAngle())));
+		data.add(new EnvironmentVariable("Turtle is Showing", Boolean.toString(modelController.getTurtleIsShowing())));
+		data.add(new EnvironmentVariable("Pen is Down", Boolean.toString(modelController.getTurtleIsDrawing())));
 		return data;
+	}
+
+	private ObservableList<UserDefinedVariable> createUserDefinedVariablesList() {
+		Map<String, String> map = modelController.getUserDefinedVariables();
+
+		ObservableList<UserDefinedVariable> data = FXCollections.observableArrayList();
+		for (String s : map.keySet()) {
+			data.add(new UserDefinedVariable(s, map.get(s)));
+		}
+		return data;
+
 	}
 
 	public void setInterpreter(SlogoCommandInterpreter interpreter) {
