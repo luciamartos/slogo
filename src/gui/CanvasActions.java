@@ -1,6 +1,7 @@
 package gui;
 
 import java.io.File;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
@@ -18,6 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import model.PathLine;
 
 public class CanvasActions{
 	private static final String COLOR_CANVAS = "white";
@@ -72,25 +74,26 @@ public class CanvasActions{
 	}
 
 	private void initializeTurtle() {
+		showTurtle = true;
 		turtleImgView = new ImageView(new Image(IMAGE_PATH + "turtle.png", 50, 50, true, true));
 	//	myTurtle = new TurtleView(canvas.getWidth() / 2, canvas.getHeight() / 2, turtleImg, true, Color.BLACK);
-		addTurtleAtXY((int) canvas.getWidth() / 2, (int) canvas.getHeight() / 2);
+		addTurtleAtXY(canvas.getWidth() / 2, canvas.getHeight() / 2);
 	}
 
-	public void changeImage(Image image, int xLoc, int yLoc) {
+	public void changeImage(Image image, double xLoc, double yLoc) {
 		setTurtleImage(image, xLoc, yLoc);
 	}
 	
-	public void drawPath(int[] myCords){
+	public void drawPath(List<PathLine> myCords){
 		if(!penDown){
 	        gc.setStroke(myColor);
-	        for(int i = 0; i<myCords.length; i+=4){
-		        gc.strokeLine(myCords[i], myCords[i+1], myCords[i+2], myCords[i+3]);
+	        for(int i =0; i<myCords.size();i++){
+		        gc.strokeLine(myCords.get(i).getX1(), myCords.get(i).getY1(), myCords.get(i).getX2(), myCords.get(i).getY2());
 	        }
 		}	
 	}
 
-	public void addTurtleAtXY(int xLoc, int yLoc) {
+	public void addTurtleAtXY(double xLoc, double yLoc) {
 		//note that when initialised myController cannot be null
 		turtleImgView.setTranslateX(xLoc);
 		turtleImgView.setTranslateY(yLoc);
@@ -104,7 +107,7 @@ public class CanvasActions{
 	}
 
 	//METHOD NEVER BEING CALLED RN
-	public void moveTurtle(int xLoc, int yLoc) {
+	public void moveTurtle(double xLoc, double yLoc) {
 		removeTurtle();
 		addTurtleAtXY(xLoc, yLoc);
 	}
@@ -118,7 +121,7 @@ public class CanvasActions{
 	}
 
 	//where is the method that takes in the string?
-	public void setTurtleImage(Image image, int xLoc, int yLoc) {
+	public void setTurtleImage(Image image, double xLoc, double yLoc) {
 		removeTurtle();
 		turtleImgView = new ImageView(new Image(IMAGE_PATH + image, 50, 50, true, true));
 		addTurtleAtXY(xLoc, yLoc);

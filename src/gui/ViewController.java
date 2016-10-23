@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
 import general.MainController;
 import general.Properties;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -49,6 +51,10 @@ public class ViewController implements Observer {
 	private SettingsController settingsController;
 	private Stage stage;
 	private ErrorConsole errorConsole;
+	private TableColumn userDefinedCommandNames;
+	private TableColumn userDefinedCommandValues;
+	private BoardStateDataSource dataSource;
+	
 
 	public ViewController(Stage stage) {
 		viewProperties = new Properties(VIEW_PROPERTIES_PACKAGE + "View");
@@ -149,13 +155,24 @@ public class ViewController implements Observer {
 		TableColumn variableNames = new TableColumn("Name");
 		TableColumn variableValues = new TableColumn("Value");
 		variables.getColumns().addAll(variableNames, variableValues);
+        
+		//tableView.setItems(data);
+		userDefinedCommandNames = new TableColumn("Name");
+		userDefinedCommandValues = new TableColumn("Value");
 		
-		TableColumn userDefinedCommandNames = new TableColumn("Name");
-		TableColumn userDefinedCommandValues = new TableColumn("Value");
 		userDefinedCommands.getColumns().addAll(userDefinedCommandNames, userDefinedCommandValues);
 		
-		HashMap<String, String> variableMap = BoardStateDataSource.getUserDefinedVariables();
+//		userDefinedCommandNames.setCellValueFactory((p)->{
+//	        String[] x = getUserDefinedVariableNamesAndVars()[0];
+//	        return new SimpleStringProperty(x != null && x.length>0 ? x[0] : "<no name>");
+//		});
+//
+//		userDefinedCommandValues.setCellValueFactory((p)->{
+//	        String[] x = p.getValue();
+//	        return new SimpleStringProperty(x != null && x.length>1 ? x[1] : "<no value>");
+//		});
 		
+		//updateUserDefinedVariableHashMap();
 		
 		// turtleVariables = FXCollections.observableArrayList();
 //		pastCommandsListView.setItems(pastCommands);
@@ -177,8 +194,26 @@ public class ViewController implements Observer {
 		return tableView;
 	}
 	
+	//WHERE DO I CALL THIS METHOD SO IT UPDATES WHEN NECCESARY?
 	private void updateUserDefinedVariableHashMap(){
+		Map<String, String> myMap = dataSource.getUserDefinedVariables();
+		for(String elem:myMap.keySet()){
+			userDefinedCommandNames.getColumns().add(elem);
+			userDefinedCommandValues.getColumns().add(myMap.get(elem));
+		}
+	}
+	
+	private String[][] getUserDefinedVariableNamesAndVars(HashMap<String, String> myMap){
+		String[] userDefinedVars = new String[myMap.size()];
+		String[] userDefinedNames = new String[myMap.size()];
+		int i =0;
+		for(String elem:myMap.keySet()){
+			userDefinedVars[i] = elem;
+			userDefinedNames[i] = myMap.get(elem);
+			i++;
+		}
 		
+		return new String[][]{userDefinedVars,userDefinedNames};
 	}
 
 	private Node createCommandInputter() {
@@ -216,10 +251,10 @@ public class ViewController implements Observer {
 	
 	public void update(MainController obs, Object o){
 		canvasActions.removeTurtle();
-		canvasActions.setShowTurtle(BoardStateDataSource.isShowing());
-		canvasActions.setPenDown(BoardStateDataSource.isPenDown());
-		canvasActions.addTurtleAtXY(BoardStateDataSource.getXLocation(), BoardStateDataSource.getYLocation());
-		canvasActions.drawPath(BoardStateDataSource.getLineCordinates());
+		canvasActions.setShowTurtle(dataSource.getTurtleIsShowing());
+		canvasActions.setPenDown(dataSource.getTurtleIsDrawing());
+		canvasActions.addTurtleAtXY(dataSource.getXCoordinate(), dataSource.getYCoordinate());
+		canvasActions.drawPath(dataSource.getLineCoordinates());
 	}
 
 	public void update(SettingsController obs, Object o) {
@@ -228,10 +263,14 @@ public class ViewController implements Observer {
 			return;
 		}
 		if (settingsController.getNewImage() != null)
-			canvasActions.changeImage(settingsController.getNewImage(),BoardStateDataSource.getXLocation(),BoardStateDataSource.getYLocation());
+			canvasActions.changeImage(settingsController.getNewImage(),dataSource.getXCoordinate(),dataSource.getYCoordinate());
 		if (settingsController.getNewBackgroundColor() != null)
 			canvasActions.setBackgroundColorCanvas(settingsController.getNewBackgroundColor());
 		if (settingsController.getNewPenColor() != null)
 			canvasActions.setPenColor(settingsController.getNewPenColor());
+	}
+	
+	public void setDataSource(BoardStateDataSource source){
+		this.dataSource = source;
 	}
 }
