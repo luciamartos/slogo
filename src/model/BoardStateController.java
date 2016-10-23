@@ -1,4 +1,5 @@
 package model;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -66,6 +67,11 @@ public class BoardStateController implements TurtleStateDataSource, BoardStateDa
 	@Override
 	public Map<String, String> getUserDefinedVariables() {
 		return BoardState.getCurrentState().getUserDefinedVariables();
+	}
+
+	@Override
+	public void addUserDefinedVariable(String varName, String userInput) {
+		BoardState.getCurrentState().addUserDefinedVariable(varName, userInput);
 	}
 	
 }
