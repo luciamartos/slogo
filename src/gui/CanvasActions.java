@@ -81,8 +81,9 @@ public class CanvasActions{
 //		yLoc = canvas.getHeight() / 2;
 
 		turtleImgView = new ImageView(ViewImageChooser.selectImage(IMAGE_PATH + "turtle.png", 50, 50));
+
 	//	myTurtle = new TurtleView(canvas.getWidth() / 2, canvas.getHeight() / 2, turtleImg, true, Color.BLACK);
-		addTurtleAtXY();
+		//addTurtleAtXY();
 	}
 
 	public void changeImage(Image image, double xLoc, double yLoc) {
