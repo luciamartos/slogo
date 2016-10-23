@@ -54,6 +54,7 @@ public class ViewController implements Observer {
 	private TableColumn userDefinedCommandNames;
 	private TableColumn userDefinedCommandValues;
 	private BoardStateDataSource dataSource;
+	private SlogoCommandInterpreter interpreter;
 	
 
 	public ViewController(Stage stage) {
