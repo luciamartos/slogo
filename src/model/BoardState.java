@@ -2,7 +2,7 @@ package model;
 
 import java.util.Observable;
 
-public class TurtleState extends Observable {
+public class BoardState extends Observable {
 	private double xCoordinate;
 	private double yCoordinate;
 	private double angle;
@@ -10,9 +10,9 @@ public class TurtleState extends Observable {
 	private boolean drawing;
 	private boolean showing;
 	
-	private static TurtleState currentState;
+	private static BoardState currentState;
 	
-	protected TurtleState(){
+	protected BoardState(){
 	}
 	
 	private void setToDefaultValues(){
@@ -24,9 +24,9 @@ public class TurtleState extends Observable {
 	}
 	
 	
-	public static TurtleState getCurrentState(){
+	public static BoardState getCurrentState(){
 		if (currentState == null){
-			currentState = new TurtleState();
+			currentState = new BoardState();
 			currentState.setToDefaultValues();
 		}
 		return currentState;
