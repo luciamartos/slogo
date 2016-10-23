@@ -9,11 +9,9 @@ public class ErrorConsole {
 	private Label errorMessage;
 	private SequentialTransition blinkThenFade;
 	
-	public ErrorConsole(double errorLabelX, double errorLabelY, double errorFontSize) {
+	public ErrorConsole(double errorFontSize) {
 		errorMessage = new Label();
 		errorMessage.setStyle("-fx-text-fill: red;");
-		errorMessage.setLayoutX(errorLabelX);
-		errorMessage.setLayoutY(errorLabelY);
 		errorMessage.setFont(Font.font("Verdana", errorFontSize));
 		FadingTransition transition = new FadingTransition();
 		blinkThenFade = transition.setupNode(errorMessage);

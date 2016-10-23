@@ -119,16 +119,9 @@ public class ViewController implements Observer {
 	}
 
 	public Node createCanvas() {
-		double canvasX = viewProperties.getDoubleProperty("canvas_x");
-		double canvasY = viewProperties.getDoubleProperty("canvas_y");
 		double canvasWidth = viewProperties.getDoubleProperty("canvas_width");
 		double canvasHeight = viewProperties.getDoubleProperty("canvas_height");
-		double canvasLayoutX = viewProperties.getDoubleProperty("canvas_layout_x");
-		double canvasLayoutY = viewProperties.getDoubleProperty("canvas_layout_y");
-		double errorLabelX = viewProperties.getDoubleProperty("error_label_x");
-		double errorLabelY = viewProperties.getDoubleProperty("error_label_y");
-		canvasActions = new CanvasActions(canvasX, canvasY, canvasWidth, canvasHeight, canvasLayoutX, canvasLayoutY,
-				errorLabelX, errorLabelY);
+		canvasActions = new CanvasActions(canvasWidth, canvasHeight);
 		return canvasActions.getPane();
 	}
 
@@ -160,7 +153,8 @@ public class ViewController implements Observer {
 
 	private Node createEnvironmentTableView() {
 		environmentTableView = new TableView<EnvironmentVariable>();
-		TableColumn<EnvironmentVariable, String> variables = new TableColumn<EnvironmentVariable, String>("Environment\nVariables");
+		TableColumn<EnvironmentVariable, String> variables = new TableColumn<EnvironmentVariable, String>(
+				"Environment\nVariables");
 
 		TableColumn<EnvironmentVariable, String> variableNames = new TableColumn<EnvironmentVariable, String>("Name");
 		variableNames.setCellValueFactory(new PropertyValueFactory<EnvironmentVariable, String>("name"));
@@ -171,38 +165,41 @@ public class ViewController implements Observer {
 		environmentTableView.getColumns().add(variables);
 		environmentTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-
 		return environmentTableView;
 	}
 
 	private Node createUserDefinedTableView() {
-		 userDefinedTableView = new TableView<UserDefinedVariable>();
-		TableColumn<UserDefinedVariable,String> userDefinedCommands = new TableColumn<UserDefinedVariable,String>("User-Defined\nVariables");
+		userDefinedTableView = new TableView<UserDefinedVariable>();
+		TableColumn<UserDefinedVariable, String> userDefinedCommands = new TableColumn<UserDefinedVariable, String>(
+				"User-Defined\nVariables");
 
 		// tableView.setItems(data);
-		TableColumn<UserDefinedVariable,String> userDefinedCommandNames = new TableColumn<UserDefinedVariable,String>("Name");
+		TableColumn<UserDefinedVariable, String> userDefinedCommandNames = new TableColumn<UserDefinedVariable, String>(
+				"Name");
 		userDefinedCommandNames.setCellValueFactory(new PropertyValueFactory<UserDefinedVariable, String>("name"));
-		TableColumn<UserDefinedVariable,String> userDefinedCommandValues = new TableColumn<UserDefinedVariable,String>("Value");
+		TableColumn<UserDefinedVariable, String> userDefinedCommandValues = new TableColumn<UserDefinedVariable, String>(
+				"Value");
 		userDefinedCommandValues.setCellValueFactory(new PropertyValueFactory<UserDefinedVariable, String>("value"));
 		userDefinedCommands.getColumns().addAll(userDefinedCommandNames, userDefinedCommandValues);
-		
+
 		userDefinedTableView.getColumns().add(userDefinedCommands);
 		userDefinedTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		return userDefinedTableView;
 	}
-//
-//	private String[][] getUserDefinedVariableNamesAndVars(HashMap<String, String> myMap) {
-//		String[] userDefinedVars = new String[myMap.size()];
-//		String[] userDefinedNames = new String[myMap.size()];
-//		int i = 0;
-//		for (String elem : myMap.keySet()) {
-//			userDefinedVars[i] = elem;
-//			userDefinedNames[i] = myMap.get(elem);
-//			i++;
-//		}
-//
-//		return new String[][] { userDefinedVars, userDefinedNames };
-//	}
+	//
+	// private String[][] getUserDefinedVariableNamesAndVars(HashMap<String,
+	// String> myMap) {
+	// String[] userDefinedVars = new String[myMap.size()];
+	// String[] userDefinedNames = new String[myMap.size()];
+	// int i = 0;
+	// for (String elem : myMap.keySet()) {
+	// userDefinedVars[i] = elem;
+	// userDefinedNames[i] = myMap.get(elem);
+	// i++;
+	// }
+	//
+	// return new String[][] { userDefinedVars, userDefinedNames };
+	// }
 
 	private Node createCommandInputter() {
 		EventHandler<ActionEvent> runCommandHandler = event -> {
@@ -219,13 +216,17 @@ public class ViewController implements Observer {
 			}
 		};
 
-		inputPanel = new InputPanel(viewProperties, runCommandHandler);
+		double inputPanelHeight = viewProperties.getDoubleProperty("input_panel_height");
+		double textFieldWidth = viewProperties.getDoubleProperty("text_field_width");
+		double runButtonWidth = viewProperties.getDoubleProperty("run_button_width");
+
+		inputPanel = new InputPanel(inputPanelHeight, textFieldWidth, runButtonWidth, viewProperties,
+				runCommandHandler);
 		return inputPanel;
 	}
 
 	private Node createErrorConsole() {
-		errorConsole = new ErrorConsole(viewProperties.getDoubleProperty("error_label_x"),
-				viewProperties.getDoubleProperty("error_label_y"), viewProperties.getDoubleProperty("error_font_size"));
+		errorConsole = new ErrorConsole(viewProperties.getDoubleProperty("error_font_size"));
 		return errorConsole.getErrorMessage();
 
 	}
