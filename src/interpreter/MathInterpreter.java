@@ -33,19 +33,19 @@ public class MathInterpreter extends SubInterpreter{
 	}
 	
 	double sine(double degrees){
-		return Math.sin(Math.toRadians(degrees));
+		return Math.sin(Math.toRadians(convertAngle(degrees)));
 	}
 	
 	double cosine(double degrees){
-		return Math.cos(Math.toRadians(degrees));
+		return Math.cos(Math.toRadians(convertAngle(degrees)));
 	}
 	
 	double tangent(double degrees){
-		return Math.tan(Math.toRadians(degrees));
+		return Math.tan(Math.toRadians(convertAngle(degrees)));
 	}
 	
 	double arctangent(double degrees){
-		return Math.atan(Math.toRadians(degrees));
+		return Math.atan(Math.toRadians(convertAngle(degrees)));
 	}
 	
 	double naturallog(double a){
@@ -58,23 +58,6 @@ public class MathInterpreter extends SubInterpreter{
 	
 	double pi(){
 		return PI;
-	}
-	
-	/**
-	 * @param unconvertedAngle
-	 * @return The angle converted to a positive value between 0.0 and 360.0
-	 */
-	private static double convertAngle(double unconvertedAngle){
-		double numerator = unconvertedAngle;
-		double denominator = 360;
-		int multiplier = (int)(numerator / denominator);
-		//multiplier is negative if numerator < (-1 * denominator)
-		//Get numerator in range [-denominator, denominator]
-		numerator -= (multiplier * denominator);
-		if (numerator < 0){
-			numerator = denominator + numerator;
-		}		
-		return numerator;
 	}
 
 	
