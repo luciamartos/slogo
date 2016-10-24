@@ -27,7 +27,7 @@ public class MainController {
     	interpreter.setStateDataSource(modelController);
     	interpreter.setVarDataSource(modelController);
     	interpreter.setStateUpdater(modelController);
-   
+    	interpreter.setErrorPresenter(viewController);
 	}
 
 }

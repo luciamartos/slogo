@@ -12,6 +12,7 @@ import java.util.Observer;
 
 import general.MainController;
 import general.Properties;
+import interpreter.ErrorPresenter;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -42,7 +43,7 @@ import javafx.stage.Stage;
  * 
  * @author LuciaMartos
  */
-public class ViewController implements Observer {
+public class ViewController implements Observer, ErrorPresenter {
 	private Properties viewProperties;
 
 	private static final String VIEW_PROPERTIES_PACKAGE = "resources.properties/";
@@ -242,6 +243,7 @@ public class ViewController implements Observer {
 			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
 					| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				e.printStackTrace();
+				System.out.println(e.);
 			}
 		}
 	}
