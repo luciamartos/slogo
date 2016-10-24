@@ -37,7 +37,7 @@ public class TurtleDataTranslator {
 	}
 	
 	public double convertAngle(double degree){
-		return degree - 90;
+		return (-degree + 90);
 	}
 
 }
