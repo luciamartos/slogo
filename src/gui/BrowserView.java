@@ -16,6 +16,9 @@ public class BrowserView {
 
     public  BrowserView (Stage stage) {
        // stage.getScene().add
+        stage.setTitle("Web View");
+      stage.setWidth(300);
+      stage.setHeight(300);
         Scene scene = new Scene(new Group());
 
         VBox root = new VBox();     

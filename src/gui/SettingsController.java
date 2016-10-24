@@ -63,7 +63,7 @@ public class SettingsController extends Observable {
 		helpButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-            BrowserView myView = new BrowserView(stage);
+            BrowserView myView = new BrowserView(new Stage());
             }
         });
 

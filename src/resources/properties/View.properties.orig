@@ -1,0 +1,28 @@
+title = SLOGO
+
+padding = 15
+title_box_width = 1100
+title_box_height = 40
+app_width = 1150
+app_height = 720
+
+#past command console
+past_command_list_width = 120
+past_command_list_height = 520
+
+#canvas for turtle playground
+canvas_width = 440
+canvas_height = 480
+
+#error labels and stuff
+error_font_size = 20
+
+#input console at bottom
+input_panel_height = 20
+text_field_width = 380
+run_button_width = 50
+help_button_width = 100
+
+#languages allowed
+languages = Chinese, English, French, German, Italian, Portuguese, Russian, Spanish
+
