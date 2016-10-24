@@ -12,6 +12,7 @@ import java.util.Observer;
 
 import general.MainController;
 import general.Properties;
+import interpreter.ErrorPresenter;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -29,6 +30,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -41,7 +43,7 @@ import javafx.stage.Stage;
  * 
  * @author LuciaMartos
  */
-public class ViewController implements Observer {
+public class ViewController implements Observer, ErrorPresenter {
 	private Properties viewProperties;
 
 	private static final String VIEW_PROPERTIES_PACKAGE = "resources.properties/";
@@ -73,6 +75,7 @@ public class ViewController implements Observer {
 				viewProperties.getDoubleProperty("canvas_height"));
 		sceneRoot.getChildren().add(setupBoxes());
 		setupStage(stage);
+		sceneRoot.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
 	}
 
 	private Node setupBoxes() {
@@ -131,6 +134,12 @@ public class ViewController implements Observer {
 
 	}
 
+	private void handleKeyInput(KeyCode code) {
+		if (code == KeyCode.ENTER){
+			runCommandFromInputLine();
+		}
+	}
+
 	private Node createPastCommandsListView() {
 		ListView<String> pastCommandsListView = new ListView<String>();
 		pastCommands = FXCollections.observableArrayList();
@@ -141,9 +150,7 @@ public class ViewController implements Observer {
 		// handle user clicking on an value of the list
 		pastCommandsListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			public void changed(ObservableValue<? extends String> ov, String old_val, String curCommand) {
-				// not actually an error
-				errorConsole.displayErrorMessage("Run: " + curCommand);
-				// TODO: RUN COMMAND OF STRING
+				runHistoricCommand(curCommand);
 			}
 		});
 
@@ -186,6 +193,7 @@ public class ViewController implements Observer {
 
 		// tableView.setItems(data);
 		TableColumn<UserDefinedCommand, String> userDefinedCommandNames = new TableColumn<UserDefinedCommand, String>(
+
 				"Name");
 		userDefinedCommandNames.setCellValueFactory(new PropertyValueFactory<UserDefinedCommand, String>("name"));
 		TableColumn<UserDefinedCommand, String> userDefinedCommandValues = new TableColumn<UserDefinedCommand, String>(
@@ -200,20 +208,10 @@ public class ViewController implements Observer {
 	}
 
 	private Node createCommandInputter() {
-		EventHandler<ActionEvent> runCommandHandler = event -> {
-			String currentCommandLine = inputPanel.getCurrentCommandLine();
-			if (!(currentCommandLine == null) && !(currentCommandLine.length() == 0)) {
-				pastCommands.add(currentCommandLine);
-				try {
-					interpreter.parseInput(currentCommandLine);
-				} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-						| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+		EventHandler<ActionEvent> runCommandHandler = event -> {			
+			runCommandFromInputLine();	
 		};
-
+		
 		double inputPanelHeight = viewProperties.getDoubleProperty("input_panel_height");
 		double textFieldWidth = viewProperties.getDoubleProperty("text_field_width");
 		double runButtonWidth = viewProperties.getDoubleProperty("run_button_width");
@@ -221,6 +219,31 @@ public class ViewController implements Observer {
 		inputPanel = new InputPanel(inputPanelHeight, textFieldWidth, runButtonWidth, viewProperties,
 				runCommandHandler);
 		return inputPanel;
+	}
+
+	private void runHistoricCommand(String curCommand) {
+		String currentCommandLine = curCommand;
+		runCommand(currentCommandLine);
+	}
+	
+	private void runCommandFromInputLine() {
+		String currentCommandLine = inputPanel.getText();
+		inputPanel.clear();
+		runCommand(currentCommandLine);
+	}
+
+	private void runCommand(String currentCommandLine) {
+		//String currentCommandLine = inputPanel.getCurrentCommandLine();
+		System.out.println("CUR" +currentCommandLine);
+		if (!(currentCommandLine == null) && !(currentCommandLine.length() == 0)) {
+			pastCommands.add(currentCommandLine);
+			try {
+				interpreter.parseInput(currentCommandLine);
+			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
+					| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private Node createErrorConsole() {
@@ -248,6 +271,10 @@ public class ViewController implements Observer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void presentError(String errorMessage){
+		errorConsole.displayErrorMessage(errorMessage);
 	}
 
 	public void update(Object obs, BoardStateDataSource o) {

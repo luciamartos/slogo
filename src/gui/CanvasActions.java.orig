@@ -75,13 +75,16 @@ public class CanvasActions{
 	}
 
 	private void initializeTurtle() {
+<<<<<<< HEAD
+=======
 //		showTurtle = true;
 //		heading = 90;
 //		xLoc = canvas.getWidth() / 2;
 //		yLoc = canvas.getHeight() / 2;
+		System.out.println(IMAGE_PATH + "turtle.png");
 
-		turtleImgView = new ImageView(ViewImageChooser.selectImage(IMAGE_PATH + "turtle.png", 50, 50));
-
+>>>>>>> 8f491cb3b67c6d8c6a8cfe85433da3d6483b4283
+		turtleImgView = new ImageView(new Image(IMAGE_PATH + "turtle.png", 50, 50, true, true));
 	//	myTurtle = new TurtleView(canvas.getWidth() / 2, canvas.getHeight() / 2, turtleImg, true, Color.BLACK);
 		//addTurtleAtXY();
 	}
@@ -100,12 +103,11 @@ public class CanvasActions{
 	}
 	
 	public void drawPath(List<PathLine> myCords){
-		//if(penDown){
-      //  System.out.println(myCords.size());
+		if(!penDown){
 	        gc.setStroke(myColor);
 	        for(int i =0; i<myCords.size();i++){
 		        gc.strokeLine(myCords.get(i).getX1(), myCords.get(i).getY1(), myCords.get(i).getX2(), myCords.get(i).getY2());
-	     //   }
+	        }
 		}	
 	}
 
@@ -141,7 +143,7 @@ public class CanvasActions{
 	//where is the method that takes in the string?
 	public void setTurtleImage(Image image, double xLoc, double yLoc) {
 		removeTurtle();
-		turtleImgView = new ImageView(image);
+		turtleImgView = new ImageView(new Image(IMAGE_PATH + image, 50, 50, true, true));
 		addTurtleAtXY();
 	}
 

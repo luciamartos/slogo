@@ -24,6 +24,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private TurtleStateDataSource stateDatasource;
 	private TurtleStateUpdater stateUpdater;
 	private UserVariablesDataSource varDataSource;
+	private ErrorPresenter errorPresenter; //errorPresenter.presentError(String s);
 	private ResourceBundle rb;
 	private Queue<String[]> listQueue;
 	
@@ -373,6 +374,10 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	public void setVarDataSource(UserVariablesDataSource varDataSource){
 		this.varDataSource = varDataSource;
+	}
+	
+	public void setErrorPresenter(ErrorPresenter p){
+		this.errorPresenter = p;
 	}
 	
 	public SlogoUpdate getModel(){
