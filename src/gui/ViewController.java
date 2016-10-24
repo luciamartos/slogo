@@ -234,14 +234,12 @@ public class ViewController implements Observer, ErrorPresenter {
 
 	private void runCommand(String currentCommandLine) {
 		//String currentCommandLine = inputPanel.getCurrentCommandLine();
-		System.out.println("CUR" +currentCommandLine);
 		if (!(currentCommandLine == null) && !(currentCommandLine.length() == 0)) {
 			pastCommands.add(currentCommandLine);
 			try {
 				interpreter.parseInput(currentCommandLine);
 			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
 					| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				e.printStackTrace();
 			}
 		}
 	}
