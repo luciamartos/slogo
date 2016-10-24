@@ -30,7 +30,7 @@ public class BoardState extends Observable {
 		setXCoordinate(0.0);
 		setYCoordinate(0.0);
 		setAngle(90.0);
-		setDrawing(false);
+		setDrawing(true);
 		setShowing(true);
 		setChanged();
 	}
