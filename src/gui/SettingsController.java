@@ -18,11 +18,14 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -40,16 +43,31 @@ public class SettingsController extends Observable {
 	private Color newPenColor;
 	private Image newImage;
 	private String newLanguage;
+	private Stage stage;
 
-	public SettingsController(Stage stage, Properties viewProperties) {
+	public SettingsController(Stage myStage, Properties viewProperties) {
+		stage = myStage;
 		this.viewProperties = viewProperties;
 		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
 		hBox.getChildren().add(initializePenColorSetting());
 		hBox.getChildren().add(initializeBackgroundColorSetting());
 		hBox.getChildren().add(initializeLanguageSetting());
 		hBox.getChildren().add(initializeTurtleImageSetting(stage));
+		hBox.getChildren().add(initializeGetHelpButton());
 	}
 	
+	private Node initializeGetHelpButton() {
+		Button helpButton = createButton("Get help!", viewProperties.getDoubleProperty("help_button_width"));
+		helpButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+            BrowserView myView = new BrowserView(stage);
+            }
+        });
+
+		return helpButton;
+	}
+
 	private Node initializePenColorSetting() {
 		ColorPicker penColorPicker = new ColorPicker();
 		penColorPicker.setValue(Color.BLACK);
