@@ -243,7 +243,7 @@ public class ViewController implements Observer, ErrorPresenter {
 			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
 					| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				e.printStackTrace();
-				System.out.println(e.);
+//				System.out.println(e.);
 			}
 		}
 	}
@@ -345,5 +345,11 @@ public class ViewController implements Observer, ErrorPresenter {
 
 	public void setInterpreter(SlogoCommandInterpreter interpreter) {
 		this.interpreter = interpreter;
+	}
+
+	@Override
+	public void presentError(String s) {
+		// TODO Auto-generated method stub
+		
 	}
 }
