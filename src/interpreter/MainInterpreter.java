@@ -24,7 +24,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private TurtleStateDataSource stateDatasource;
 	private TurtleStateUpdater stateUpdater;
 	private UserVariablesDataSource varDataSource;
-	private ErrorPresenter errorPresenter; //errorPresenter.presentError(String s);
+	private ErrorPresenter errorPresenter;
 	private ResourceBundle rb;
 	private Queue<String[]> listQueue;
 	
@@ -101,8 +101,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		
 			
 		else{
-			System.out.println("Invalid argument detected: '" + input[searchStartIndex]
-					+"' is not a valid command!");
+			String errorMessage = "Invalid argument detected: '"+input[searchStartIndex]+"' is not a valid command!";
+			System.out.println(errorMessage);
+			errorPresenter.presentError(errorMessage);
 			throw new IllegalArgumentException();
 		}
 		
@@ -217,7 +218,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 				return param[0];
 			}
 			else{
-				System.out.println("Illegal Variable detected: '" + input[searchStartIndex+1] + "' is not a variable!");
+				String errorMessage = "Illegal Variable detected: '" + input[searchStartIndex+1] + "' is not a variable!";
+				System.out.println(errorMessage);
+				errorPresenter.presentError(errorMessage);
 				throw new IllegalArgumentException();
 			}
 		}
@@ -349,7 +352,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		return repCount;
 	}
 	
-	//TODO: currently only understands one language at a time; is this what we want?
 	public void setLanguage(String language){
 		ProgramParser checkLang = new ProgramParser();
 		try{
@@ -358,8 +360,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			languages = temp;
 			lang = checkLang;
 		} catch(MissingResourceException e){
-			System.out.println(language+" is not a valid language! \n"
-					+ "Set to English by default.");
+			String langErrorMessage = language+" is not a valid language!\n Set to English by default.";
+			errorPresenter.presentError(langErrorMessage);
+			System.out.println(langErrorMessage);
 		}
 
 	}
