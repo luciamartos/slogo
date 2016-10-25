@@ -27,6 +27,11 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private ErrorPresenter errorPresenter;
 	private ResourceBundle rb;
 	private Queue<String[]> listQueue;
+	private int currSearchIndex;
+	//	if(commandQueue.size()>0){
+	//	String s = commandQueue.pop();
+	//	parseInput(s);
+	//}
 	
 	private int repCount;
 	
@@ -41,19 +46,12 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		model = new SlogoUpdate(stateDatasource);
 		String[] split = input.split("\\s+");
 		lang = new ProgramParser();
-		lang = addPatterns(lang);
-		
+		lang = addPatterns(lang);	
 //		for(String elem: split){
 //			System.out.println(elem);
 //		}
-		
 		interpretCommand(split, 0);   //first search(non-recursive) begins at index 0;
-		
 		stateUpdater.applyChanges(model);
-//		if(commandQueue.size()>0){
-//			String s = commandQueue.pop();
-//			parseInput(s);
-//		}
 	}
 	
 	private double interpretCommand(String[] input, int searchStartIndex) throws ClassNotFoundException, NoSuchMethodException, 
@@ -64,7 +62,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		GeneralInterpreter decideCommand = new GeneralInterpreter();
 		String keyword = parsed[searchStartIndex].toLowerCase();
 		
-//		System.out.println("xxx: " + keyword);
+		System.out.println("index: " + searchStartIndex);
 		//scan for list first before anything else
 		searchForList(input, parsed);
 		
@@ -136,13 +134,13 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model, stateUpdater);
 		
 		if(interpreter.isNonInputTurtleCommand(keyword)){
+			currSearchIndex = searchStartIndex;
 			return handleNonInputKeywordWithModel(keyword, interpreterClass, obj, interpreter);
 		}
 		else if(interpreter.isUnaryTurtleCommand(keyword)){
 			param = parseParam(input, searchStartIndex+1, 1);
 			args = createDoubleArgs(1);
 			Method method = interpreterClass.getDeclaredMethod(keyword, args);
-//			System.out.println(method.invoke(obj, param[0]));
 			double res = (double) method.invoke(obj, param[0]);
 			System.out.println(res);
 			model = interpreter.getModel();
@@ -152,7 +150,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			param = parseParam(input, searchStartIndex+1, 2);
 			args = createDoubleArgs(2);
 			Method method = interpreterClass.getDeclaredMethod(keyword, args);
-//			System.out.println(method.invoke(obj, param[0], param[1]));
 			double res = (double) method.invoke(obj, param[0], param[1]);
 			System.out.println(res);
 			model = interpreter.getModel();
@@ -251,7 +248,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		Class[] args;
 		args = createDoubleArgs(0);
 		Method method = interpreterClass.getDeclaredMethod(keyword, args);
-//		System.out.println(method.invoke(obj));
 		double res =  (double) method.invoke(obj);
 		System.out.println(res);
 		model = interpreter.getModel();
@@ -266,7 +262,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		param = parseParam(input, searchStartIndex+1, 2);
 		args = createDoubleArgs(2);
 		Method method = interpreterClass.getDeclaredMethod(keyword, args);
-//		System.out.println(method.invoke(obj, param[0], param[1]));
 		double res = (double) method.invoke(obj, param[0], param[1]);
 		System.out.println(res);
 		return res;
@@ -280,7 +275,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		param = parseParam(input, searchStartIndex+1, 1);
 		args = createDoubleArgs(1);
 		Method method = interpreterClass.getDeclaredMethod(keyword, args);
-//		System.out.println(method.invoke(obj, param[0]));
 		double res = (double) method.invoke(obj, param[0]);
 		System.out.println(res);
 		return res;
@@ -291,7 +285,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		Class[] args;
 		args = createDoubleArgs(0);
 		Method method = interpreterClass.getDeclaredMethod(keyword, args);
-//		System.out.println(method.invoke(obj));
 		double res = (double) method.invoke(obj);
 		System.out.println(res);
 		return res;
@@ -346,6 +339,21 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		} catch (NumberFormatException e) {
 			return false;
 		}
+	}
+	
+	
+	//returns -1 if no remaining actionables, otherwise returns index of next actionable
+	private int hasRemainingActionable(String[] parsed, GeneralInterpreter interpreter, int index){
+		int resIndex = -1;
+		if(index == parsed.length) return resIndex;
+		for(int i=index+1;i<parsed.length;i++){
+			if(interpreter.isBinaryTurtleCommand(parsed[i]) || interpreter.isUnaryTurtleCommand(parsed[i]) ||
+				interpreter.isNonInputTurtleCommand(parsed[i])){
+				resIndex = i;
+				break;
+			}
+		}
+		return resIndex;
 	}
 	
 	public int getRepCount(){
