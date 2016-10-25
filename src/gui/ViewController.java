@@ -293,17 +293,8 @@ public class ViewController implements Observer, ErrorPresenter {
 		canvasActions.setPenDown(modelController.getTurtleIsDrawing());
 		canvasActions.setXandYLoc(turtleTranslator.convertXImageCordinate(modelController.getXCoordinate()),
 				turtleTranslator.convertYImageCordinate(modelController.getYCoordinate()));
-		
-		System.out.println("y cord" + turtleTranslator.convertYImageCordinate(modelController.getYCoordinate()));
-		System.out.println("x cord" + turtleTranslator.convertXImageCordinate(modelController.getXCoordinate()));
-		
-
 		canvasActions.addTurtleAtXY();
 		canvasActions.drawPath(turtleTranslator.convertLineCordinates(modelController.getLineCoordinates()));
-		if(modelController.getLineCoordinates().size() !=0){
-		System.out.println("X1 cord" + turtleTranslator.convertLineCordinates(modelController.getLineCoordinates()).get(modelController.getLineCoordinates().size()-1).getX2());
-		System.out.println("Y1 cord" + turtleTranslator.convertLineCordinates(modelController.getLineCoordinates()).get(modelController.getLineCoordinates().size()-1).getY2());
-		}
 		updateVariables();
 
 	}

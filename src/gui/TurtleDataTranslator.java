@@ -25,13 +25,10 @@ public class TurtleDataTranslator {
 	}
 	
 	public double convertXImageCordinate(double xCor){
-		System.out.print("IMAGE WIDTH" + imageWidth);
 			return width/2 + xCor-imageWidth*2/5;
 	}
 	
 	public double convertYImageCordinate(double yCor){
-		System.out.print("IMAGE HEIGHT" + imageWidth);
-
 			return height/2 - yCor-imageHeight;
 	}
 	
