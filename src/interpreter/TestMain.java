@@ -7,7 +7,7 @@ import model.BoardStateController;
 
 public class TestMain extends Application{
 	
-	String input = "fd 100 rt 144";
+	String input = "fd 100 fd";
 	String input2 = "repeat :potato [ fd 7 ]";
 	String input3 = "repeat 5 [ fd 100 rt 144 ]";
 //	String language = "Chinese";
