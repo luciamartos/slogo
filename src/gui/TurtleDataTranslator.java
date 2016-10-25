@@ -13,12 +13,28 @@ import model.PathLine;
 public class TurtleDataTranslator {
 	private double width;
 	private double height;
+	private double imageWidth;
+	private double imageHeight;
 	
-	public TurtleDataTranslator(double canvasWidth, double canvasHeight) {
+	public TurtleDataTranslator(double canvasWidth, double canvasHeight, double imWidth, double imHeight) {
 		// TODO Auto-generated constructor stub
 		width = canvasWidth;
 		height = canvasHeight;
+		imageWidth = imWidth;
+		imageHeight = imHeight;
 	}
+	
+	public double convertXImageCordinate(double xCor){
+		System.out.print("IMAGE WIDTH" + imageWidth);
+			return width/2 + xCor-imageWidth*2/5;
+	}
+	
+	public double convertYImageCordinate(double yCor){
+		System.out.print("IMAGE HEIGHT" + imageWidth);
+
+			return height/2 - yCor-imageHeight;
+	}
+	
 	
 	public double convertXCordinate(double xCor){
 			return width/2 + xCor;

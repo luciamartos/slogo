@@ -67,12 +67,21 @@ public class ViewController implements Observer, ErrorPresenter {
 
 	TableView<Variable> variableTableView;
 	TableView<UserDefinedCommand> userDefinedTableView;
-
+	
+	public double getImageWidth(){
+		return viewProperties.getDoubleProperty("image_width");
+	}
+	
+	
+	public double getImageHeight(){
+		return viewProperties.getDoubleProperty("image_height");
+	}
+	
 	public ViewController(Stage stage) {
 		viewProperties = new Properties(VIEW_PROPERTIES_PACKAGE + "View");
 		sceneRoot = new Group();
 		turtleTranslator = new TurtleDataTranslator(viewProperties.getDoubleProperty("canvas_width"),
-				viewProperties.getDoubleProperty("canvas_height"));
+				viewProperties.getDoubleProperty("canvas_height"), getImageWidth(), getImageHeight());
 		sceneRoot.getChildren().add(setupBoxes());
 		setupStage(stage);
 		sceneRoot.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
@@ -123,7 +132,7 @@ public class ViewController implements Observer, ErrorPresenter {
 	public Node createCanvas() {
 		double canvasWidth = viewProperties.getDoubleProperty("canvas_width");
 		double canvasHeight = viewProperties.getDoubleProperty("canvas_height");
-		canvasActions = new CanvasActions(canvasWidth, canvasHeight);
+		canvasActions = new CanvasActions(canvasWidth, canvasHeight, getImageWidth(), getImageHeight());
 		return canvasActions.getPane();
 	}
 
@@ -282,10 +291,19 @@ public class ViewController implements Observer, ErrorPresenter {
 		canvasActions.setShowTurtle(modelController.getTurtleIsShowing());
 		canvasActions.setHeading(turtleTranslator.convertAngle(modelController.getAngle()));
 		canvasActions.setPenDown(modelController.getTurtleIsDrawing());
-		canvasActions.setXandYLoc(turtleTranslator.convertXCordinate(modelController.getXCoordinate()),
-				turtleTranslator.convertYCordinate(modelController.getYCoordinate()));
+		canvasActions.setXandYLoc(turtleTranslator.convertXImageCordinate(modelController.getXCoordinate()),
+				turtleTranslator.convertYImageCordinate(modelController.getYCoordinate()));
+		
+		System.out.println("y cord" + turtleTranslator.convertYImageCordinate(modelController.getYCoordinate()));
+		System.out.println("x cord" + turtleTranslator.convertXImageCordinate(modelController.getXCoordinate()));
+		
+
 		canvasActions.addTurtleAtXY();
 		canvasActions.drawPath(turtleTranslator.convertLineCordinates(modelController.getLineCoordinates()));
+		if(modelController.getLineCoordinates().size() !=0){
+		System.out.println("X1 cord" + turtleTranslator.convertLineCordinates(modelController.getLineCoordinates()).get(modelController.getLineCoordinates().size()-1).getX2());
+		System.out.println("Y1 cord" + turtleTranslator.convertLineCordinates(modelController.getLineCoordinates()).get(modelController.getLineCoordinates().size()-1).getY2());
+		}
 		updateVariables();
 
 	}

@@ -38,11 +38,15 @@ public class CanvasActions{
 	private double heading;
 	private double xLoc;
 	private double yLoc;
+	private double imageWidth;
+	private double imageHeight;
 
 
-	public CanvasActions(double canvasWidth, double canvasHeight){
+	public CanvasActions(double canvasWidth, double canvasHeight, double imWidth, double imHeight){
 		initializePane(canvasWidth, canvasHeight);
 		initializeCanvas(canvasWidth, canvasHeight);
+		imageWidth = imWidth;
+		imageHeight = imHeight;
 		pane.getChildren().addAll(canvas);
 		gc = canvas.getGraphicsContext2D(); // TODO: make a more descriptive
 											// name
@@ -80,7 +84,7 @@ public class CanvasActions{
 //		xLoc = canvas.getWidth() / 2;
 //		yLoc = canvas.getHeight() / 2;
 
-		turtleImgView = new ImageView(ViewImageChooser.selectImage(IMAGE_PATH + "turtle.png", 50, 50));
+		turtleImgView = new ImageView(ViewImageChooser.selectImage(IMAGE_PATH + "turtle.png", imageWidth, imageHeight));
 
 	//	myTurtle = new TurtleView(canvas.getWidth() / 2, canvas.getHeight() / 2, turtleImg, true, Color.BLACK);
 		//addTurtleAtXY();
