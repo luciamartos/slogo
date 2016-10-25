@@ -12,6 +12,11 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
  
+/**
+ * Adaptation of: http://www.java2s.com/Code/Java/JavaFX/WebEngineLoadListener.htm
+ * 
+ *
+ */
 public class BrowserView {
 	
     private static final double WEB_WIDTH = 800;
