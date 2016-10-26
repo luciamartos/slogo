@@ -379,10 +379,6 @@ public class ViewController implements Observer, ErrorPresenter {
 		if (settingsController.getNewImage() != null)
 			canvasActions.changeImage(settingsController.getNewImage(), modelController.getXCoordinate(),
 					modelController.getYCoordinate());
-		if (settingsController.getNewBackgroundColor() != null)
-			canvasActions.setBackgroundColorCanvas(settingsController.getNewBackgroundColor());
-		if (settingsController.getNewLanguage() != null)
-			interpreter.setLanguage(settingsController.getNewLanguage());
 	}
 	
 	public void update(WorkspaceSettingsController obs, Object o) {
