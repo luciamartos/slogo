@@ -21,6 +21,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
@@ -37,6 +38,11 @@ public class SettingsController extends Observable {
 
 	private static final int PADDING = 4;
 
+	private static final double MIN_THICKNESS = 1;
+	private static final double MAX_THICKNESS = 10;
+	private static final double INIT_THICKNESS = 2;
+
+
 	private Properties viewProperties;
 	private HBox hBox;
 	private Button imageButton;
@@ -46,12 +52,14 @@ public class SettingsController extends Observable {
 	private Image newImage;
 	private String newLanguage;
 	private Stage stage;
+	private double newPenThickness;
 
 	public SettingsController(Stage myStage, Properties viewProperties) {
 		stage = myStage;
 		this.viewProperties = viewProperties;
 		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
 		hBox.getChildren().add(initializePenColorSetting());
+		hBox.getChildren().add(initializePenThicknessSetting());
 		hBox.getChildren().add(initializeBackgroundColorSetting());
 		hBox.getChildren().add(initializeLanguageSetting());
 		hBox.getChildren().add(initializeTurtleImageSetting(stage));
@@ -82,6 +90,23 @@ public class SettingsController extends Observable {
 			}
 		});
 		VBox tempBox = makeLabelForComboBox(penColorPicker, "Pen color");
+		return tempBox;
+	}
+	
+	private Node initializePenThicknessSetting(){
+		Slider thicknessSlider = new Slider();
+		thicknessSlider.setMin(MIN_THICKNESS);
+		thicknessSlider.setMax(MAX_THICKNESS);
+		thicknessSlider.setValue(INIT_THICKNESS);
+		
+		thicknessSlider.valueProperty().addListener(new ChangeListener<Number>(){
+			public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val){
+				setChanged();
+				newPenThickness = new_val.doubleValue();
+				notifyObservers();
+			}
+		});
+		VBox tempBox = makeLabelForComboBox(thicknessSlider, "Pen thickness");
 		return tempBox;
 	}
 
@@ -181,6 +206,10 @@ public class SettingsController extends Observable {
 
 	public Image getNewImage() {
 		return newImage;
+	}
+
+	public double getNewPenThickness() {
+		return newPenThickness;
 	}
 
 }

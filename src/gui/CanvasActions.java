@@ -32,6 +32,7 @@ public class CanvasActions{
 	private Canvas canvas;
 	private Pane pane;
 	private Color myColor;
+	private double myThickness;
 	private ImageView turtleImgView;
 	private boolean penDown;
 	private boolean showTurtle;
@@ -107,6 +108,7 @@ public class CanvasActions{
 		//if(penDown){
       //  System.out.println(myCords.size());
 	        gc.setStroke(myColor);
+	    	gc.setLineWidth(myThickness);
 	        for(int i =0; i<myCords.size();i++){
 		        gc.strokeLine(myCords.get(i).getX1(), myCords.get(i).getY1(), myCords.get(i).getX2(), myCords.get(i).getY2());
 	     //   }
@@ -151,6 +153,10 @@ public class CanvasActions{
 
 	public void setPenColor(Color color) {
 		myColor = color;
+	}
+	
+	public void setPenThickness(double thickness){
+		myThickness = thickness;
 	}
 
 }

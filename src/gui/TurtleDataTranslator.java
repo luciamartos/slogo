@@ -25,11 +25,11 @@ public class TurtleDataTranslator {
 	}
 	
 	public double convertXImageCordinate(double xCor){
-			return width/2 + xCor-imageWidth*2/5;
+			return width/2 + xCor-imageWidth/2;
 	}
 	
 	public double convertYImageCordinate(double yCor){
-			return height/2 - yCor-imageHeight;
+			return height/2 - yCor-imageHeight/2;
 	}
 	
 	
