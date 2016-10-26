@@ -52,8 +52,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 //			System.out.println(elem);
 //		}
 		interpretCommand(split, 0);   //first search(non-recursive) begins at index 0;
-		System.out.println(currSearchIndex);
-		stateUpdater.applyChanges(model);
+//		stateUpdater.applyChanges(model);
 	}
 	
 	private double interpretCommand(String[] input, int searchStartIndex) throws ClassNotFoundException, NoSuchMethodException, 
@@ -63,8 +62,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		
 		GeneralInterpreter decideCommand = new GeneralInterpreter();
 		String keyword = parsed[searchStartIndex].toLowerCase();
-		
-		System.out.println("index: " + searchStartIndex);
+
 		//scan for list first before anything else
 		searchForList(input, parsed);
 		
@@ -102,25 +100,22 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		}
 		
 			
-//		else{
-			if(returnValue != defaultReturnValue){
-				if(hasRemainingActionable(parsed, decideCommand, currSearchIndex) < 0){
-					return returnValue;
-				}
-				else{
-					return interpretCommand(input, currSearchIndex+1);
-				}
+		if(returnValue != defaultReturnValue){
+			if(hasRemainingActionable(parsed, decideCommand, currSearchIndex) < 0){
+				stateUpdater.applyChanges(model);
+				return returnValue;
 			}
 			else{
-				String errorMessage = "Invalid argument detected: '"+input[searchStartIndex]+"' is not a valid command!";
-				System.out.println(errorMessage);
-				errorPresenter.presentError(errorMessage);
-				throw new IllegalArgumentException();
+				stateUpdater.applyChanges(model);
+				return interpretCommand(input, currSearchIndex+1);
 			}
-			
-//		}
-		
-//		return returnValue; //this line will not be reached
+		}
+		else{
+			String errorMessage = "Invalid argument detected: '"+input[searchStartIndex]+"' is not a valid command!";
+			System.out.println(errorMessage);
+			errorPresenter.presentError(errorMessage);
+			throw new IllegalArgumentException();
+		}
 	}
 
 	private void searchForList(String[] input, String[] parsed) {
@@ -253,6 +248,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			}
 			listQueue.remove();
 			System.out.println(res);
+			currSearchIndex = searchStartIndex+2;
 			return res;
 		}
 		
@@ -367,8 +363,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	//returns -1 if no remaining actionables, otherwise returns index of next actionable
 	private int hasRemainingActionable(String[] parsed, GeneralInterpreter interpreter, int index){
 		int resIndex = -1;
-		if(index == parsed.length) return resIndex;
+		if(index == parsed.length || parsed[index].equalsIgnoreCase(rb.getString("ListStartLabel"))) return resIndex;
 		for(int i=index+1;i<parsed.length;i++){
+
 			if(interpreter.isBinaryTurtleCommand(parsed[i]) || interpreter.isUnaryTurtleCommand(parsed[i]) ||
 				interpreter.isNonInputTurtleCommand(parsed[i])){
 				resIndex = i;
