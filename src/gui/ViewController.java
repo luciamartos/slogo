@@ -33,6 +33,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -49,12 +50,15 @@ public class ViewController implements Observer, ErrorPresenter {
 
 	private static final String VIEW_PROPERTIES_PACKAGE = "resources.properties/";
 	private static final Paint BACKGROUND_COLOR_SCENE = Color.ALICEBLUE;
+
+	private static final double HIDE_SHOW_BUTTON_WIDTH = 140;
 	private Group sceneRoot;
 	private TitleBox titleBox;
 	private InputPanel inputPanel;
 	private ObservableList<String> pastCommands;
 	private CanvasActions canvasActions;
 	private SettingsController settingsController;
+	private PenSettingsController penSettingsController;
 	private Stage stage;
 	private ErrorConsole errorConsole;
 	private BoardStateDataSource modelController;
@@ -108,10 +112,14 @@ public class ViewController implements Observer, ErrorPresenter {
 
 		box3.getChildren().add(createCanvas());
 		box3.getChildren().add(createCommandInputter());
+	    //HBox.setHgrow(box2, Priority.ALWAYS);
 		
 		Node settingsController =initializeSettingsController();
+		Node penSettingsController = initializePenSettingsController();
 		box4.getChildren().add(createViewSelector());
+		box4.getChildren().add(penSettingsController);
 		box4.getChildren().add(settingsController);
+		
 		return box1;
 	}
 
@@ -128,10 +136,10 @@ public class ViewController implements Observer, ErrorPresenter {
 	private Node createViewSelector(){
 		//initialise buttons
 		VBox hideShowButtons = new VBox(2);
-		Button historicCommands = new Button("Hide history");
-		Button variables = new Button("Hide variales");
-		Button userVariables = new Button("Hide user variables");
-		Button drawSettings = new Button("Hide settings");
+		Button historicCommands = createButton("Hide history", HIDE_SHOW_BUTTON_WIDTH);
+		Button variables = createButton("Hide variales",HIDE_SHOW_BUTTON_WIDTH);
+		Button userVariables = createButton("Hide user variables",HIDE_SHOW_BUTTON_WIDTH);
+		Button drawSettings = createButton("Hide settings",HIDE_SHOW_BUTTON_WIDTH);
 		
 		//initialise button actions
 		hideShowButtonActions(historicCommands, pastCommandsListView, "Hide history", "Show history");
@@ -182,7 +190,12 @@ public class ViewController implements Observer, ErrorPresenter {
 		settingsController = new SettingsController(stage, viewProperties);
 		settingsController.addObserver(this);
 		return settingsController.getHBox();
-
+	}
+	
+	private Node initializePenSettingsController() {
+		penSettingsController = new PenSettingsController(stage, viewProperties);
+		penSettingsController.addObserver(this);
+		return penSettingsController.getVBox();
 	}
 
 	private void handleKeyInput(KeyCode code) {
@@ -222,15 +235,6 @@ public class ViewController implements Observer, ErrorPresenter {
 		TableColumn<Variable, String> variableValues = new TableColumn<Variable, String>("Value");
 		variableValues.setCellValueFactory(new PropertyValueFactory<Variable, String>("value"));
 		variableValues.setEditable(true);
-		//
-		// variableValues.setOnEditCommit(
-		// new EventHandler<ActionEvent>() {
-		// @Override
-		// public void handle() {
-		//
-		// }
-		// }
-		// );
 
 		variables.getColumns().addAll(variableNames, variableValues);
 
@@ -361,14 +365,21 @@ public class ViewController implements Observer, ErrorPresenter {
 					modelController.getYCoordinate());
 		if (settingsController.getNewBackgroundColor() != null)
 			canvasActions.setBackgroundColorCanvas(settingsController.getNewBackgroundColor());
+		if (settingsController.getNewLanguage() != null)
+			interpreter.setLanguage(settingsController.getNewLanguage());
+	}
+	
+	public void update(PenSettingsController obvs, Object o){
+		if (o != null) {
+			errorConsole.displayErrorMessage(o.toString());
+			return;
+		}
 		if (settingsController.getNewPenColor() != null)
 			canvasActions.setPenColor(settingsController.getNewPenColor());
 		if (settingsController.getNewPenType() != null)
 			canvasActions.setPenType(settingsController.getNewPenType());
 		if(settingsController.getNewPenThickness() != 0)
 			canvasActions.setPenThickness(settingsController.getNewPenThickness());
-		if (settingsController.getNewLanguage() != null)
-			interpreter.setLanguage(settingsController.getNewLanguage());
 	}
 
 	public void setModelController(BoardStateDataSource modelController) {
