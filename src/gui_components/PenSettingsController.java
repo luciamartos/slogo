@@ -1,4 +1,4 @@
-package gui;
+package gui_components;
 
 import java.io.File;
 import java.lang.reflect.Field;

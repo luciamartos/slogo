@@ -1,5 +1,6 @@
-package gui;
+package gui_components;
 
+import gui.FadingTransition;
 import javafx.animation.SequentialTransition;
 import javafx.scene.control.Label;
 import javafx.scene.text.Font;

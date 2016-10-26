@@ -1,4 +1,4 @@
-package gui;
+package gui_components;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

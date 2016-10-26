@@ -12,6 +12,13 @@ import java.util.Observer;
 
 import general.MainController;
 import general.Properties;
+import gui_components.ErrorConsole;
+import gui_components.InputPanel;
+import gui_components.PenSettingsController;
+import gui_components.SettingsController;
+import gui_components.TitleBox;
+import gui_components.UserDefinedCommand;
+import gui_components.WorkspaceSettingsController;
 import interpreter.ErrorPresenter;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -58,6 +65,7 @@ public class ViewController implements Observer, ErrorPresenter {
 	private ObservableList<String> pastCommands;
 	private CanvasActions canvasActions;
 	private SettingsController settingsController;
+	private WorkspaceSettingsController workspaceSettingsController;
 	private PenSettingsController penSettingsController;
 	private Stage stage;
 	private ErrorConsole errorConsole;
@@ -116,8 +124,10 @@ public class ViewController implements Observer, ErrorPresenter {
 		
 		Node settingsController =initializeSettingsController();
 		Node penSettingsController = initializePenSettingsController();
+		Node workspaceSettingsController = initializeWorkspaceSettingsController();
 		box4.getChildren().add(createViewSelector());
 		box4.getChildren().add(penSettingsController);
+		box4.getChildren().add(workspaceSettingsController);
 		box4.getChildren().add(settingsController);
 		
 		return box1;
@@ -190,6 +200,12 @@ public class ViewController implements Observer, ErrorPresenter {
 		settingsController = new SettingsController(stage, viewProperties);
 		settingsController.addObserver(this);
 		return settingsController.getHBox();
+	}
+	
+	private Node initializeWorkspaceSettingsController() {
+		workspaceSettingsController = new WorkspaceSettingsController(stage, viewProperties);
+		workspaceSettingsController.addObserver(this);
+		return workspaceSettingsController.getVBox();
 	}
 	
 	private Node initializePenSettingsController() {
@@ -369,17 +385,24 @@ public class ViewController implements Observer, ErrorPresenter {
 			interpreter.setLanguage(settingsController.getNewLanguage());
 	}
 	
+	public void update(WorkspaceSettingsController obs, Object o) {
+		if (workspaceSettingsController.getNewBackgroundColor() != null)
+			canvasActions.setBackgroundColorCanvas(workspaceSettingsController.getNewBackgroundColor());
+		if (workspaceSettingsController.getNewLanguage() != null)
+			interpreter.setLanguage(workspaceSettingsController.getNewLanguage());
+	}
+	
 	public void update(PenSettingsController obvs, Object o){
 		if (o != null) {
 			errorConsole.displayErrorMessage(o.toString());
 			return;
 		}
-		if (settingsController.getNewPenColor() != null)
-			canvasActions.setPenColor(settingsController.getNewPenColor());
-		if (settingsController.getNewPenType() != null)
-			canvasActions.setPenType(settingsController.getNewPenType());
-		if(settingsController.getNewPenThickness() != 0)
-			canvasActions.setPenThickness(settingsController.getNewPenThickness());
+		if (penSettingsController.getNewPenColor() != null)
+			canvasActions.setPenColor(penSettingsController.getNewPenColor());
+		if (penSettingsController.getNewPenType() != null)
+			canvasActions.setPenType(penSettingsController.getNewPenType());
+		if(penSettingsController.getNewPenThickness() != 0)
+			canvasActions.setPenThickness(penSettingsController.getNewPenThickness());
 	}
 
 	public void setModelController(BoardStateDataSource modelController) {

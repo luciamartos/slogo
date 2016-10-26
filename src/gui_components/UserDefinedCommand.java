@@ -1,4 +1,4 @@
-package gui;
+package gui_components;
 
 import javafx.beans.property.SimpleStringProperty;
 

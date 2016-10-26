@@ -1,4 +1,4 @@
-package gui;
+package gui_components;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -8,6 +8,7 @@ import java.util.Observable;
 
 import general.Main;
 import general.Properties;
+import gui.ViewImageChooser;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -35,7 +36,7 @@ import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class SettingsController extends Observable {
+public class TurtleSettingsController extends Observable {
 
 	private static final String IMAGE_PATH = "resources/images/";
 
@@ -48,22 +49,17 @@ public class SettingsController extends Observable {
 
 	private Properties viewProperties;
 	private HBox hBox;
-	private Button imageButton;
 
-	private Color newBackgroundColor;
-	private Color newPenColor;
 	private Image newImage;
-	private String newLanguage;
 	private Stage stage;
-	private double newPenThickness;
-	private String newPenType;
 
-	public SettingsController(Stage myStage, Properties viewProperties) {
+
+	public TurtleSettingsController(Stage myStage, Properties viewProperties) {
 		stage = myStage;
 		this.viewProperties = viewProperties;
 		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
-		hBox.getChildren().add(initializeBackgroundColorSetting());
-		hBox.getChildren().add(initializeLanguageSetting());
+	//	hBox.getChildren().add(initializeBackgroundColorSetting());
+		//hBox.getChildren().add(initializeLanguageSetting());
 		hBox.getChildren().add(initializeTurtleImageSetting(stage));
 		hBox.getChildren().add(initializeGetHelpButton());
 	}
@@ -80,41 +76,7 @@ public class SettingsController extends Observable {
 		return helpButton;
 	}
 
-	private Node initializeBackgroundColorSetting() {
-		ColorPicker backgroundColorPicker = new ColorPicker();
-		backgroundColorPicker.setValue(Color.WHITE);
-		backgroundColorPicker.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent t) {
-				setChanged();
-				newBackgroundColor = backgroundColorPicker.getValue();
-				notifyObservers();
-			}
-		});
-		VBox tempBox = makeLabel(backgroundColorPicker, "Background color");
-		return tempBox;
-	}
 
-
-	private Node initializeLanguageSetting() {
-		ComboBox<String> languageSelect = new ComboBox<String>();
-		languageSelect.setVisibleRowCount(3);
-		String rawLanguage = viewProperties.getStringProperty("languages");
-		rawLanguage = rawLanguage.replaceAll("\\s","");
-		List<String> languages = Arrays.asList(rawLanguage.split(","));
-		languageSelect.getItems().addAll(languages);
-		languageSelect.setValue("English");
-		languageSelect.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue ov, String t, String t1) {
-				setChanged();
-				newLanguage = languageSelect.getValue();
-				notifyObservers();
-			}
-		});
-		VBox tempBox = makeLabel(languageSelect, "Set language");
-		return tempBox;
-	}
 
 	private Node initializeTurtleImageSetting(Stage stage) {
 		ComboBox<String> shapesComboBox = new ComboBox<String>();
@@ -156,28 +118,8 @@ public class SettingsController extends Observable {
 		return hBox;
 	}
 
-	public Color getNewBackgroundColor() {
-		return newBackgroundColor;
-	}
-
-	public Color getNewPenColor() {
-		return newPenColor;
-	}
-	
-	public String getNewLanguage(){
-		return newLanguage;
-	}
-
 	public Image getNewImage() {
 		return newImage;
-	}
-
-	public double getNewPenThickness() {
-		return newPenThickness;
-	}
-	
-	public String getNewPenType(){
-		return newPenType;
 	}
 
 }
