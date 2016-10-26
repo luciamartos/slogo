@@ -32,6 +32,7 @@ public class CanvasActions{
 	private Canvas canvas;
 	private Pane pane;
 	private Color myColor;
+	private String penType;
 	private double myThickness;
 	private ImageView turtleImgView;
 	private boolean penDown;
@@ -41,7 +42,6 @@ public class CanvasActions{
 	private double yLoc;
 	private double imageWidth;
 	private double imageHeight;
-
 
 	public CanvasActions(double canvasWidth, double canvasHeight, double imWidth, double imHeight){
 		initializePane(canvasWidth, canvasHeight);
@@ -109,10 +109,27 @@ public class CanvasActions{
       //  System.out.println(myCords.size());
 	        gc.setStroke(myColor);
 	    	gc.setLineWidth(myThickness);
+	    	if(penType !=null){			//MAKE SURE ITS INITIALISED TO NOT NULL SO I CAN REMOVE THIS
+	    		handleDifferentPenTypes();
+	    	}
+	    	
 	        for(int i =0; i<myCords.size();i++){
 		        gc.strokeLine(myCords.get(i).getX1(), myCords.get(i).getY1(), myCords.get(i).getX2(), myCords.get(i).getY2());
 	     //   }
 		}	
+	}
+
+	private void handleDifferentPenTypes() {
+		if(penType.equals("dashed")){	//THESE ARENT WORKING EXACTLY HOW THEY SHOULD
+			gc.setLineDashes(6.0f);
+			gc.setLineDashOffset(0.0f);
+		}
+		if(penType.equals("dotted")){
+			gc.setLineDashes(3.0f);
+		}
+		else{
+			gc.setLineDashes(null);
+		}
 	}
 
 	public void addTurtleAtXY() {
@@ -157,6 +174,10 @@ public class CanvasActions{
 	
 	public void setPenThickness(double thickness){
 		myThickness = thickness;
+	}
+	
+	public void setPenType(String type){
+		penType = type;
 	}
 
 }

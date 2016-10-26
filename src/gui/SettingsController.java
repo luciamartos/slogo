@@ -53,6 +53,7 @@ public class SettingsController extends Observable {
 	private String newLanguage;
 	private Stage stage;
 	private double newPenThickness;
+	private String newPenType;
 
 	public SettingsController(Stage myStage, Properties viewProperties) {
 		stage = myStage;
@@ -60,12 +61,32 @@ public class SettingsController extends Observable {
 		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
 		hBox.getChildren().add(initializePenColorSetting());
 		hBox.getChildren().add(initializePenThicknessSetting());
+		hBox.getChildren().add(initializePenTypeSetting());
 		hBox.getChildren().add(initializeBackgroundColorSetting());
 		hBox.getChildren().add(initializeLanguageSetting());
 		hBox.getChildren().add(initializeTurtleImageSetting(stage));
 		hBox.getChildren().add(initializeGetHelpButton());
 	}
 	
+	private Node initializePenTypeSetting() {
+		ComboBox<String> penTypesComboBox = new ComboBox<String>();
+		penTypesComboBox.setVisibleRowCount(3);
+		penTypesComboBox.getItems().addAll("solid", "dashed", "dotted");
+		penTypesComboBox.setValue("Pen type");
+
+		penTypesComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue ov, String t, String t1) {
+				if(t1!=null){
+				setChanged();
+				newPenType = t1;
+				notifyObservers();
+				}
+			}
+		});
+		return penTypesComboBox;
+	}
+
 	private Node initializeGetHelpButton() {
 		Button helpButton = createButton("Get help!", viewProperties.getDoubleProperty("help_button_width"));
 		helpButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -89,7 +110,7 @@ public class SettingsController extends Observable {
 				notifyObservers();
 			}
 		});
-		VBox tempBox = makeLabelForComboBox(penColorPicker, "Pen color");
+		VBox tempBox = makeLabel(penColorPicker, "Pen color");
 		return tempBox;
 	}
 	
@@ -106,7 +127,7 @@ public class SettingsController extends Observable {
 				notifyObservers();
 			}
 		});
-		VBox tempBox = makeLabelForComboBox(thicknessSlider, "Pen thickness");
+		VBox tempBox = makeLabel(thicknessSlider, "Pen thickness");
 		return tempBox;
 	}
 
@@ -121,7 +142,7 @@ public class SettingsController extends Observable {
 				notifyObservers();
 			}
 		});
-		VBox tempBox = makeLabelForComboBox(backgroundColorPicker, "Background color");
+		VBox tempBox = makeLabel(backgroundColorPicker, "Background color");
 		return tempBox;
 	}
 
@@ -142,7 +163,7 @@ public class SettingsController extends Observable {
 				notifyObservers();
 			}
 		});
-		VBox tempBox = makeLabelForComboBox(languageSelect, "Set language");
+		VBox tempBox = makeLabel(languageSelect, "Set language");
 		return tempBox;
 	}
 
@@ -167,7 +188,7 @@ public class SettingsController extends Observable {
 
 	}
 	
-	private VBox makeLabelForComboBox(Node backgroundColorPicker, String text) {
+	private VBox makeLabel(Node backgroundColorPicker, String text) {
 		Label lbl = new Label();
 		lbl.setText(text);
 		VBox tempBox = new VBox(PADDING);
@@ -175,12 +196,6 @@ public class SettingsController extends Observable {
 		return tempBox;
 	}
 
-	private TextField createTextBox(String text, double width) {
-		TextField textField = new TextField();
-		textField.setPromptText(text);
-		textField.setPrefWidth(width); // CHANGE TO COMMAND BUTTON WIDTH
-		return textField;
-	}
 
 	private Button createButton(String text, double width) {
 		Button button = new Button(text);
@@ -210,6 +225,10 @@ public class SettingsController extends Observable {
 
 	public double getNewPenThickness() {
 		return newPenThickness;
+	}
+	
+	public String getNewPenType(){
+		return newPenType;
 	}
 
 }

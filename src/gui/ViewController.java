@@ -311,6 +311,8 @@ public class ViewController implements Observer, ErrorPresenter {
 			canvasActions.setBackgroundColorCanvas(settingsController.getNewBackgroundColor());
 		if (settingsController.getNewPenColor() != null)
 			canvasActions.setPenColor(settingsController.getNewPenColor());
+		if (settingsController.getNewPenType() != null)
+			canvasActions.setPenType(settingsController.getNewPenType());
 		if(settingsController.getNewPenThickness() != 0)
 			canvasActions.setPenThickness(settingsController.getNewPenThickness());
 		if (settingsController.getNewLanguage() != null)
