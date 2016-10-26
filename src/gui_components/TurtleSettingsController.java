@@ -69,7 +69,7 @@ public class TurtleSettingsController extends Observable {
 		helpButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-            BrowserView myView = new BrowserView(new Stage());
+            BrowserView myView = new BrowserView(new Stage(), viewProperties.getDoubleProperty("help_width"),viewProperties.getDoubleProperty("help_height"));
             }
         });
 
