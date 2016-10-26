@@ -24,6 +24,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
@@ -59,6 +60,7 @@ public class ViewController implements Observer, ErrorPresenter {
 	private BoardStateDataSource modelController;
 	private SlogoCommandInterpreter interpreter;
 	private TurtleDataTranslator turtleTranslator;
+	private ListView<String> pastCommandsListView;
 
 	// private TableColumn userDefinedCommandNames;
 	// private TableColumn userDefinedCommandValues;
@@ -91,11 +93,12 @@ public class ViewController implements Observer, ErrorPresenter {
 		VBox box1 = new VBox(15);
 		HBox box2 = new HBox(15);
 		VBox box3 = new VBox(15);
+		HBox box4 = new HBox(15);
 
 		box1.setPadding(new Insets(15, 15, 15, 15));
 		box1.getChildren().add(createTitleBox());
 		box1.getChildren().add(box2);
-		box1.getChildren().add(initializeSettingsController());
+		box1.getChildren().add(box4);
 		box1.getChildren().add(createErrorConsole());
 
 		box2.getChildren().add(box3);
@@ -105,10 +108,14 @@ public class ViewController implements Observer, ErrorPresenter {
 
 		box3.getChildren().add(createCanvas());
 		box3.getChildren().add(createCommandInputter());
-
+		
+		Node settingsController =initializeSettingsController();
+		box4.getChildren().add(createViewSelector());
+		box4.getChildren().add(settingsController);
 		return box1;
 	}
 
+	
 	private void setupStage(Stage stage) {
 		double appWidth = viewProperties.getDoubleProperty("app_width");
 		double appHeight = viewProperties.getDoubleProperty("app_height");
@@ -118,6 +125,41 @@ public class ViewController implements Observer, ErrorPresenter {
 		stage.show();
 	}
 
+	private Node createViewSelector(){
+		//initialise buttons
+		VBox hideShowButtons = new VBox(2);
+		Button historicCommands = new Button("Hide history");
+		Button variables = new Button("Hide variales");
+		Button userVariables = new Button("Hide user variables");
+		Button drawSettings = new Button("Hide settings");
+		
+		//initialise button actions
+		hideShowButtonActions(historicCommands, pastCommandsListView, "Hide history", "Show history");
+		hideShowButtonActions(variables, variableTableView, "Hide variales", "Show variales");
+		hideShowButtonActions(userVariables, userDefinedTableView, "Hide user variables", "Show user variables");
+		hideShowButtonActions(drawSettings, settingsController.getHBox(), "Hide settings", "Show settings");
+
+		hideShowButtons.getChildren().addAll(historicCommands,userVariables,variables,drawSettings);
+		return hideShowButtons;
+	}
+
+
+	private void hideShowButtonActions(Button button, Node view, String hide, String show) {
+		button.setOnAction(new EventHandler<ActionEvent>() {
+	        @Override
+	        public void handle(ActionEvent e) {
+				if(button.getText().equals(hide)){
+					button.setText(show);
+					view.setVisible(false);	
+				}
+				else{
+					button.setText(hide);
+					view.setVisible(true);
+				}
+	        }
+		});
+	}
+	
 	private Node createTitleBox() {
 		double padding = viewProperties.getDoubleProperty("padding");
 		double x = padding;
@@ -150,7 +192,8 @@ public class ViewController implements Observer, ErrorPresenter {
 	}
 
 	private Node createPastCommandsListView() {
-		ListView<String> pastCommandsListView = new ListView<String>();
+		pastCommandsListView = new ListView<String>();
+		pastCommandsListView.managedProperty().bind(pastCommandsListView.visibleProperty());
 		pastCommands = FXCollections.observableArrayList();
 		pastCommandsListView.setItems(pastCommands);
 
@@ -169,6 +212,8 @@ public class ViewController implements Observer, ErrorPresenter {
 	private Node createVariableTableView() {
 		variableTableView = new TableView<Variable>();
 		variableTableView.setEditable(true);
+		variableTableView.managedProperty().bind(variableTableView.visibleProperty());
+
 		TableColumn<Variable, String> variables = new TableColumn<Variable, String>("Variables");
 		variables.setEditable(true);
 
@@ -228,6 +273,13 @@ public class ViewController implements Observer, ErrorPresenter {
 		inputPanel = new InputPanel(inputPanelHeight, textFieldWidth, runButtonWidth, viewProperties,
 				runCommandHandler);
 		return inputPanel;
+	}
+
+	
+	private Button createButton(String text, double width) {
+		Button button = new Button(text);
+		button.setPrefWidth(width);
+		return button;
 	}
 
 	private void runHistoricCommand(String curCommand) {

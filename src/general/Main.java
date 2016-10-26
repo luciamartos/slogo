@@ -3,6 +3,7 @@ package general;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * Main class for Slogo. Basic boilerplate code for launching the JavaFX

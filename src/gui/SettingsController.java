@@ -23,7 +23,9 @@ import javafx.scene.control.Labeled;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -69,6 +71,8 @@ public class SettingsController extends Observable {
 	}
 	
 	private Node initializePenTypeSetting() {
+		//TitledPane titledPane = new TitledPane();
+		//titledPane.setRotate(270);
 		ComboBox<String> penTypesComboBox = new ComboBox<String>();
 		penTypesComboBox.setVisibleRowCount(3);
 		penTypesComboBox.getItems().addAll("solid", "dashed", "dotted");
@@ -84,6 +88,7 @@ public class SettingsController extends Observable {
 				}
 			}
 		});
+		//titledPane .setContent(penTypesComboBox);
 		return penTypesComboBox;
 	}
 
