@@ -69,7 +69,9 @@ public class SettingsController extends Observable {
 		helpButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-            BrowserView myView = new BrowserView(new Stage());
+            	double webWidth = viewProperties.getDoubleProperty("web_width");
+            	double webHeight = viewProperties.getDoubleProperty("web_height");
+            BrowserView myView = new BrowserView(new Stage(), webWidth, webHeight);
             }
         });
 
