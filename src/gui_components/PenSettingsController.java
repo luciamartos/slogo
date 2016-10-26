@@ -40,7 +40,7 @@ public class PenSettingsController extends Observable {
 
 	public PenSettingsController(Stage myStage, Properties viewProperties) {
 		stage = myStage;
-		vBox = new VBox(7);
+		vBox = new VBox(viewProperties.getDoubleProperty("padding"));
 		Label lbl = new Label();
 		lbl.setText("Pen settings");
 		vBox.getChildren().add(lbl);
@@ -48,6 +48,11 @@ public class PenSettingsController extends Observable {
 		vBox.getChildren().add(initializePenThicknessSetting());
 		vBox.getChildren().add(initializePenTypeSetting());
 	}
+	
+	public Node getPenSettingsController(){
+		return vBox;
+	}
+	
 	
 	private Node initializePenTypeSetting() {
 		//TitledPane titledPane = new TitledPane();
