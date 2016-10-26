@@ -189,6 +189,10 @@ public class ViewController implements Observer, ErrorPresenter {
 	private Node initializeSettingsController() {
 		settingsController = new SettingsController(stage, viewProperties);
 		settingsController.addObserver(this);
+		settingsController.getPenSettingsController().addObserver(this);
+		settingsController.getWorkspaceSettingsController().addObserver(this);
+		settingsController.getGeneralSettingsController().addObserver(this);
+		settingsController.getTurtleSettingsController().addObserver(this);
 		return settingsController.getHBox();
 	}
 	
@@ -325,6 +329,9 @@ public class ViewController implements Observer, ErrorPresenter {
 	// currently only observable this controller observes is settingsController
 	// DOES THIS ACCOUNT FOR MY UPDATE THING TOO?
 	public void update(Observable obs, Object o) {
+		if (o != null) {
+			errorConsole.displayErrorMessage(o.toString());
+		}
 		try {
 			Method update;
 			if (o != null) {
@@ -355,32 +362,30 @@ public class ViewController implements Observer, ErrorPresenter {
 		canvasActions.setPenDown(modelController.getTurtleIsDrawing());
 		canvasActions.setXandYLoc(turtleTranslator.convertXImageCordinate(modelController.getXCoordinate()),
 				turtleTranslator.convertYImageCordinate(modelController.getYCoordinate()));
+		canvasActions.setPathLine(turtleTranslator.convertLineCordinates(modelController.getLineCoordinates()));
+		//canvasActions.animatedMovementToXY();
 		canvasActions.addTurtleAtXY();
-		canvasActions.drawPath(turtleTranslator.convertLineCordinates(modelController.getLineCoordinates()));
+		canvasActions.drawPath();
 		updateVariables();
 
 	}
 
 	public void update(SettingsController obs, Object o) {
-		if (o != null) {
-			errorConsole.displayErrorMessage(o.toString());
-			return;
-		}
+
+	}
+	
+	public void update(TurtleSettingsController obs, Object o){
 		if (settingsController.getTurtleSettingsController().getNewImage() != null)
 			canvasActions.changeImage(settingsController.getTurtleSettingsController().getNewImage(), modelController.getXCoordinate(),
 					modelController.getYCoordinate());
+	}
+
+	
+	public void update(WorkspaceSettingsController obs, Object o){
 		if (settingsController.getWorkspaceSettingsController().getNewBackgroundColor() != null)
 			canvasActions.setBackgroundColorCanvas(settingsController.getWorkspaceSettingsController().getNewBackgroundColor());
 		if (settingsController.getWorkspaceSettingsController().getNewLanguage() != null)
 			interpreter.setLanguage(settingsController.getWorkspaceSettingsController().getNewLanguage());
-		if (settingsController.getPenSettingsController().getNewPenColor() != null)
-			canvasActions.setPenColor(settingsController.getPenSettingsController().getNewPenColor());
-		if (settingsController.getPenSettingsController().getNewPenType() != null)
-			canvasActions.setPenType(settingsController.getPenSettingsController().getNewPenType());
-		if(settingsController.getPenSettingsController().getNewPenThickness() != 0){
-			canvasActions.setPenThickness(settingsController.getPenSettingsController().getNewPenThickness());
-			System.out.println("MARTOS");
-		}
 	}
 	
 	public void update(PenSettingsController obs, Object o){
@@ -388,10 +393,8 @@ public class ViewController implements Observer, ErrorPresenter {
 			canvasActions.setPenColor(settingsController.getPenSettingsController().getNewPenColor());
 		if (settingsController.getPenSettingsController().getNewPenType() != null)
 			canvasActions.setPenType(settingsController.getPenSettingsController().getNewPenType());
-		if(settingsController.getPenSettingsController().getNewPenThickness() != 0){
+		if(settingsController.getPenSettingsController().getNewPenThickness() != 0)
 			canvasActions.setPenThickness(settingsController.getPenSettingsController().getNewPenThickness());
-			System.out.println("LUCIA");
-		}
 	}
 
 	public void setModelController(BoardStateDataSource modelController) {
