@@ -18,15 +18,12 @@ import javafx.stage.Stage;
  *
  */
 public class BrowserView {
-	
-    private static final double WEB_WIDTH = 800;
-	private static final double WEB_HEIGHT = 500;
 
-	public  BrowserView (Stage stage) {
+	public  BrowserView (Stage stage, double webWidth, double webHeight) {
        // stage.getScene().add
         stage.setTitle("Web View");
-      stage.setWidth(WEB_WIDTH);
-      stage.setHeight(WEB_HEIGHT);
+      stage.setWidth(webWidth);
+      stage.setHeight(webHeight);
         Scene scene = new Scene(new Group());
 
         VBox root = new VBox();     
