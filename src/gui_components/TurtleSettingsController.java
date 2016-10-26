@@ -39,16 +39,12 @@ import javafx.stage.Stage;
 public class TurtleSettingsController extends Observable {
 
 	private static final String IMAGE_PATH = "resources/images/";
+	private static final double MIN_TURTLES = 0;
+	private static final double MAX_TURTLES = 10;
+	private static final double INIT_TURTLES = 1;
+	private int newTurtleNumber;
 
-	private static final int PADDING = 4;
-
-	private static final double MIN_THICKNESS = 1;
-	private static final double MAX_THICKNESS = 10;
-	private static final double INIT_THICKNESS = 2;
-
-
-	private Properties viewProperties;
-	private HBox hBox;
+	private VBox vBox;
 
 	private Image newImage;
 	private Stage stage;
@@ -56,28 +52,31 @@ public class TurtleSettingsController extends Observable {
 
 	public TurtleSettingsController(Stage myStage, Properties viewProperties) {
 		stage = myStage;
-		this.viewProperties = viewProperties;
-		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
-	//	hBox.getChildren().add(initializeBackgroundColorSetting());
-		//hBox.getChildren().add(initializeLanguageSetting());
-		hBox.getChildren().add(initializeTurtleImageSetting(stage));
-		hBox.getChildren().add(initializeGetHelpButton());
-	}
-
-	private Node initializeGetHelpButton() {
-		Button helpButton = createButton("Get help!", viewProperties.getDoubleProperty("help_button_width"));
-		helpButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-            BrowserView myView = new BrowserView(new Stage(), viewProperties.getDoubleProperty("help_width"),viewProperties.getDoubleProperty("help_height"));
-            }
-        });
-
-		return helpButton;
+		vBox = new VBox(7);
+		Label lbl = new Label();
+		lbl.setText("Turtle settings");
+		vBox.getChildren().add(lbl);
+		vBox.getChildren().add(initializeTurtleImageSetting(stage));
+		vBox.getChildren().add(initializeTurtleNumber());
 	}
 
 
 
+	private Node initializeTurtleNumber(){
+		Slider turtleNumberSlider = new Slider();
+		turtleNumberSlider.setMin(MIN_TURTLES);
+		turtleNumberSlider.setMax(MAX_TURTLES);
+		turtleNumberSlider.setValue(INIT_TURTLES);
+		turtleNumberSlider.valueProperty().addListener(new ChangeListener<Number>(){
+			public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val){
+				setChanged();
+				newTurtleNumber = new_val.intValue();
+				notifyObservers();
+			}
+		});
+		return turtleNumberSlider;
+	}
+	
 	private Node initializeTurtleImageSetting(Stage stage) {
 		ComboBox<String> shapesComboBox = new ComboBox<String>();
 		shapesComboBox.setVisibleRowCount(3);
@@ -98,28 +97,21 @@ public class TurtleSettingsController extends Observable {
 		return shapesComboBox;
 
 	}
-	
-	private VBox makeLabel(Node backgroundColorPicker, String text) {
-		Label lbl = new Label();
-		lbl.setText(text);
-		VBox tempBox = new VBox(PADDING);
-		tempBox.getChildren().addAll(backgroundColorPicker,lbl);
-		return tempBox;
-	}
 
-
-	private Button createButton(String text, double width) {
-		Button button = new Button(text);
-		button.setPrefWidth(width);
-		return button;
-	}
-
-	public HBox getHBox() {
-		return hBox;
+	public VBox getVBox() {
+		return vBox;
 	}
 
 	public Image getNewImage() {
 		return newImage;
+	}
+
+	public Node getTurtleSettingsController() {
+		return vBox;
+	}
+	
+	public int getNewTurtleNumber(){
+		return newTurtleNumber;
 	}
 
 }

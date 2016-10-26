@@ -61,7 +61,7 @@ public class WorkspaceSettingsController extends Observable {
 	public WorkspaceSettingsController(Stage myStage, Properties viewProperties) {
 		stage = myStage;
 		this.viewProperties = viewProperties;
-		vBox = new VBox(7);
+		vBox = new VBox(viewProperties.getDoubleProperty("padding"));
 		Label lbl = new Label();
 		lbl.setText("Workspace settings");
 		vBox.getChildren().add(lbl);
