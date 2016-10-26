@@ -47,7 +47,6 @@ public class SettingsController extends Observable {
 		hBox.getChildren().add(workspaceSettingsController.getVBox());
 		hBox.getChildren().add(turtleSettingsController.getVBox());
 		hBox.getChildren().add(generalSettingsController.getVBox());
-
 	}
 
 	private void initializeSettingsControllers() {
