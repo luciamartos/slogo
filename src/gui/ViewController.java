@@ -363,8 +363,8 @@ public class ViewController implements Observer, ErrorPresenter {
 		canvasActions.setXandYLoc(turtleTranslator.convertXImageCordinate(modelController.getXCoordinate()),
 				turtleTranslator.convertYImageCordinate(modelController.getYCoordinate()));
 		canvasActions.setPathLine(turtleTranslator.convertLineCordinates(modelController.getLineCoordinates()));
-		//canvasActions.animatedMovementToXY();
-		canvasActions.addTurtleAtXY();
+		canvasActions.animatedMovementToXY();
+		//canvasActions.addTurtleAtXY();
 		canvasActions.drawPath();
 		updateVariables();
 

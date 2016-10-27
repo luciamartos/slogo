@@ -27,13 +27,14 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.HLineTo;
+import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import model.PathLine;
 
-public class CanvasActions{
+public class CanvasActions {
 	private static final Color COLOR_CANVAS = Color.WHITE;
 	private static final String IMAGE_PATH = "resources/images/";
 	private GraphicsContext gc;
@@ -51,8 +52,10 @@ public class CanvasActions{
 	private double imageWidth;
 	private double imageHeight;
 	private List<PathLine> myPathLines;
+	private double prevTurtleImgViewX;
+	private double prevTurtleImgViewY;
 
-	public CanvasActions(double canvasWidth, double canvasHeight, double imWidth, double imHeight){
+	public CanvasActions(double canvasWidth, double canvasHeight, double imWidth, double imHeight) {
 		initializePane(canvasWidth, canvasHeight);
 		initializeCanvas(canvasWidth, canvasHeight);
 		imageWidth = imWidth;
@@ -68,7 +71,7 @@ public class CanvasActions{
 	}
 
 	private void initializeCanvas(double canvasWidth, double canvasHeight) {
-		//TODO: delete all x and y's
+		// TODO: delete all x and y's
 		canvas = new Canvas();
 		canvas.setWidth(canvasWidth);
 		canvas.setHeight(canvasHeight);
@@ -89,105 +92,104 @@ public class CanvasActions{
 	}
 
 	private void initializeTurtle() {
-//		showTurtle = true;
-//		heading = 90;
-//		xLoc = canvas.getWidth() / 2;
-//		yLoc = canvas.getHeight() / 2;
-
 		turtleImgView = new ImageView(ViewImageChooser.selectImage(IMAGE_PATH + "turtle.png", imageWidth, imageHeight));
-		System.out.println("LUCIA");
-
-	//	myTurtle = new TurtleView(canvas.getWidth() / 2, canvas.getHeight() / 2, turtleImg, true, Color.BLACK);
-		//addTurtleAtXY();
 	}
 
 	public void changeImage(Image image, double xLoc, double yLoc) {
 		setTurtleImage(image, xLoc, yLoc);
 	}
-	
-	public void setHeading(double degrees){
+
+	public void setHeading(double degrees) {
 		heading = degrees;
 	}
-	
-	public void setXandYLoc(double xLocation, double yLocation){
+
+	public void setXandYLoc(double xLocation, double yLocation) {
 		xLoc = xLocation;
 		yLoc = yLocation;
 	}
-	
-	
-	
-	
-	public void drawPath(){
-		if(penDown){
-	        gc.setStroke(myColor);
-	    	gc.setLineWidth(myThickness);
-	    	if(penType !=null){			//MAKE SURE ITS INITIALISED TO NOT NULL SO I CAN REMOVE THIS
-	    		handleDifferentPenTypes();
-	    	}
-	    	
-	        for(int i =0; i<myPathLines.size();i++){
-		        gc.strokeLine(myPathLines.get(i).getX1(), myPathLines.get(i).getY1(), myPathLines.get(i).getX2(), myPathLines.get(i).getY2());
-	        }
-		}	
+
+	public void drawPath() {
+		if (penDown) {
+			gc.setStroke(myColor);
+			gc.setLineWidth(myThickness);
+			if (penType != null) { // MAKE SURE ITS INITIALISED TO NOT NULL SO I
+									// CAN REMOVE THIS
+				handleDifferentPenTypes();
+			}
+
+			for (int i = 0; i < myPathLines.size(); i++) {
+				gc.strokeLine(myPathLines.get(i).getX1(), myPathLines.get(i).getY1(), myPathLines.get(i).getX2(),
+						myPathLines.get(i).getY2());
+			}
+		}
 	}
 
 	private void handleDifferentPenTypes() {
-		if(penType.equals("dashed")){	//THESE ARENT WORKING EXACTLY HOW THEY SHOULD
+		if (penType.equals("dashed")) { // THESE ARENT WORKING EXACTLY HOW THEY
+										// SHOULD
 			gc.setLineDashes(6.0f);
 			gc.setLineDashOffset(0.0f);
 		}
-		if(penType.equals("dotted")){
+		if (penType.equals("dotted")) {
 			gc.setLineDashes(3.0f);
-		}
-		else{
+		} else {
 			gc.setLineDashes(null);
 		}
 	}
-	
-	public void animatedMovementToXY(){
-		makeAnimationRotateTurtle();
-        for(int i =0; i<myPathLines.size();i++){
-	        makeAnimationMovementTurtle(myPathLines.get(i).getX1(), myPathLines.get(i).getY1(), myPathLines.get(i).getX2(), myPathLines.get(i).getY2());
-        }
-        return;
+
+	public void animatedMovementToXY() {
+		turtleImgView.setTranslateX(xLoc);
+		turtleImgView.setTranslateY(yLoc);
+		pane.getChildren().add(turtleImgView);
+		
+		if(heading!=turtleImgView.getRotate())
+			makeAnimationRotateTurtle();
+		
+		else if(myPathLines.size()!=0 && (xLoc!=prevTurtleImgViewX || yLoc!=prevTurtleImgViewY)){
+			int i =myPathLines.size()-1;
+			makeAnimationMovementTurtle(myPathLines.get(i).getX1(), myPathLines.get(i).getY1(),
+						myPathLines.get(i).getX2(), myPathLines.get(i).getY2());
+		}	
 	}
 
-	private Animation makeAnimationRotateTurtle() {
-		System.out.println("LUCIA");
-		RotateTransition rt = new RotateTransition(Duration.seconds(3));
-        rt.setByAngle(heading);
-        return new SequentialTransition(turtleImgView, rt);
+	private void makeAnimationRotateTurtle() {
+		RotateTransition rt = new RotateTransition(Duration.seconds(3), turtleImgView);
+		rt.setByAngle(heading-turtleImgView.getRotate());
+		rt.play();
+		return;	
 	}
-	
-	 private Animation makeAnimationMovementTurtle( double x1, double y1, double x2, double y2) {
-	        // create something to follow
-	        Path path = new Path();
-	        path.getElements().addAll(new MoveTo(x2, y2), new HLineTo(350));
-	        // create an animation where the shape follows a path
-	        PathTransition pt = new PathTransition(Duration.millis(4000), path, turtleImgView);
-	        return new SequentialTransition(turtleImgView, pt);
-	    }
 
-	public void addTurtleAtXY() {		
+	private void makeAnimationMovementTurtle(double x1, double y1, double x2, double y2) {
+		Path path = new Path();
+		path.getElements().addAll(new MoveTo(x1, y1), new LineTo(x2,y2));
+		PathTransition pt = new PathTransition(Duration.millis(500), path, turtleImgView);
+		pt.delayProperty();
+		pt.play();
+		return;
+	}
+
+	public void addTurtleAtXY() {
 		turtleImgView.setRotate(heading);
 		turtleImgView.setTranslateX(xLoc);
 		turtleImgView.setTranslateY(yLoc);
-		if(showTurtle){
+		if (showTurtle) {
 			pane.getChildren().add(turtleImgView);
 		}
 	}
 
 	public void removeTurtle() {
+		prevTurtleImgViewX = turtleImgView.getX();
+		prevTurtleImgViewY = turtleImgView.getY();
 		pane.getChildren().remove(turtleImgView);
 	}
 
-	//METHOD NEVER BEING CALLED RN
+	// METHOD NEVER BEING CALLED RN
 	public void moveTurtle() {
 		removeTurtle();
 		addTurtleAtXY();
 	}
 
-	public void setShowTurtle(boolean isShowing){
+	public void setShowTurtle(boolean isShowing) {
 		showTurtle = isShowing;
 	}
 
@@ -195,7 +197,7 @@ public class CanvasActions{
 		penDown = penPos;
 	}
 
-	//where is the method that takes in the string?
+	// where is the method that takes in the string?
 	public void setTurtleImage(Image image, double xLoc, double yLoc) {
 		removeTurtle();
 		turtleImgView = new ImageView(image);
@@ -205,12 +207,12 @@ public class CanvasActions{
 	public void setPenColor(Color color) {
 		myColor = color;
 	}
-	
-	public void setPenThickness(double thickness){
+
+	public void setPenThickness(double thickness) {
 		myThickness = thickness;
 	}
-	
-	public void setPenType(String type){
+
+	public void setPenType(String type) {
 		penType = type;
 	}
 
