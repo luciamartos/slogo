@@ -89,7 +89,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 				decideCommand.isBinaryMathExpression(keyword)){
 			returnValue = interpretMathCommand(input, keyword, searchStartIndex);
 		}
-		
+		// fd fd 50 rt 90
 		else if(decideCommand.isUnaryBooleanExpression(keyword) || decideCommand.isBinaryBooleanExpression(keyword)){
 			returnValue = interpretBooleanCommand(input, keyword, searchStartIndex);
 		}
@@ -388,10 +388,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	/**
 	 * Returns -1 if no remaining Turtle Commands, otherwise returns index of next Turtle Command
-	 * @param parsed
-	 * @param interpreter
-	 * @param index
-	 * @return
 	 */
 	private int hasRemainingActionable(String[] parsed, GeneralInterpreter interpreter, int index){
 		int resIndex = -1;
