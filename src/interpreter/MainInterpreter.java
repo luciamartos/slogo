@@ -37,6 +37,19 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		listQueue = new LinkedList<String[]>();
 	}
 	
+	/**
+	 * Overload of parseInput() method that enables a global interpreter for multiple turtles
+	 */
+ 	public void parseInput(String input, TurtleStateDataSource stateDataSource, TurtleStateUpdater stateUpdater, UserVariablesDataSource varDataSource, ErrorPresenter errorPresenter) throws ClassNotFoundException, NoSuchMethodException, 
+ 	SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
+ 	InvocationTargetException{
+ 		this.stateDatasource = stateDataSource;
+ 		this.stateUpdater = stateUpdater;
+ 		this.varDataSource = varDataSource;
+ 		this.errorPresenter = errorPresenter;
+ 		this.parseInput(input);
+ 	}
+	
 	public void parseInput(String input) throws ClassNotFoundException, NoSuchMethodException, 
 			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
 			InvocationTargetException{
