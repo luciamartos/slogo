@@ -32,16 +32,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	private int repCount;
 	
-	public void parseInput(String input, TurtleStateDataSource stateDataSource, TurtleStateUpdater stateUpdater, UserVariablesDataSource varDataSource, ErrorPresenter errorPresenter) throws ClassNotFoundException, NoSuchMethodException, 
-	SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
-	InvocationTargetException{
-		this.stateDatasource = stateDataSource;
-		this.stateUpdater = stateUpdater;
-		this.varDataSource = varDataSource;
-		this.errorPresenter = errorPresenter;
-		this.parseInput(input);
-	}
-	
 	public MainInterpreter(){
 		rb = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+PROPERTIES_TITLE);
 		listQueue = new LinkedList();
@@ -53,7 +43,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		model = new SlogoUpdate(stateDatasource);
 		String[] split = input.split("\\s+");
 		lang = new ProgramParser();
-		lang = addPatterns(lang);	
+		lang = addLanguagePatterns(lang);	
 //		for(String elem: split){
 //			System.out.println(elem);
 //		}
@@ -141,8 +131,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 				int listEndIndex = temp;  //temp is currently at index of ']'.
 				listQueue.add(Arrays.copyOfRange(input, listStartIndex, listEndIndex));
 			}
-		}
-		
+		}	
 	}
 	
 	private double interpretTurtleCommand(String[] input, String keyword, int searchStartIndex) throws ClassNotFoundException, 
@@ -343,7 +332,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		return out;
 	}
 	
-	private ProgramParser addPatterns(ProgramParser lang){
+	private ProgramParser addLanguagePatterns(ProgramParser lang){
 		for(String language:languages){
 			lang.addPatterns(DEFAULT_RESOURCE_LANGUAGE+language);
 		}
