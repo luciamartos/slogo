@@ -61,11 +61,8 @@ import tableviews.VariableTableView;
 public class TabViewController implements Observer, ErrorPresenter {
 	private Properties viewProperties;
 
-	private static final String VIEW_PROPERTIES_PACKAGE = "resources.properties/";
-	private static final Paint BACKGROUND_COLOR_SCENE = Color.ALICEBLUE;
 
 	private static final double HIDE_SHOW_BUTTON_WIDTH = 140;
-	private Group sceneRoot;
 	private TitleBox titleBox;
 	private InputPanel inputPanel;
 	private ObservableList<String> pastCommands;
@@ -74,59 +71,40 @@ public class TabViewController implements Observer, ErrorPresenter {
 	// private WorkspaceSettingsController workspaceSettingsController;
 	// private PenSettingsController penSettingsController;
 	// private TurtleSettingsController turtleSettingsController;
-	private Stage stage;
 	private ErrorConsole errorConsole;
 	private BoardStateDataSource modelController;
 	private SlogoCommandInterpreter interpreter;
 	private TurtleDataTranslator turtleTranslator;
 	private ListView<String> pastCommandsListView;
 
-	// private TableColumn userDefinedCommandNames;
-	// private TableColumn userDefinedCommandValues;
-	// private TableColumn variableNames;
-	// private TableColumn variableValues;
-
 	TableView<Variable> variableTableView;
 	TableView<UserDefinedCommand> userDefinedTableView;
 
-	public TabViewController(Stage stage) {
-		viewProperties = new Properties(VIEW_PROPERTIES_PACKAGE + "View");
+	public TabViewController(TabPane tabPane, Properties viewProperties, String tabTitle) {
+		this.viewProperties = viewProperties;
+		tabPane.getTabs().add(setupTab(tabTitle));
 		turtleTranslator = new TurtleDataTranslator(viewProperties.getDoubleProperty("canvas_width"),
 				viewProperties.getDoubleProperty("canvas_height"), getImageWidth(), getImageHeight());
-		setupStage(stage);
-		sceneRoot.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
-
 	}
 
-	private void setupStage(Stage stage) {
-		int numTabs = 5;
+	private Tab setupTab(String tabTitle) {
 
-		TabPane tabPane = new TabPane();
-		BorderPane borderPane = new BorderPane();
-		for (int i = 0; i < numTabs; i++) {
+
 			Tab tab = new Tab();
-			tab.setText("Tab" + i);
+			//tab.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
+
+			tab.setText(tabTitle);
 //			HBox hbox = new HBox();
 //			hbox.getChildren().add(new Label("Tab" + i));
 //			hbox.setAlignment(Pos.CENTER);
 			tab.setContent(setupBoxes());
-			tabPane.getTabs().add(tab);	
-		}
+		return tab;
 		// bind to take available space
 		
-		double appWidth = viewProperties.getDoubleProperty("app_width");
-		double appHeight = viewProperties.getDoubleProperty("app_height");
+		
 		
 
-		borderPane.setCenter(tabPane);
-		sceneRoot = new Group();
-		sceneRoot.getChildren().add(borderPane);
-		stage.setTitle(viewProperties.getStringProperty("title"));
-		Scene scene = new Scene(sceneRoot, appWidth, appHeight, BACKGROUND_COLOR_SCENE);
-		borderPane.prefHeightProperty().bind(scene.heightProperty());
-		borderPane.prefWidthProperty().bind(scene.widthProperty());
-		stage.setScene(scene);
-		stage.show();
+		
 	}
 
 	private Node setupBoxes() {
@@ -208,7 +186,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 	}
 
 	private Node initializeSettingsController() {
-		settingsController = new SettingsController(stage, viewProperties);
+		settingsController = new SettingsController(viewProperties);
 		settingsController.addObserver(this);
 		settingsController.getPenSettingsController().addObserver(this);
 		settingsController.getWorkspaceSettingsController().addObserver(this);
