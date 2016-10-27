@@ -22,7 +22,7 @@ public class GeneralSettingsController extends Observable {
 
 	private Image newImage;
 
-	public GeneralSettingsController(Stage myStage, Properties viewProperties) {
+	public GeneralSettingsController(Properties viewProperties) {
 		this.viewProperties = viewProperties;
 		vBox = new VBox(viewProperties.getDoubleProperty("padding"));
 		vBox.getChildren().add(initializeUndoButton());

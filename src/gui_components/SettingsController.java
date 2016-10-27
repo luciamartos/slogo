@@ -35,11 +35,7 @@ public class SettingsController extends Observable {
 	private Properties viewProperties;
 	private HBox hBox;
 
-	private Stage stage;
-
-
-	public SettingsController(Stage myStage, Properties viewProperties) {
-		stage = myStage;
+	public SettingsController(Properties viewProperties) {
 		this.viewProperties = viewProperties;
 		initializeSettingsControllers();
 		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
@@ -50,10 +46,10 @@ public class SettingsController extends Observable {
 	}
 
 	private void initializeSettingsControllers() {
-		 penSettingsController = new PenSettingsController(stage,viewProperties);
-		 turtleSettingsController = new TurtleSettingsController(stage, viewProperties);
-		 workspaceSettingsController = new WorkspaceSettingsController(stage, viewProperties);
-		 generalSettingsController = new GeneralSettingsController(stage, viewProperties);
+		 penSettingsController = new PenSettingsController(viewProperties);
+		 turtleSettingsController = new TurtleSettingsController(viewProperties);
+		 workspaceSettingsController = new WorkspaceSettingsController(viewProperties);
+		 generalSettingsController = new GeneralSettingsController(viewProperties);
 	}
 	
 	public PenSettingsController getPenSettingsController(){

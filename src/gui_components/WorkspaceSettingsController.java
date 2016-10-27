@@ -54,12 +54,10 @@ public class WorkspaceSettingsController extends Observable {
 	private Color newPenColor;
 	private Image newImage;
 	private String newLanguage;
-	private Stage stage;
 	private double newPenThickness;
 	private String newPenType;
 
-	public WorkspaceSettingsController(Stage myStage, Properties viewProperties) {
-		stage = myStage;
+	public WorkspaceSettingsController(Properties viewProperties) {
 		this.viewProperties = viewProperties;
 		vBox = new VBox(viewProperties.getDoubleProperty("padding"));
 		Label lbl = new Label();

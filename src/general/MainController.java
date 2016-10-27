@@ -1,5 +1,8 @@
 package general;
+import java.util.HashMap;
+
 import gui.TabViewController;
+import gui.WindowViewController;
 import interpreter.MainInterpreter;
 import javafx.stage.Stage;
 import model.BoardStateController;
@@ -10,14 +13,21 @@ import model.BoardStateController;
  */
 public class MainController {
 	
-	private TabViewController viewController;
-	private BoardStateController modelController;
+	private WindowViewController windowViewController;
+	private HashMap<TabViewController,BoardStateController> vcMap;
 	private MainInterpreter interpreter;
 
 	public MainController(Stage stage) {
-    	modelController = new BoardStateController();
-    	viewController = new TabViewController(stage);
+    	windowViewController = new WindowViewController(stage);
+    	vcMap = new HashMap<TabViewController,BoardStateController>();
     	interpreter = new MainInterpreter();
+    	addSlogoInstance();
+	}
+	
+	public void addSlogoInstance(){
+		TabViewController viewController = makeTabViewController("Tab 1");
+    	BoardStateController modelController = new BoardStateController();
+    	vcMap.put(viewController, modelController);
     	
     	viewController.setModelController(modelController);
     	viewController.setInterpreter(interpreter);
@@ -28,14 +38,14 @@ public class MainController {
     	interpreter.setVarDataSource(modelController);
     	interpreter.setStateUpdater(modelController);
     	interpreter.setErrorPresenter(viewController);
-	}
-	
-	public TabViewController makeTab(String title){
 		
-		return null;
 	}
 	
-	public void closeTab(TabViewController closedTab){
+	public TabViewController makeTabViewController(String title){
+		return windowViewController.makeTabViewController(title);
+	}
+	
+	public void closeTabViewController(TabViewController closedTab){
 		
 	}
 	

@@ -47,16 +47,14 @@ public class TurtleSettingsController extends Observable {
 	private VBox vBox;
 
 	private Image newImage;
-	private Stage stage;
 
 
-	public TurtleSettingsController(Stage myStage, Properties viewProperties) {
-		stage = myStage;
+	public TurtleSettingsController(Properties viewProperties) {
 		vBox = new VBox(7);
 		Label lbl = new Label();
 		lbl.setText("Turtle settings");
 		vBox.getChildren().add(lbl);
-		vBox.getChildren().add(initializeTurtleImageSetting(stage));
+		vBox.getChildren().add(initializeTurtleImageSetting());
 		vBox.getChildren().add(initializeTurtleNumber());
 	}
 
@@ -77,7 +75,7 @@ public class TurtleSettingsController extends Observable {
 		return turtleNumberSlider;
 	}
 	
-	private Node initializeTurtleImageSetting(Stage stage) {
+	private Node initializeTurtleImageSetting() {
 		ComboBox<String> shapesComboBox = new ComboBox<String>();
 		shapesComboBox.setVisibleRowCount(3);
 		shapesComboBox.getItems().addAll("elephant", "turtle", "pig", "frog");
