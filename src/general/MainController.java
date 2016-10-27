@@ -29,5 +29,15 @@ public class MainController {
     	interpreter.setStateUpdater(modelController);
     	interpreter.setErrorPresenter(viewController);
 	}
+	
+	public TabViewController makeTab(String title){
+		
+		return null;
+	}
+	
+	public void closeTab(TabViewController closedTab){
+		
+	}
+	
 
 }
