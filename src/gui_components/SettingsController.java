@@ -3,7 +3,7 @@ package gui_components;
 import java.util.Observable;
 
 import general.Properties;
-import gui.ViewController;
+import gui.TabViewController;
 import gui.ViewImageChooser;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
