@@ -34,7 +34,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	public MainInterpreter(){
 		rb = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+PROPERTIES_TITLE);
-		listQueue = new LinkedList();
+		listQueue = new LinkedList<String[]>();
 	}
 	
 	public void parseInput(String input) throws ClassNotFoundException, NoSuchMethodException, 
@@ -148,24 +148,10 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			return handleNonInputKeywordWithModel(keyword, searchStartIndex, interpreterClass, obj, interpreter);
 		}
 		else if(interpreter.isUnaryTurtleCommand(keyword)){
-			currSearchIndex = searchStartIndex+1;
-			param = parseParam(input, searchStartIndex+1, 1);
-			args = createDoubleArgs(1);
-			Method method = interpreterClass.getDeclaredMethod(keyword, args);
-			double res = (double) method.invoke(obj, param[0]);
-			System.out.println(res);
-			model = interpreter.getModel();
-			return res;
+			return handleUnaryKeywordWithModel(input, keyword, searchStartIndex, interpreterClass, obj, interpreter);
 		}
 		else if(interpreter.isBinaryTurtleCommand(keyword)){
-			currSearchIndex = searchStartIndex+2;
-			param = parseParam(input, searchStartIndex+1, 2);
-			args = createDoubleArgs(2);
-			Method method = interpreterClass.getDeclaredMethod(keyword, args);
-			double res = (double) method.invoke(obj, param[0], param[1]);
-			System.out.println(res);
-			model = interpreter.getModel();
-			return res;
+			return handleBinaryKeywordWithModel(input, keyword, searchStartIndex, interpreterClass, obj, interpreter);
 		}
 		else throw new IllegalArgumentException();
 	}
@@ -256,17 +242,59 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private double handleNonInputKeywordWithModel(String keyword, int searchStartIndex, Class interpreterClass, Object obj,
 			TurtleCommandInterpreter interpreter)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		currSearchIndex = searchStartIndex;
-		Class[] args;
-		args = createDoubleArgs(0);
-		Method method = interpreterClass.getDeclaredMethod(keyword, args);
-		double res =  (double) method.invoke(obj);
-		System.out.println(res);
+		double res = helpHandleNonInputKeyword(keyword, searchStartIndex, interpreterClass, obj);
 		model = interpreter.getModel();
 		return res;
 	}
 
+	private double handleUnaryKeywordWithModel(String[] input, String keyword, int searchStartIndex,
+			Class interpreterClass, Object obj, TurtleCommandInterpreter interpreter) throws ClassNotFoundException,
+			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+		double res = helpHandleUnaryKeyword(input, keyword, searchStartIndex, interpreterClass, obj);
+		model = interpreter.getModel();
+		return res;
+	}
+	
+	private double handleBinaryKeywordWithModel(String[] input, String keyword, int searchStartIndex,
+			Class interpreterClass, Object obj, TurtleCommandInterpreter interpreter) throws ClassNotFoundException,
+			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+		double res = helpHandleBinaryKeyword(input, keyword, searchStartIndex, interpreterClass, obj);
+		model = interpreter.getModel();
+		return res;
+	}
+	
+	private double handleNonInputKeyword(String keyword, int searchStartIndex, Class interpreterClass, Object obj)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		double res = helpHandleNonInputKeyword(keyword, searchStartIndex, interpreterClass, obj);
+		return res;
+	}
+
 	private double handleBinaryKeyword(String[] input, String keyword, int searchStartIndex, Class interpreterClass,
+			Object obj) throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
+			IllegalAccessException, InvocationTargetException {
+		double res = helpHandleBinaryKeyword(input, keyword, searchStartIndex, interpreterClass, obj);
+		return res;
+	}
+
+	private double handleUnaryKeyword(String[] input, String keyword, int searchStartIndex, Class interpreterClass,
+			Object obj) throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
+			IllegalAccessException, InvocationTargetException {
+		double res = helpHandleUnaryKeyword(input, keyword, searchStartIndex, interpreterClass, obj);
+		return res;
+	}
+
+	private double helpHandleNonInputKeyword(String keyword, int searchStartIndex, Class interpreterClass, Object obj)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		currSearchIndex = searchStartIndex;
+		Class[] args;
+		args = createDoubleArgs(0);
+		Method method = interpreterClass.getDeclaredMethod(keyword, args);
+		double res = (double) method.invoke(obj);
+		System.out.println(res);
+		return res;
+	}
+
+	private double helpHandleBinaryKeyword(String[] input, String keyword, int searchStartIndex, Class interpreterClass,
 			Object obj) throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
 			IllegalAccessException, InvocationTargetException {
 		currSearchIndex = searchStartIndex+2;
@@ -279,8 +307,8 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		System.out.println(res);
 		return res;
 	}
-
-	private double handleUnaryKeyword(String[] input, String keyword, int searchStartIndex, Class interpreterClass,
+	
+	private double helpHandleUnaryKeyword(String[] input, String keyword, int searchStartIndex, Class interpreterClass,
 			Object obj) throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
 			IllegalAccessException, InvocationTargetException {
 		currSearchIndex = searchStartIndex+1;
@@ -294,17 +322,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		return res;
 	}
 
-	private double handleNonInputKeyword(String keyword, int searchStartIndex, Class interpreterClass, Object obj)
-			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		currSearchIndex = searchStartIndex;
-		Class[] args;
-		args = createDoubleArgs(0);
-		Method method = interpreterClass.getDeclaredMethod(keyword, args);
-		double res = (double) method.invoke(obj);
-		System.out.println(res);
-		return res;
-	}
-	
 	
 	private double[] parseParam(String[] input, int startSearchIndex, int numOfParams) throws ClassNotFoundException, 
 	NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, 
@@ -356,7 +373,13 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		}
 	}
 	
-	//returns -1 if no remaining actionables, otherwise returns index of next actionable
+	/**
+	 * Returns -1 if no remaining Turtle Commands, otherwise returns index of next Turtle Command
+	 * @param parsed
+	 * @param interpreter
+	 * @param index
+	 * @return
+	 */
 	private int hasRemainingActionable(String[] parsed, GeneralInterpreter interpreter, int index){
 		int resIndex = -1;
 		if(index == parsed.length || parsed[index].equalsIgnoreCase(rb.getString("ListStartLabel"))) return resIndex;
@@ -369,10 +392,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			}
 		}
 		return resIndex;
-	}
-	
-	public int getRepCount(){
-		return repCount;
 	}
 	
 	public void setLanguage(String language){
@@ -406,7 +425,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		this.errorPresenter = p;
 	}
 	
-	public SlogoUpdate getModel(){
-		return model;
+	public int getRepCount(){
+		return repCount;
 	}
 }
