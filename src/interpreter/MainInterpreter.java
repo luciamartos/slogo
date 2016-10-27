@@ -32,6 +32,16 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	private int repCount;
 	
+	public void parseInput(String input, TurtleStateDataSource stateDataSource, TurtleStateUpdater stateUpdater, UserVariablesDataSource varDataSource, ErrorPresenter errorPresenter) throws ClassNotFoundException, NoSuchMethodException, 
+	SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
+	InvocationTargetException{
+		this.stateDatasource = stateDataSource;
+		this.stateUpdater = stateUpdater;
+		this.varDataSource = varDataSource;
+		this.errorPresenter = errorPresenter;
+		this.parseInput(input);
+	}
+	
 	public MainInterpreter(){
 		rb = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+PROPERTIES_TITLE);
 		listQueue = new LinkedList();

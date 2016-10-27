@@ -7,10 +7,14 @@ import java.util.Observer;
 import java.util.ResourceBundle;
 
 import general.Properties;
+import javafx.animation.Animation;
+import javafx.animation.PathTransition;
+import javafx.animation.RotateTransition;
 import javafx.animation.SequentialTransition;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -22,7 +26,11 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.HLineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 import model.PathLine;
 
 public class CanvasActions{
@@ -42,6 +50,7 @@ public class CanvasActions{
 	private double yLoc;
 	private double imageWidth;
 	private double imageHeight;
+	private List<PathLine> myPathLines;
 
 	public CanvasActions(double canvasWidth, double canvasHeight, double imWidth, double imHeight){
 		initializePane(canvasWidth, canvasHeight);
@@ -86,6 +95,7 @@ public class CanvasActions{
 //		yLoc = canvas.getHeight() / 2;
 
 		turtleImgView = new ImageView(ViewImageChooser.selectImage(IMAGE_PATH + "turtle.png", imageWidth, imageHeight));
+		System.out.println("LUCIA");
 
 	//	myTurtle = new TurtleView(canvas.getWidth() / 2, canvas.getHeight() / 2, turtleImg, true, Color.BLACK);
 		//addTurtleAtXY();
@@ -104,18 +114,20 @@ public class CanvasActions{
 		yLoc = yLocation;
 	}
 	
-	public void drawPath(List<PathLine> myCords){
-		//if(penDown){
-      //  System.out.println(myCords.size());
+	
+	
+	
+	public void drawPath(){
+		if(penDown){
 	        gc.setStroke(myColor);
 	    	gc.setLineWidth(myThickness);
 	    	if(penType !=null){			//MAKE SURE ITS INITIALISED TO NOT NULL SO I CAN REMOVE THIS
 	    		handleDifferentPenTypes();
 	    	}
 	    	
-	        for(int i =0; i<myCords.size();i++){
-		        gc.strokeLine(myCords.get(i).getX1(), myCords.get(i).getY1(), myCords.get(i).getX2(), myCords.get(i).getY2());
-	     //   }
+	        for(int i =0; i<myPathLines.size();i++){
+		        gc.strokeLine(myPathLines.get(i).getX1(), myPathLines.get(i).getY1(), myPathLines.get(i).getX2(), myPathLines.get(i).getY2());
+	        }
 		}	
 	}
 
@@ -131,10 +143,32 @@ public class CanvasActions{
 			gc.setLineDashes(null);
 		}
 	}
+	
+	public void animatedMovementToXY(){
+		makeAnimationRotateTurtle();
+        for(int i =0; i<myPathLines.size();i++){
+	        makeAnimationMovementTurtle(myPathLines.get(i).getX1(), myPathLines.get(i).getY1(), myPathLines.get(i).getX2(), myPathLines.get(i).getY2());
+        }
+        return;
+	}
 
-	public void addTurtleAtXY() {
-		//note that when initialised myController cannot be null
-	//	 turtleImgView = new ImageView( new Image(Main.class.getResourceAsStream("a.jpg")));
+	private Animation makeAnimationRotateTurtle() {
+		System.out.println("LUCIA");
+		RotateTransition rt = new RotateTransition(Duration.seconds(3));
+        rt.setByAngle(heading);
+        return new SequentialTransition(turtleImgView, rt);
+	}
+	
+	 private Animation makeAnimationMovementTurtle( double x1, double y1, double x2, double y2) {
+	        // create something to follow
+	        Path path = new Path();
+	        path.getElements().addAll(new MoveTo(x2, y2), new HLineTo(350));
+	        // create an animation where the shape follows a path
+	        PathTransition pt = new PathTransition(Duration.millis(4000), path, turtleImgView);
+	        return new SequentialTransition(turtleImgView, pt);
+	    }
+
+	public void addTurtleAtXY() {		
 		turtleImgView.setRotate(heading);
 		turtleImgView.setTranslateX(xLoc);
 		turtleImgView.setTranslateY(yLoc);
@@ -178,6 +212,10 @@ public class CanvasActions{
 	
 	public void setPenType(String type){
 		penType = type;
+	}
+
+	public void setPathLine(List<PathLine> pathLine) {
+		myPathLines = pathLine;
 	}
 
 }

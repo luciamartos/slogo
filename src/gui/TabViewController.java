@@ -17,6 +17,7 @@ import gui_components.InputPanel;
 import gui_components.PenSettingsController;
 import gui_components.SettingsController;
 import gui_components.TitleBox;
+import gui_components.TurtleSettingsController;
 import gui_components.UserDefinedCommand;
 import gui_components.WorkspaceSettingsController;
 import interpreter.ErrorPresenter;
@@ -28,17 +29,21 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -47,12 +52,13 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import tableviews.VariableTableView;
 
 /**
  * 
  * @author LuciaMartos
  */
-public class ViewController implements Observer, ErrorPresenter {
+public class TabViewController implements Observer, ErrorPresenter {
 	private Properties viewProperties;
 
 	private static final String VIEW_PROPERTIES_PACKAGE = "resources.properties/";
@@ -65,8 +71,9 @@ public class ViewController implements Observer, ErrorPresenter {
 	private ObservableList<String> pastCommands;
 	private CanvasActions canvasActions;
 	private SettingsController settingsController;
-	private WorkspaceSettingsController workspaceSettingsController;
-	private PenSettingsController penSettingsController;
+	// private WorkspaceSettingsController workspaceSettingsController;
+	// private PenSettingsController penSettingsController;
+	// private TurtleSettingsController turtleSettingsController;
 	private Stage stage;
 	private ErrorConsole errorConsole;
 	private BoardStateDataSource modelController;
@@ -81,24 +88,45 @@ public class ViewController implements Observer, ErrorPresenter {
 
 	TableView<Variable> variableTableView;
 	TableView<UserDefinedCommand> userDefinedTableView;
-	
-	public double getImageWidth(){
-		return viewProperties.getDoubleProperty("image_width");
-	}
-	
-	
-	public double getImageHeight(){
-		return viewProperties.getDoubleProperty("image_height");
-	}
-	
-	public ViewController(Stage stage) {
+
+	public TabViewController(Stage stage) {
 		viewProperties = new Properties(VIEW_PROPERTIES_PACKAGE + "View");
-		sceneRoot = new Group();
 		turtleTranslator = new TurtleDataTranslator(viewProperties.getDoubleProperty("canvas_width"),
 				viewProperties.getDoubleProperty("canvas_height"), getImageWidth(), getImageHeight());
-		sceneRoot.getChildren().add(setupBoxes());
 		setupStage(stage);
 		sceneRoot.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
+
+	}
+
+	private void setupStage(Stage stage) {
+		int numTabs = 5;
+
+		TabPane tabPane = new TabPane();
+		BorderPane borderPane = new BorderPane();
+		for (int i = 0; i < numTabs; i++) {
+			Tab tab = new Tab();
+			tab.setText("Tab" + i);
+//			HBox hbox = new HBox();
+//			hbox.getChildren().add(new Label("Tab" + i));
+//			hbox.setAlignment(Pos.CENTER);
+			tab.setContent(setupBoxes());
+			tabPane.getTabs().add(tab);	
+		}
+		// bind to take available space
+		
+		double appWidth = viewProperties.getDoubleProperty("app_width");
+		double appHeight = viewProperties.getDoubleProperty("app_height");
+		
+
+		borderPane.setCenter(tabPane);
+		sceneRoot = new Group();
+		sceneRoot.getChildren().add(borderPane);
+		stage.setTitle(viewProperties.getStringProperty("title"));
+		Scene scene = new Scene(sceneRoot, appWidth, appHeight, BACKGROUND_COLOR_SCENE);
+		borderPane.prefHeightProperty().bind(scene.heightProperty());
+		borderPane.prefWidthProperty().bind(scene.widthProperty());
+		stage.setScene(scene);
+		stage.show();
 	}
 
 	private Node setupBoxes() {
@@ -106,6 +134,7 @@ public class ViewController implements Observer, ErrorPresenter {
 		HBox box2 = new HBox(15);
 		VBox box3 = new VBox(15);
 		HBox box4 = new HBox(15);
+		box2.setAlignment(Pos.CENTER);
 
 		box1.setPadding(new Insets(15, 15, 15, 15));
 		box1.getChildren().add(createTitleBox());
@@ -120,72 +149,54 @@ public class ViewController implements Observer, ErrorPresenter {
 
 		box3.getChildren().add(createCanvas());
 		box3.getChildren().add(createCommandInputter());
-	    //HBox.setHgrow(box2, Priority.ALWAYS);
-		
-		Node settingsController =initializeSettingsController();
-		Node penSettingsController = initializePenSettingsController();
-		Node workspaceSettingsController = initializeWorkspaceSettingsController();
+		// HBox.setHgrow(box2, Priority.ALWAYS);
+
+		Node settingsController = initializeSettingsController();
 		box4.getChildren().add(createViewSelector());
-		box4.getChildren().add(penSettingsController);
-		box4.getChildren().add(workspaceSettingsController);
 		box4.getChildren().add(settingsController);
-		
+
 		return box1;
 	}
 
-	
-	private void setupStage(Stage stage) {
-		double appWidth = viewProperties.getDoubleProperty("app_width");
-		double appHeight = viewProperties.getDoubleProperty("app_height");
-		Scene scene = new Scene(sceneRoot, appWidth, appHeight, BACKGROUND_COLOR_SCENE);
-		stage.setTitle(viewProperties.getStringProperty("title"));
-		stage.setScene(scene);
-		stage.show();
-	}
-
-	private Node createViewSelector(){
-		//initialise buttons
+	private Node createViewSelector() {
+		// initialise buttons
 		VBox hideShowButtons = new VBox(2);
 		Button historicCommands = createButton("Hide history", HIDE_SHOW_BUTTON_WIDTH);
-		Button variables = createButton("Hide variales",HIDE_SHOW_BUTTON_WIDTH);
-		Button userVariables = createButton("Hide user variables",HIDE_SHOW_BUTTON_WIDTH);
-		Button drawSettings = createButton("Hide settings",HIDE_SHOW_BUTTON_WIDTH);
-		
-		//initialise button actions
+		Button variables = createButton("Hide variales", HIDE_SHOW_BUTTON_WIDTH);
+		Button userVariables = createButton("Hide user variables", HIDE_SHOW_BUTTON_WIDTH);
+		Button drawSettings = createButton("Hide settings", HIDE_SHOW_BUTTON_WIDTH);
+
+		// initialise button actions
 		hideShowButtonActions(historicCommands, pastCommandsListView, "Hide history", "Show history");
 		hideShowButtonActions(variables, variableTableView, "Hide variales", "Show variales");
 		hideShowButtonActions(userVariables, userDefinedTableView, "Hide user variables", "Show user variables");
 		hideShowButtonActions(drawSettings, settingsController.getHBox(), "Hide settings", "Show settings");
 
-		hideShowButtons.getChildren().addAll(historicCommands,userVariables,variables,drawSettings);
+		hideShowButtons.getChildren().addAll(historicCommands, userVariables, variables, drawSettings);
 		return hideShowButtons;
 	}
 
-
 	private void hideShowButtonActions(Button button, Node view, String hide, String show) {
 		button.setOnAction(new EventHandler<ActionEvent>() {
-	        @Override
-	        public void handle(ActionEvent e) {
-				if(button.getText().equals(hide)){
+			@Override
+			public void handle(ActionEvent e) {
+				if (button.getText().equals(hide)) {
 					button.setText(show);
-					view.setVisible(false);	
-				}
-				else{
+					view.setVisible(false);
+				} else {
 					button.setText(hide);
 					view.setVisible(true);
 				}
-	        }
+			}
 		});
 	}
-	
+
 	private Node createTitleBox() {
 		double padding = viewProperties.getDoubleProperty("padding");
-		double x = padding;
-		double y = padding;
 		double width = viewProperties.getDoubleProperty("title_box_width");
 		double height = viewProperties.getDoubleProperty("title_box_height");
 		String title = "SLOGO";
-		titleBox = new TitleBox(x, y, width, height, title);
+		titleBox = new TitleBox(padding, padding, width, height, title);
 		return titleBox;
 	}
 
@@ -199,23 +210,15 @@ public class ViewController implements Observer, ErrorPresenter {
 	private Node initializeSettingsController() {
 		settingsController = new SettingsController(stage, viewProperties);
 		settingsController.addObserver(this);
+		settingsController.getPenSettingsController().addObserver(this);
+		settingsController.getWorkspaceSettingsController().addObserver(this);
+		settingsController.getGeneralSettingsController().addObserver(this);
+		settingsController.getTurtleSettingsController().addObserver(this);
 		return settingsController.getHBox();
-	}
-	
-	private Node initializeWorkspaceSettingsController() {
-		workspaceSettingsController = new WorkspaceSettingsController(stage, viewProperties);
-		workspaceSettingsController.addObserver(this);
-		return workspaceSettingsController.getVBox();
-	}
-	
-	private Node initializePenSettingsController() {
-		penSettingsController = new PenSettingsController(stage, viewProperties);
-		penSettingsController.addObserver(this);
-		return penSettingsController.getVBox();
 	}
 
 	private void handleKeyInput(KeyCode code) {
-		if (code == KeyCode.ENTER){
+		if (code == KeyCode.ENTER) {
 			runCommandFromInputLine();
 		}
 	}
@@ -239,53 +242,20 @@ public class ViewController implements Observer, ErrorPresenter {
 	}
 
 	private Node createVariableTableView() {
-		variableTableView = new TableView<Variable>();
-		variableTableView.setEditable(true);
-		variableTableView.managedProperty().bind(variableTableView.visibleProperty());
-
-		TableColumn<Variable, String> variables = new TableColumn<Variable, String>("Variables");
-		variables.setEditable(true);
-
-		TableColumn<Variable, String> variableNames = new TableColumn<Variable, String>("Name");
-		variableNames.setCellValueFactory(new PropertyValueFactory<Variable, String>("name"));
-		TableColumn<Variable, String> variableValues = new TableColumn<Variable, String>("Value");
-		variableValues.setCellValueFactory(new PropertyValueFactory<Variable, String>("value"));
-		variableValues.setEditable(true);
-
-		variables.getColumns().addAll(variableNames, variableValues);
-
-		variableTableView.getColumns().add(variables);
-		variableTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
+		variableTableView = new VariableTableView();
 		return variableTableView;
 	}
 
 	private Node createUserDefinedTableView() {
 		userDefinedTableView = new TableView<UserDefinedCommand>();
-		TableColumn<UserDefinedCommand, String> userDefinedCommands = new TableColumn<UserDefinedCommand, String>(
-				"User-Defined\nVariables");
-
-		// tableView.setItems(data);
-		TableColumn<UserDefinedCommand, String> userDefinedCommandNames = new TableColumn<UserDefinedCommand, String>(
-
-				"Name");
-		userDefinedCommandNames.setCellValueFactory(new PropertyValueFactory<UserDefinedCommand, String>("name"));
-		TableColumn<UserDefinedCommand, String> userDefinedCommandValues = new TableColumn<UserDefinedCommand, String>(
-				"Value");
-		userDefinedCommandValues.setCellValueFactory(new PropertyValueFactory<UserDefinedCommand, String>("value"));
-		userDefinedCommandValues.setEditable(true);
-		userDefinedCommands.getColumns().addAll(userDefinedCommandNames, userDefinedCommandValues);
-
-		userDefinedTableView.getColumns().add(userDefinedCommands);
-		userDefinedTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		return userDefinedTableView;
 	}
 
 	private Node createCommandInputter() {
-		EventHandler<ActionEvent> runCommandHandler = event -> {			
-			runCommandFromInputLine();	
+		EventHandler<ActionEvent> runCommandHandler = event -> {
+			runCommandFromInputLine();
 		};
-		
+
 		double inputPanelHeight = viewProperties.getDoubleProperty("input_panel_height");
 		double textFieldWidth = viewProperties.getDoubleProperty("text_field_width");
 		double runButtonWidth = viewProperties.getDoubleProperty("run_button_width");
@@ -295,7 +265,6 @@ public class ViewController implements Observer, ErrorPresenter {
 		return inputPanel;
 	}
 
-	
 	private Button createButton(String text, double width) {
 		Button button = new Button(text);
 		button.setPrefWidth(width);
@@ -306,7 +275,7 @@ public class ViewController implements Observer, ErrorPresenter {
 		String currentCommandLine = curCommand;
 		runCommand(currentCommandLine);
 	}
-	
+
 	private void runCommandFromInputLine() {
 		String currentCommandLine = inputPanel.getText();
 		inputPanel.clear();
@@ -314,7 +283,7 @@ public class ViewController implements Observer, ErrorPresenter {
 	}
 
 	private void runCommand(String currentCommandLine) {
-		//String currentCommandLine = inputPanel.getCurrentCommandLine();
+		// String currentCommandLine = inputPanel.getCurrentCommandLine();
 		if (!(currentCommandLine == null) && !(currentCommandLine.length() == 0)) {
 			pastCommands.add(currentCommandLine);
 			try {
@@ -335,6 +304,9 @@ public class ViewController implements Observer, ErrorPresenter {
 	// currently only observable this controller observes is settingsController
 	// DOES THIS ACCOUNT FOR MY UPDATE THING TOO?
 	public void update(Observable obs, Object o) {
+		if (o != null) {
+			errorConsole.displayErrorMessage(o.toString());
+		}
 		try {
 			Method update;
 			if (o != null) {
@@ -352,9 +324,9 @@ public class ViewController implements Observer, ErrorPresenter {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
-	public void presentError(String errorMessage){
+	public void presentError(String errorMessage) {
 		errorConsole.displayErrorMessage(errorMessage);
 	}
 
@@ -365,40 +337,39 @@ public class ViewController implements Observer, ErrorPresenter {
 		canvasActions.setPenDown(modelController.getTurtleIsDrawing());
 		canvasActions.setXandYLoc(turtleTranslator.convertXImageCordinate(modelController.getXCoordinate()),
 				turtleTranslator.convertYImageCordinate(modelController.getYCoordinate()));
+		canvasActions.setPathLine(turtleTranslator.convertLineCordinates(modelController.getLineCoordinates()));
+		// canvasActions.animatedMovementToXY();
 		canvasActions.addTurtleAtXY();
-		canvasActions.drawPath(turtleTranslator.convertLineCordinates(modelController.getLineCoordinates()));
+		canvasActions.drawPath();
 		updateVariables();
 
 	}
 
 	public void update(SettingsController obs, Object o) {
-		if (o != null) {
-			errorConsole.displayErrorMessage(o.toString());
-			return;
-		}
-		if (settingsController.getNewImage() != null)
-			canvasActions.changeImage(settingsController.getNewImage(), modelController.getXCoordinate(),
-					modelController.getYCoordinate());
+
 	}
-	
+
+	public void update(TurtleSettingsController obs, Object o) {
+		if (settingsController.getTurtleSettingsController().getNewImage() != null)
+			canvasActions.changeImage(settingsController.getTurtleSettingsController().getNewImage(),
+					modelController.getXCoordinate(), modelController.getYCoordinate());
+	}
+
 	public void update(WorkspaceSettingsController obs, Object o) {
-		if (workspaceSettingsController.getNewBackgroundColor() != null)
-			canvasActions.setBackgroundColorCanvas(workspaceSettingsController.getNewBackgroundColor());
-		if (workspaceSettingsController.getNewLanguage() != null)
-			interpreter.setLanguage(workspaceSettingsController.getNewLanguage());
+		if (settingsController.getWorkspaceSettingsController().getNewBackgroundColor() != null)
+			canvasActions.setBackgroundColorCanvas(
+					settingsController.getWorkspaceSettingsController().getNewBackgroundColor());
+		if (settingsController.getWorkspaceSettingsController().getNewLanguage() != null)
+			interpreter.setLanguage(settingsController.getWorkspaceSettingsController().getNewLanguage());
 	}
-	
-	public void update(PenSettingsController obvs, Object o){
-		if (o != null) {
-			errorConsole.displayErrorMessage(o.toString());
-			return;
-		}
-		if (penSettingsController.getNewPenColor() != null)
-			canvasActions.setPenColor(penSettingsController.getNewPenColor());
-		if (penSettingsController.getNewPenType() != null)
-			canvasActions.setPenType(penSettingsController.getNewPenType());
-		if(penSettingsController.getNewPenThickness() != 0)
-			canvasActions.setPenThickness(penSettingsController.getNewPenThickness());
+
+	public void update(PenSettingsController obs, Object o) {
+		if (settingsController.getPenSettingsController().getNewPenColor() != null)
+			canvasActions.setPenColor(settingsController.getPenSettingsController().getNewPenColor());
+		if (settingsController.getPenSettingsController().getNewPenType() != null)
+			canvasActions.setPenType(settingsController.getPenSettingsController().getNewPenType());
+		if (settingsController.getPenSettingsController().getNewPenThickness() != 0)
+			canvasActions.setPenThickness(settingsController.getPenSettingsController().getNewPenThickness());
 	}
 
 	public void setModelController(BoardStateDataSource modelController) {
@@ -452,5 +423,14 @@ public class ViewController implements Observer, ErrorPresenter {
 
 	public void setInterpreter(SlogoCommandInterpreter interpreter) {
 		this.interpreter = interpreter;
+	}
+
+	// WHY CANT WE JUST PASS VIEWPROPERTIES TO INTERPRETER?
+	public double getImageWidth() {
+		return viewProperties.getDoubleProperty("image_width");
+	}
+
+	public double getImageHeight() {
+		return viewProperties.getDoubleProperty("image_height");
 	}
 }
