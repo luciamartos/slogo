@@ -1,5 +1,5 @@
 package general;
-import gui.ViewController;
+import gui.TabViewController;
 import interpreter.MainInterpreter;
 import javafx.stage.Stage;
 import model.BoardStateController;
@@ -10,13 +10,13 @@ import model.BoardStateController;
  */
 public class MainController {
 	
-	private ViewController viewController;
+	private TabViewController viewController;
 	private BoardStateController modelController;
 	private MainInterpreter interpreter;
 
 	public MainController(Stage stage) {
     	modelController = new BoardStateController();
-    	viewController = new ViewController(stage);
+    	viewController = new TabViewController(stage);
     	interpreter = new MainInterpreter();
     	
     	viewController.setModelController(modelController);
@@ -29,5 +29,15 @@ public class MainController {
     	interpreter.setStateUpdater(modelController);
     	interpreter.setErrorPresenter(viewController);
 	}
+	
+	public TabViewController makeTab(String title){
+		
+		return null;
+	}
+	
+	public void closeTab(TabViewController closedTab){
+		
+	}
+	
 
 }

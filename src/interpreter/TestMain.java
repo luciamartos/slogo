@@ -1,6 +1,6 @@
 package interpreter;
 
-import gui.ViewController;
+import gui.TabViewController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import model.BoardStateController;
@@ -20,7 +20,7 @@ public class TestMain extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		BoardStateController controller = new BoardStateController();
 		MainInterpreter main = new MainInterpreter();
-		ViewController vc = new ViewController(primaryStage);
+		TabViewController vc = new TabViewController(primaryStage);
 		
 		//controller is passed in three times because there are three different interfaces
 		main.setStateDataSource(controller);
