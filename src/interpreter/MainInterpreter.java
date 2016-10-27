@@ -17,7 +17,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private final String DEFAULT_RESOURCE_LANGUAGE = "resources/languages/";
 	private final String DEFAULT_RESOURCE_PACKAGE = "resources/properties/";
 	private final String PROPERTIES_TITLE = "Interpreter";
-	private final double defaultReturnValue = Double.NEGATIVE_INFINITY;
+	private final double erroneousReturnValue = Double.NaN;
 	private String[] languages = {"English", "Syntax"};  //default language is English
 	
 	private ProgramParser lang;
@@ -29,10 +29,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private ResourceBundle rb;
 	private Queue<String[]> listQueue;
 	private int currSearchIndex;
-	//	if(commandQueue.size()>0){
-	//	String s = commandQueue.pop();
-	//	parseInput(s);
-	//}
 	
 	private int repCount;
 	
@@ -52,7 +48,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 //			System.out.println(elem);
 //		}
 		interpretCommand(split, 0);   //first search(non-recursive) begins at index 0;
-//		stateUpdater.applyChanges(model);
 	}
 	
 	private double interpretCommand(String[] input, int searchStartIndex) throws ClassNotFoundException, NoSuchMethodException, 
@@ -66,7 +61,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		//scan for list first before anything else
 		searchForList(input, parsed);
 		
-		double returnValue = defaultReturnValue;
+		double returnValue = erroneousReturnValue; //initialized as an erroneous number
 		
 		if(decideCommand.isNonInputTurtleCommand(keyword) || decideCommand.isUnaryTurtleCommand(keyword) || 
 				decideCommand.isBinaryTurtleCommand(keyword)){
@@ -97,10 +92,16 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 				returnValue = Double.parseDouble(varDataSource.getUserDefinedVariable(newKeyword));
 			}
 			else returnValue = 0;  //By definition, unassigned variables have a value of 0.
-		}
-		
+		}	
 			
-		if(returnValue != defaultReturnValue){
+		return getValueOfCommand(input, searchStartIndex, parsed, decideCommand, returnValue);
+	}
+
+	private double getValueOfCommand(String[] input, int searchStartIndex, String[] parsed,
+			GeneralInterpreter decideCommand, double returnValue) throws ClassNotFoundException, NoSuchMethodException,
+			InstantiationException, IllegalAccessException, InvocationTargetException {
+		
+		if(returnValue != erroneousReturnValue){
 			if(hasRemainingActionable(parsed, decideCommand, currSearchIndex) < 0){
 				stateUpdater.applyChanges(model);
 				return returnValue;
@@ -239,9 +240,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			param = parseParam(input, searchStartIndex+1, 1);
 			double res = 0;
 			String[] temp = listQueue.peek();
-//			for(String elem: temp){
-//				System.out.println("ttt: " + elem);
-//			}
 			for(int i=0;i<param[0];i++){
 				res = interpretCommand(temp, 0);
 				repCount++;
@@ -252,7 +250,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			return res;
 		}
 		
-		//TODO: Implement other controls other than set
+		//TODO: Implement other controls other than set and repeat
 		else return 0;
 	}
 	
@@ -358,7 +356,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			return false;
 		}
 	}
-	
 	
 	//returns -1 if no remaining actionables, otherwise returns index of next actionable
 	private int hasRemainingActionable(String[] parsed, GeneralInterpreter interpreter, int index){
