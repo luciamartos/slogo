@@ -92,7 +92,7 @@ public class CanvasActions {
 	}
 
 	private void initializeTurtle() {
-		turtleImgView = new ImageView(ViewImageChooser.selectImage(IMAGE_PATH + "turtle.png", imageWidth, imageHeight));
+		turtleImgView = new ImageView(FileChooserPath.selectImage(IMAGE_PATH + "turtle.png", imageWidth, imageHeight));
 	}
 
 	public void changeImage(Image image, double xLoc, double yLoc) {

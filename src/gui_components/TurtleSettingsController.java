@@ -8,7 +8,7 @@ import java.util.Observable;
 
 import general.Main;
 import general.Properties;
-import gui.ViewImageChooser;
+import gui.FileChooserPath;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -86,7 +86,7 @@ public class TurtleSettingsController extends Observable {
 			public void changed(ObservableValue ov, String t, String t1) {
 				if(t1!=null){
 				setChanged();
-				Image image = ViewImageChooser.selectImage(IMAGE_PATH+t1+".png", 50, 50);
+				Image image = FileChooserPath.selectImage(IMAGE_PATH+t1+".png", 50, 50);
 				newImage = image;
 				notifyObservers();
 				}

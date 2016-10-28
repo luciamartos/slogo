@@ -3,7 +3,7 @@ package gui_components;
 import java.util.Observable;
 
 import general.Properties;
-import gui.ViewImageChooser;
+import gui.FileChooserPath;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;

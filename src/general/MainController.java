@@ -11,7 +11,7 @@ import model.BoardStateController;
  * 
  * @author Eric Song, Andrew Bihl
  */
-public class MainController{
+public class MainController{// implements NewSlogoInstance{
 	
 	private WindowViewController windowViewController;
 	private HashMap<TabViewController,BoardStateController> vcMap;
