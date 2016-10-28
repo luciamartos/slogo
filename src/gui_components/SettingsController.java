@@ -2,6 +2,7 @@ package gui_components;
 
 import java.util.Observable;
 
+import general.NewSlogoInstanceCreator;
 import general.Properties;
 import gui.TabViewController;
 import gui.FileChooserPath;
@@ -34,8 +35,10 @@ public class SettingsController extends Observable {
 	private GeneralSettingsController generalSettingsController;
 	private Properties viewProperties;
 	private HBox hBox;
+	private NewSlogoInstanceCreator instanceCreator;
 
-	public SettingsController(Properties viewProperties) {
+	public SettingsController(Properties viewProperties, NewSlogoInstanceCreator instanceCreator) {
+		this.instanceCreator = instanceCreator;
 		this.viewProperties = viewProperties;
 		initializeSettingsControllers();
 		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
@@ -49,7 +52,7 @@ public class SettingsController extends Observable {
 		 penSettingsController = new PenSettingsController(viewProperties);
 		 turtleSettingsController = new TurtleSettingsController(viewProperties);
 		 workspaceSettingsController = new WorkspaceSettingsController(viewProperties);
-		 generalSettingsController = new GeneralSettingsController(viewProperties);
+		 generalSettingsController = new GeneralSettingsController(viewProperties,instanceCreator);
 	}
 	
 	public PenSettingsController getPenSettingsController(){

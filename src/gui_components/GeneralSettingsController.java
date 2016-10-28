@@ -2,7 +2,11 @@ package gui_components;
 
 import java.util.Observable;
 
+
 import XMLparser.XMLReader;
+
+import general.NewSlogoInstanceCreator;
+
 import general.Properties;
 import gui.FileChooserPath;
 import javafx.beans.value.ChangeListener;
@@ -24,8 +28,10 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 
 	private Image newImage;
 	private String newCommandString; 
+	private NewSlogoInstanceCreator instanceCreator;
 
-	public GeneralSettingsController(Properties viewProperties) {
+	public GeneralSettingsController(Properties viewProperties, NewSlogoInstanceCreator instanceCreator) {
+		this.instanceCreator = instanceCreator;
 		this.viewProperties = viewProperties;
 		
 		VBox vBoxLeft = new VBox(viewProperties.getDoubleProperty("padding"));
@@ -46,7 +52,7 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 		addTab.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				
+				instanceCreator.addSlogoInstance();
 			}
 		});
 		return addTab;

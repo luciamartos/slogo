@@ -11,7 +11,9 @@ import java.util.Observable;
 import java.util.Observer;
 
 import general.MainController;
+import general.NewSlogoInstanceCreator;
 import general.Properties;
+import general.SlogoCommandHandler;
 import gui_components.ErrorConsole;
 import gui_components.GeneralSettingsController;
 import gui_components.InputPanel;
@@ -57,7 +59,7 @@ import tableviews.VariableTableView;
 
 /**
  * 
- * @author LuciaMartos
+ * @author LuciaMartos, Eric Song
  */
 public class TabViewController implements Observer, ErrorPresenter {
 	private Properties viewProperties;
@@ -74,15 +76,17 @@ public class TabViewController implements Observer, ErrorPresenter {
 	// private TurtleSettingsController turtleSettingsController;
 	private ErrorConsole errorConsole;
 	private BoardStateDataSource modelController;
-	private SlogoCommandInterpreter interpreter;
+	private SlogoCommandHandler commandHandler;
 	private TurtleDataTranslator turtleTranslator;
 	private ListView<String> pastCommandsListView;
 	private Tab tab;
+	private NewSlogoInstanceCreator instanceCreator;
 
 	TableView<Variable> variableTableView;
 	TableView<UserDefinedCommand> userDefinedTableView;
 
-	public TabViewController(TabPane tabPane, Properties viewProperties, String tabTitle) {
+	public TabViewController(TabPane tabPane, Properties viewProperties, String tabTitle, NewSlogoInstanceCreator instanceCreator) {
+		this.instanceCreator = instanceCreator;
 		this.viewProperties = viewProperties;
 		setupTab(tabTitle);
 		tabPane.getTabs().add(tab);
@@ -181,7 +185,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 	}
 
 	private Node initializeSettingsController() {
-		settingsController = new SettingsController(viewProperties);
+		settingsController = new SettingsController(viewProperties,instanceCreator);
 		settingsController.addObserver(this);
 		settingsController.getPenSettingsController().addObserver(this);
 		settingsController.getWorkspaceSettingsController().addObserver(this);
@@ -259,12 +263,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 		// String currentCommandLine = inputPanel.getCurrentCommandLine();
 		if (!(currentCommandLine == null) && !(currentCommandLine.length() == 0)) {
 			pastCommands.add(currentCommandLine);
-			try {
-				interpreter.parseInput(currentCommandLine);
-			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-					| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				e.printStackTrace();
-			}
+			commandHandler.parseInput(this,currentCommandLine);
 		}
 	}
 
@@ -304,6 +303,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 	}
 
 	public void update(Object obs, BoardStateDataSource o) {
+		System.out.println(obs.getClass());
 		canvasActions.removeTurtle();
 		canvasActions.setShowTurtle(modelController.getTurtleIsShowing());
 		canvasActions.setHeading(turtleTranslator.convertAngle(modelController.getAngle()));
@@ -337,7 +337,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 			canvasActions.setBackgroundColorCanvas(
 					obs.getNewBackgroundColor());
 		if (obs.getNewLanguage() != null)
-			interpreter.setLanguage(obs.getNewLanguage());
+			commandHandler.setLanguage(this,obs.getNewLanguage());
 	}
 
 	public void update(PenSettingsController obs, Object o) {
@@ -399,8 +399,8 @@ public class TabViewController implements Observer, ErrorPresenter {
 
 	}
 
-	public void setInterpreter(SlogoCommandInterpreter interpreter) {
-		this.interpreter = interpreter;
+	public void setCommandHandler(SlogoCommandHandler commandHandler) {
+		this.commandHandler = commandHandler;
 	}
 
 	// WHY CANT WE JUST PASS VIEWPROPERTIES TO INTERPRETER?
