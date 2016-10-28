@@ -120,7 +120,7 @@ public class WorkspaceSettingsController extends Observable {
 		return button;
 	}
 
-	public VBox getVBox() {
+	public VBox getNode() {
 		return vBox;
 	}
 

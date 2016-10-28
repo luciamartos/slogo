@@ -13,6 +13,7 @@ import java.util.Observer;
 import general.MainController;
 import general.Properties;
 import gui_components.ErrorConsole;
+import gui_components.GeneralSettingsController;
 import gui_components.InputPanel;
 import gui_components.PenSettingsController;
 import gui_components.SettingsController;
@@ -76,35 +77,27 @@ public class TabViewController implements Observer, ErrorPresenter {
 	private SlogoCommandInterpreter interpreter;
 	private TurtleDataTranslator turtleTranslator;
 	private ListView<String> pastCommandsListView;
+	private Tab tab;
 
 	TableView<Variable> variableTableView;
 	TableView<UserDefinedCommand> userDefinedTableView;
 
 	public TabViewController(TabPane tabPane, Properties viewProperties, String tabTitle) {
 		this.viewProperties = viewProperties;
-		tabPane.getTabs().add(setupTab(tabTitle));
+		setupTab(tabTitle);
+		tabPane.getTabs().add(tab);
 		turtleTranslator = new TurtleDataTranslator(viewProperties.getDoubleProperty("canvas_width"),
 				viewProperties.getDoubleProperty("canvas_height"), getImageWidth(), getImageHeight());
 	}
 
-	private Tab setupTab(String tabTitle) {
-
-
-			Tab tab = new Tab();
-			//tab.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
-
+	private void setupTab(String tabTitle) {
+			tab = new Tab();
 			tab.setText(tabTitle);
-//			HBox hbox = new HBox();
-//			hbox.getChildren().add(new Label("Tab" + i));
-//			hbox.setAlignment(Pos.CENTER);
-			tab.setContent(setupBoxes());
+			tab.setContent(setupBoxes());	
+	}
+	
+	public Tab getTab(){
 		return tab;
-		// bind to take available space
-		
-		
-		
-
-		
 	}
 
 	private Node setupBoxes() {
@@ -119,6 +112,8 @@ public class TabViewController implements Observer, ErrorPresenter {
 		box1.getChildren().add(box2);
 		box1.getChildren().add(box4);
 		box1.getChildren().add(createErrorConsole());
+		box1.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
+
 
 		box2.getChildren().add(box3);
 		box2.getChildren().add(createPastCommandsListView());
@@ -140,15 +135,15 @@ public class TabViewController implements Observer, ErrorPresenter {
 		// initialise buttons
 		VBox hideShowButtons = new VBox(2);
 		Button historicCommands = createButton("Hide history", HIDE_SHOW_BUTTON_WIDTH);
-		Button variables = createButton("Hide variales", HIDE_SHOW_BUTTON_WIDTH);
+		Button variables = createButton("Hide variables", HIDE_SHOW_BUTTON_WIDTH);
 		Button userVariables = createButton("Hide user variables", HIDE_SHOW_BUTTON_WIDTH);
 		Button drawSettings = createButton("Hide settings", HIDE_SHOW_BUTTON_WIDTH);
 
 		// initialise button actions
 		hideShowButtonActions(historicCommands, pastCommandsListView, "Hide history", "Show history");
-		hideShowButtonActions(variables, variableTableView, "Hide variales", "Show variales");
+		hideShowButtonActions(variables, variableTableView, "Hide variales", "Show variables");
 		hideShowButtonActions(userVariables, userDefinedTableView, "Hide user variables", "Show user variables");
-		hideShowButtonActions(drawSettings, settingsController.getHBox(), "Hide settings", "Show settings");
+		hideShowButtonActions(drawSettings, settingsController.getNode(), "Hide settings", "Show settings");
 
 		hideShowButtons.getChildren().addAll(historicCommands, userVariables, variables, drawSettings);
 		return hideShowButtons;
@@ -192,7 +187,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 		settingsController.getWorkspaceSettingsController().addObserver(this);
 		settingsController.getGeneralSettingsController().addObserver(this);
 		settingsController.getTurtleSettingsController().addObserver(this);
-		return settingsController.getHBox();
+		return settingsController.getNode();
 	}
 
 	private void handleKeyInput(KeyCode code) {
@@ -326,31 +321,31 @@ public class TabViewController implements Observer, ErrorPresenter {
 
 	}
 
-	public void update(SettingsController obs, Object o) {
+	public void update(GeneralSettingsController obs, Object o) {
 
 	}
 
 	public void update(TurtleSettingsController obs, Object o) {
-		if (settingsController.getTurtleSettingsController().getNewImage() != null)
-			canvasActions.changeImage(settingsController.getTurtleSettingsController().getNewImage(),
+		if (obs.getNewImage() != null)
+			canvasActions.changeImage(obs.getNewImage(),
 					modelController.getXCoordinate(), modelController.getYCoordinate());
 	}
 
 	public void update(WorkspaceSettingsController obs, Object o) {
-		if (settingsController.getWorkspaceSettingsController().getNewBackgroundColor() != null)
+		if (obs.getNewBackgroundColor() != null)
 			canvasActions.setBackgroundColorCanvas(
-					settingsController.getWorkspaceSettingsController().getNewBackgroundColor());
-		if (settingsController.getWorkspaceSettingsController().getNewLanguage() != null)
-			interpreter.setLanguage(settingsController.getWorkspaceSettingsController().getNewLanguage());
+					obs.getNewBackgroundColor());
+		if (obs.getNewLanguage() != null)
+			interpreter.setLanguage(obs.getNewLanguage());
 	}
 
 	public void update(PenSettingsController obs, Object o) {
-		if (settingsController.getPenSettingsController().getNewPenColor() != null)
-			canvasActions.setPenColor(settingsController.getPenSettingsController().getNewPenColor());
-		if (settingsController.getPenSettingsController().getNewPenType() != null)
-			canvasActions.setPenType(settingsController.getPenSettingsController().getNewPenType());
-		if (settingsController.getPenSettingsController().getNewPenThickness() != 0)
-			canvasActions.setPenThickness(settingsController.getPenSettingsController().getNewPenThickness());
+		if (obs.getNewPenColor() != null)
+			canvasActions.setPenColor(obs.getNewPenColor());
+		if (obs.getNewPenType() != null)
+			canvasActions.setPenType(obs.getNewPenType());
+		if (obs.getNewPenThickness() != 0)
+			canvasActions.setPenThickness(obs.getNewPenThickness());
 	}
 
 	public void setModelController(BoardStateDataSource modelController) {

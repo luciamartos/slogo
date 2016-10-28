@@ -96,7 +96,7 @@ public class TurtleSettingsController extends Observable {
 
 	}
 
-	public VBox getVBox() {
+	public VBox getNode() {
 		return vBox;
 	}
 
@@ -104,9 +104,9 @@ public class TurtleSettingsController extends Observable {
 		return newImage;
 	}
 
-	public Node getTurtleSettingsController() {
-		return vBox;
-	}
+//	public Node getTurtleSettingsController() {
+//		return vBox;
+//	}
 	
 	public int getNewTurtleNumber(){
 		return newTurtleNumber;

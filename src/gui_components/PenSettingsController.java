@@ -117,7 +117,7 @@ public class PenSettingsController extends Observable {
 
 
 
-	public VBox getVBox() {
+	public VBox getNode() {
 		return vBox;
 	}
 

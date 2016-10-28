@@ -39,10 +39,10 @@ public class SettingsController extends Observable {
 		this.viewProperties = viewProperties;
 		initializeSettingsControllers();
 		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
-		hBox.getChildren().add(penSettingsController.getVBox());
-		hBox.getChildren().add(workspaceSettingsController.getVBox());
-		hBox.getChildren().add(turtleSettingsController.getVBox());
-		hBox.getChildren().add(generalSettingsController.getVBox());
+		hBox.getChildren().add(penSettingsController.getNode());
+		hBox.getChildren().add(workspaceSettingsController.getNode());
+		hBox.getChildren().add(turtleSettingsController.getNode());
+		hBox.getChildren().add(generalSettingsController.getNode());
 	}
 
 	private void initializeSettingsControllers() {
@@ -69,7 +69,7 @@ public class SettingsController extends Observable {
 	}
 
 
-	public HBox getHBox() {
+	public HBox getNode() {
 		return hBox;
 	}
 
