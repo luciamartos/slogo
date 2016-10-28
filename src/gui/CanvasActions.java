@@ -6,6 +6,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
 
+import XMLparser.XMLReader;
 import general.Properties;
 import javafx.animation.Animation;
 import javafx.animation.PathTransition;

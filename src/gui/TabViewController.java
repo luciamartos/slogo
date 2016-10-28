@@ -322,7 +322,8 @@ public class TabViewController implements Observer, ErrorPresenter {
 	}
 
 	public void update(GeneralSettingsController obs, Object o) {
-
+		if(obs.getNewCommandLineFromFile()!=null)
+			 runCommand(obs.getNewCommandLineFromFile());
 	}
 
 	public void update(TurtleSettingsController obs, Object o) {
@@ -347,6 +348,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 		if (obs.getNewPenThickness() != 0)
 			canvasActions.setPenThickness(obs.getNewPenThickness());
 	}
+	
 
 	public void setModelController(BoardStateDataSource modelController) {
 		this.modelController = modelController;

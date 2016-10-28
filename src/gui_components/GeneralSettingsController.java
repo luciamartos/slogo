@@ -2,6 +2,7 @@ package gui_components;
 
 import java.util.Observable;
 
+import XMLparser.XMLReader;
 import general.Properties;
 import gui.FileChooserPath;
 import javafx.beans.value.ChangeListener;
@@ -52,11 +53,15 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	private Node initalizeCommandFileLoader() {
-		CommandFileUploader myUploader = new CommandFileUploader();
+		CommandFileUploader myUploader = new CommandFileUploader(this);
 		return myUploader.getCommandFileUploaderButton();
 	}
 
 	private Node initalizeFileLoader() {
+		
+//		XMLReader myReader = new XMLReader();
+//		myReader.readFile("test1.xml");
+		
 		ComboBox<String> fileLoaderComboBox = new ComboBox<String>();
 		fileLoaderComboBox.setVisibleRowCount(3);
 		fileLoaderComboBox.getItems().addAll("test.xml");
@@ -119,6 +124,10 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 		setChanged();
 		newCommandString = myCommand;
 		notifyObservers();
+	}
+	
+	public String getNewCommandLineFromFile(){
+		return newCommandString;
 	}
 
 }
