@@ -16,18 +16,25 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class GeneralSettingsController extends Observable {
+public class GeneralSettingsController extends Observable implements ReadCommandFileInterface {
 	private Properties viewProperties;
 	private VBox vBox;
 
 	private Image newImage;
+	private String newCommandString; 
 
 	public GeneralSettingsController(Properties viewProperties) {
 		this.viewProperties = viewProperties;
 		vBox = new VBox(viewProperties.getDoubleProperty("padding"));
 		vBox.getChildren().add(initializeUndoButton());
 		vBox.getChildren().add(initalizeFileLoader());
+		vBox.getChildren().add(initalizeCommandFileLoader());
 		vBox.getChildren().add(initializeGetHelpButton());
+	}
+
+	private Node initalizeCommandFileLoader() {
+		CommandFileUploader myUploader = new CommandFileUploader();
+		return myUploader.getCommandFileUploaderButton();
 	}
 
 	private Node initalizeFileLoader() {
@@ -86,6 +93,13 @@ public class GeneralSettingsController extends Observable {
 
 	public Image getNewImage() {
 		return newImage;
+	}
+
+	@Override
+	public void getCommandLineFromFile(String myCommand) {
+		setChanged();
+		newCommandString = myCommand;
+		notifyObservers();
 	}
 
 }
