@@ -11,7 +11,7 @@ import model.BoardStateController;
  * 
  * @author Eric Song, Andrew Bihl
  */
-public class MainController {
+public class MainController{
 	
 	private WindowViewController windowViewController;
 	private HashMap<TabViewController,BoardStateController> vcMap;
@@ -46,7 +46,8 @@ public class MainController {
 	}
 	
 	public void closeTabViewController(TabViewController closedTab){
-		
+		windowViewController.closeTabViewController(closedTab);
+		vcMap.remove(closedTab);
 	}
 	
 

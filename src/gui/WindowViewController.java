@@ -32,7 +32,13 @@ public class WindowViewController {
 	public TabViewController makeTabViewController(String tabTitle){
 		TabViewController tabViewController = new TabViewController(tabPane,viewProperties,tabTitle);
 		tabViewControllerList.add(tabViewController);
+		
 		return tabViewController;
+	}
+	
+	public void closeTabViewController(TabViewController closedTab){
+		tabPane.getTabs().remove(closedTab.getTab());
+		
 	}
 	
 	private void setupStage(){

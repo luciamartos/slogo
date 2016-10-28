@@ -18,16 +18,35 @@ import javafx.stage.Stage;
 
 public class GeneralSettingsController extends Observable {
 	private Properties viewProperties;
-	private VBox vBox;
+	private HBox hBox;
+	private boolean newTab;
 
 	private Image newImage;
 
 	public GeneralSettingsController(Properties viewProperties) {
 		this.viewProperties = viewProperties;
-		vBox = new VBox(viewProperties.getDoubleProperty("padding"));
-		vBox.getChildren().add(initializeUndoButton());
-		vBox.getChildren().add(initalizeFileLoader());
-		vBox.getChildren().add(initializeGetHelpButton());
+		
+		VBox vBoxLeft = new VBox(viewProperties.getDoubleProperty("padding"));
+		vBoxLeft.getChildren().add(initializeUndoButton());
+		vBoxLeft.getChildren().add(initalizeFileLoader());
+		vBoxLeft.getChildren().add(initializeGetHelpButton());
+		
+		VBox vBoxRight = new VBox(viewProperties.getDoubleProperty("padding"));
+		vBoxRight.getChildren().add(initializeAddTabButton());
+		
+		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
+		hBox.getChildren().addAll(vBoxLeft,vBoxRight);
+	}
+	
+	private Node initializeAddTabButton(){
+		Button addTab = createButton("Add Tab", viewProperties.getDoubleProperty("help_button_width"));
+		addTab.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				
+			}
+		});
+		return addTab;
 	}
 
 	private Node initalizeFileLoader() {
@@ -80,8 +99,8 @@ public class GeneralSettingsController extends Observable {
 		return button;
 	}
 
-	public VBox getVBox() {
-		return vBox;
+	public Node getNode() {
+		return hBox;
 	}
 
 	public Image getNewImage() {
