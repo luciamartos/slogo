@@ -16,12 +16,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class GeneralSettingsController extends Observable {
+public class GeneralSettingsController extends Observable implements ReadCommandFileInterface {
 	private Properties viewProperties;
 	private HBox hBox;
 	private boolean newTab;
 
 	private Image newImage;
+	private String newCommandString; 
 
 	public GeneralSettingsController(Properties viewProperties) {
 		this.viewProperties = viewProperties;
@@ -29,11 +30,12 @@ public class GeneralSettingsController extends Observable {
 		VBox vBoxLeft = new VBox(viewProperties.getDoubleProperty("padding"));
 		vBoxLeft.getChildren().add(initializeUndoButton());
 		vBoxLeft.getChildren().add(initalizeFileLoader());
-		vBoxLeft.getChildren().add(initializeGetHelpButton());
+		vBoxLeft.getChildren().add(initalizeCommandFileLoader());
 		
 		VBox vBoxRight = new VBox(viewProperties.getDoubleProperty("padding"));
 		vBoxRight.getChildren().add(initializeAddTabButton());
-		
+		vBoxRight.getChildren().add(initializeGetHelpButton());
+
 		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
 		hBox.getChildren().addAll(vBoxLeft,vBoxRight);
 	}
@@ -47,6 +49,11 @@ public class GeneralSettingsController extends Observable {
 			}
 		});
 		return addTab;
+	}
+
+	private Node initalizeCommandFileLoader() {
+		CommandFileUploader myUploader = new CommandFileUploader();
+		return myUploader.getCommandFileUploaderButton();
 	}
 
 	private Node initalizeFileLoader() {
@@ -105,6 +112,13 @@ public class GeneralSettingsController extends Observable {
 
 	public Image getNewImage() {
 		return newImage;
+	}
+
+	@Override
+	public void getCommandLineFromFile(String myCommand) {
+		setChanged();
+		newCommandString = myCommand;
+		notifyObservers();
 	}
 
 }

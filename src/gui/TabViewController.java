@@ -308,6 +308,9 @@ public class TabViewController implements Observer, ErrorPresenter {
 		canvasActions.setShowTurtle(modelController.getTurtleIsShowing());
 		canvasActions.setHeading(turtleTranslator.convertAngle(modelController.getAngle()));
 		canvasActions.setPenDown(modelController.getTurtleIsDrawing());
+//		canvasActions.setPenColor(modelController.getPenColor());
+//		canvasActions.setBackgroundColorCanvas(modelController.getBackgroundColor());
+//		canvasActions.setPenThickness(modelController.getPenThickness());
 		canvasActions.setXandYLoc(turtleTranslator.convertXImageCordinate(modelController.getXCoordinate()),
 				turtleTranslator.convertYImageCordinate(modelController.getYCoordinate()));
 		canvasActions.setPathLine(turtleTranslator.convertLineCordinates(modelController.getLineCoordinates()));
