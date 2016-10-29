@@ -9,7 +9,7 @@ import java.util.Observable;
  * @author Andrew Bihl
  */
 
-public class BoardState extends Observable {
+public class BoardState{
 	private double xCoordinate;
 	private double yCoordinate;
 	private double angle;
@@ -19,11 +19,11 @@ public class BoardState extends Observable {
 	private ArrayList<PathLine> lineCoordinates;
 	private HashMap<String, String> userDefinedVariables;
 	
-	private static BoardState currentState;
 	
-	protected BoardState(){
+	public BoardState(){
 		this.lineCoordinates= new ArrayList<PathLine>();
 		this.userDefinedVariables = new HashMap<String, String>();
+		setToDefaultValues();
 	}
 	
 	private void setToDefaultValues(){
@@ -32,17 +32,8 @@ public class BoardState extends Observable {
 		setAngle(90.0);
 		setDrawing(true);
 		setShowing(true);
-		setChanged();
 	}
-	
-	
-	public static BoardState getCurrentState(){
-		if (currentState == null){
-			currentState = new BoardState();
-			currentState.setToDefaultValues();
-		}
-		return currentState;
-	}
+
 
 // Getters and Setters
 	
@@ -53,7 +44,6 @@ public class BoardState extends Observable {
 	public void setXCoordinate(double xCoordinate) {
 		if (this.xCoordinate != xCoordinate){
 			this.xCoordinate = xCoordinate;
-			setChanged();
 		}
 	
 	}
@@ -65,7 +55,6 @@ public class BoardState extends Observable {
 	public void setYCoordinate(double yCoordinate) {
 		if (this.yCoordinate != yCoordinate){
 			this.yCoordinate = yCoordinate;
-			setChanged();
 		}
 	}
 
@@ -76,7 +65,6 @@ public class BoardState extends Observable {
 	public void setAngle(double angle) {
 		if (this.angle != angle){
 			this.angle = angle;
-			setChanged();
 		}
 	}
 
@@ -103,7 +91,6 @@ public class BoardState extends Observable {
 	public void setShowing(boolean turtleShouldShow) {
 		if (this.showing != turtleShouldShow){
 			this.showing = turtleShouldShow;
-			setChanged();
 		}
 	}
 	
@@ -113,12 +100,10 @@ public class BoardState extends Observable {
 	
 	public void addLineCoordinates(PathLine line){
 		lineCoordinates.add(line);
-		setChanged();
 	}
 	
 	public void addUserDefinedVariable(String varName, String userInput){
 		this.userDefinedVariables.put(varName, userInput);
-		setChanged();
 	}
 	
 	public HashMap<String, String> getUserDefinedVariables(){

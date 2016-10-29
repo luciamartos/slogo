@@ -64,7 +64,6 @@ import tableviews.VariableTableView;
 public class TabViewController implements Observer, ErrorPresenter {
 	private Properties viewProperties;
 
-
 	private static final double HIDE_SHOW_BUTTON_WIDTH = 140;
 	private TitleBox titleBox;
 	private InputPanel inputPanel;
@@ -85,7 +84,8 @@ public class TabViewController implements Observer, ErrorPresenter {
 	TableView<Variable> variableTableView;
 	TableView<UserDefinedCommand> userDefinedTableView;
 
-	public TabViewController(TabPane tabPane, Properties viewProperties, String tabTitle, NewSlogoInstanceCreator instanceCreator) {
+	public TabViewController(TabPane tabPane, Properties viewProperties, String tabTitle,
+			NewSlogoInstanceCreator instanceCreator) {
 		this.instanceCreator = instanceCreator;
 		this.viewProperties = viewProperties;
 		setupTab(tabTitle);
@@ -95,12 +95,12 @@ public class TabViewController implements Observer, ErrorPresenter {
 	}
 
 	private void setupTab(String tabTitle) {
-			tab = new Tab();
-			tab.setText(tabTitle);
-			tab.setContent(setupBoxes());	
+		tab = new Tab();
+		tab.setText(tabTitle);
+		tab.setContent(setupBoxes());
 	}
-	
-	public Tab getTab(){
+
+	public Tab getTab() {
 		return tab;
 	}
 
@@ -117,7 +117,6 @@ public class TabViewController implements Observer, ErrorPresenter {
 		box1.getChildren().add(box4);
 		box1.getChildren().add(createErrorConsole());
 		box1.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
-
 
 		box2.getChildren().add(box3);
 		box2.getChildren().add(createPastCommandsListView());
@@ -185,7 +184,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 	}
 
 	private Node initializeSettingsController() {
-		settingsController = new SettingsController(viewProperties,instanceCreator);
+		settingsController = new SettingsController(viewProperties, instanceCreator);
 		settingsController.addObserver(this);
 		settingsController.getPenSettingsController().addObserver(this);
 		settingsController.getWorkspaceSettingsController().addObserver(this);
@@ -263,7 +262,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 		// String currentCommandLine = inputPanel.getCurrentCommandLine();
 		if (!(currentCommandLine == null) && !(currentCommandLine.length() == 0)) {
 			pastCommands.add(currentCommandLine);
-			commandHandler.parseInput(this,currentCommandLine);
+			commandHandler.parseInput(this, currentCommandLine);
 		}
 	}
 
@@ -281,20 +280,20 @@ public class TabViewController implements Observer, ErrorPresenter {
 		}
 		try {
 			Method update;
-			if (o != null) {
-				for (Class c : o.getClass().getInterfaces()) {
+				for (Class c : obs.getClass().getInterfaces()) {
 					if (c.equals(BoardStateDataSource.class)) {
-						update = getClass().getMethod("update", Object.class, BoardStateDataSource.class);
+						update = getClass().getMethod("update", BoardStateDataSource.class, Object.class);
 						update.invoke(this, obs, o);
+						return;
 					}
 				}
-			} else {
 				update = getClass().getMethod("update", obs.getClass(), Object.class);
 				update.invoke(this, obs, o);
-			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 	@Override
@@ -302,20 +301,19 @@ public class TabViewController implements Observer, ErrorPresenter {
 		errorConsole.displayErrorMessage(errorMessage);
 	}
 
-	public void update(Object obs, BoardStateDataSource o) {
-		System.out.println(obs.getClass());
+	public void update(BoardStateDataSource obs, Object o) {
 		canvasActions.removeTurtle();
 		canvasActions.setShowTurtle(modelController.getTurtleIsShowing());
 		canvasActions.setHeading(turtleTranslator.convertAngle(modelController.getAngle()));
 		canvasActions.setPenDown(modelController.getTurtleIsDrawing());
-//		canvasActions.setPenColor(modelController.getPenColor());
-//		canvasActions.setBackgroundColorCanvas(modelController.getBackgroundColor());
-//		canvasActions.setPenThickness(modelController.getPenThickness());
+		// canvasActions.setPenColor(modelController.getPenColor());
+		// canvasActions.setBackgroundColorCanvas(modelController.getBackgroundColor());
+		// canvasActions.setPenThickness(modelController.getPenThickness());
 		canvasActions.setXandYLoc(turtleTranslator.convertXImageCordinate(modelController.getXCoordinate()),
 				turtleTranslator.convertYImageCordinate(modelController.getYCoordinate()));
 		canvasActions.setPathLine(turtleTranslator.convertLineCordinates(modelController.getLineCoordinates()));
 		canvasActions.animatedMovementToXY();
-		//canvasActions.addTurtleAtXY();
+		// canvasActions.addTurtleAtXY();
 		canvasActions.drawPath();
 		updateVariables();
 
@@ -327,16 +325,15 @@ public class TabViewController implements Observer, ErrorPresenter {
 
 	public void update(TurtleSettingsController obs, Object o) {
 		if (obs.getNewImage() != null)
-			canvasActions.changeImage(obs.getNewImage(),
-					modelController.getXCoordinate(), modelController.getYCoordinate());
+			canvasActions.changeImage(obs.getNewImage(), modelController.getXCoordinate(),
+					modelController.getYCoordinate());
 	}
 
 	public void update(WorkspaceSettingsController obs, Object o) {
 		if (obs.getNewBackgroundColor() != null)
-			canvasActions.setBackgroundColorCanvas(
-					obs.getNewBackgroundColor());
+			canvasActions.setBackgroundColorCanvas(obs.getNewBackgroundColor());
 		if (obs.getNewLanguage() != null)
-			commandHandler.setLanguage(this,obs.getNewLanguage());
+			commandHandler.setLanguage(this, obs.getNewLanguage());
 	}
 
 	public void update(PenSettingsController obs, Object o) {
