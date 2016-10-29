@@ -7,14 +7,15 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import java.io.File;
+import java.util.HashMap;
 
 public class XMLReader {
-
-  public static void main(String argv[]) {
+	private HashMap<String, String> myMap;
+  public static void readFile(String file) {
 
     try {
 
-	File fXmlFile = new File("data/examples/workspace_settings/test1.xml");
+	File fXmlFile = new File("data/examples/workspace_settings/"+file);
 	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 	Document doc = dBuilder.parse(fXmlFile);
@@ -25,7 +26,7 @@ public class XMLReader {
 
 	System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
 
-	NodeList nList = doc.getElementsByTagName("staff");
+	NodeList nList = doc.getElementsByTagName("type");
 
 	System.out.println("----------------------------");
 
@@ -39,12 +40,14 @@ public class XMLReader {
 
 			Element eElement = (Element) nNode;
 
-			System.out.println("Staff id : " + eElement.getAttribute("id"));
-			System.out.println("First Name : " + eElement.getElementsByTagName("firstname").item(0).getTextContent());
-			System.out.println("Last Name : " + eElement.getElementsByTagName("lastname").item(0).getTextContent());
-			System.out.println("Nick Name : " + eElement.getElementsByTagName("nickname").item(0).getTextContent());
-			System.out.println("Salary : " + eElement.getElementsByTagName("salary").item(0).getTextContent());
-
+			System.out.println("Type : " + eElement.getAttribute("id"));
+			System.out.println("imageURL : " + eElement.getElementsByTagName("imageURL").item(0).getTextContent());
+			System.out.println("backgroundcolor : " + eElement.getElementsByTagName("backgroundcolor").item(0).getTextContent());
+			System.out.println("language : " + eElement.getElementsByTagName("language").item(0).getTextContent());
+			System.out.println("turtlecount : " + eElement.getElementsByTagName("turtlecount").item(0).getTextContent());
+			System.out.println("pencolor : " + eElement.getElementsByTagName("pencolor").item(0).getTextContent());
+			System.out.println("pendown : " + eElement.getElementsByTagName("pendown").item(0).getTextContent());
+			System.out.println("linestyle : " + eElement.getElementsByTagName("linestyle").item(0).getTextContent());
 		}
 	}
     } catch (Exception e) {
