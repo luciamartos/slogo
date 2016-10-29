@@ -4,6 +4,34 @@ public class MathInterpreter extends SubInterpreter{
 	
 	private final double PI = 3.14159;
 	
+	@Override
+	boolean canHandle(String keyword) {
+		return isNonInputMathExpression(keyword) || isUnaryMathExpression(keyword) || isBinaryMathExpression(keyword);
+	}
+
+	@Override
+	double handle(String[] input, String keyword, double[] param, int searchStartIndex) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	boolean isNonInputMathExpression(String input){
+		return input.equalsIgnoreCase(rb.getString("pi"));
+	}
+	
+	boolean isUnaryMathExpression(String input){
+		return input.equalsIgnoreCase(rb.getString("sin")) || input.equalsIgnoreCase(rb.getString("cos")) ||
+				input.equalsIgnoreCase(rb.getString("tan")) || input.equalsIgnoreCase(rb.getString("atan")) ||
+				input.equalsIgnoreCase(rb.getString("log")) || input.equalsIgnoreCase(rb.getString("rand"));
+	}
+	
+	boolean isBinaryMathExpression(String input){
+		return input.equalsIgnoreCase(rb.getString("sum")) || input.equalsIgnoreCase(rb.getString("diff")) ||
+				input.equalsIgnoreCase(rb.getString("prod")) || input.equalsIgnoreCase(rb.getString("quo")) ||
+				input.equalsIgnoreCase(rb.getString("minus")) || input.equalsIgnoreCase(rb.getString("remain")) || 
+				input.equalsIgnoreCase(rb.getString("pwr")) ;
+	}
+	
 	double sum(double a, double b){
 		return a+b;
 	}
@@ -59,6 +87,5 @@ public class MathInterpreter extends SubInterpreter{
 	double pi(){
 		return PI;
 	}
-
 	
 }

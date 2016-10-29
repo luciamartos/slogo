@@ -19,7 +19,7 @@ public class TestMain extends Application{
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		BoardStateController controller = new BoardStateController();
-		MainInterpreter main = new MainInterpreter();
+		NewMainInterpreter main = new NewMainInterpreter();
 		TabViewController vc = new TabViewController(primaryStage);
 		
 		//controller is passed in three times because there are three different interfaces

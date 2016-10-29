@@ -1,9 +1,12 @@
 package interpreter;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Queue;
 import java.util.ResourceBundle;
@@ -17,11 +20,13 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private final String DEFAULT_RESOURCE_LANGUAGE = "resources/languages/";
 	private final String DEFAULT_RESOURCE_PACKAGE = "resources/properties/";
 	private final String PROPERTIES_TITLE = "Interpreter";
+	private final String LISTOFSUBINTERPRETER_TITLE = "ListOfSubinterpreters";
 	private final double erroneousReturnValue = Double.NaN;
 	private String[] languages = {"English", "Syntax"};  //default language is English
 	
 	private ProgramParser lang;
 	private SlogoUpdate model;
+	private List listOfSubinterpreters;
 	private TurtleStateDataSource stateDatasource;
 	private TurtleStateUpdater stateUpdater;
 	private UserVariablesDataSource varDataSource;
@@ -352,6 +357,20 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			}
 		}
 		return res;
+	}
+	
+	private List<SubInterpreter> createListOfInterpreters() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		List<SubInterpreter> list = new ArrayList<SubInterpreter>();
+		ResourceBundle reader = 
+				ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+LISTOFSUBINTERPRETER_TITLE);
+		for(String elem: reader.keySet()){
+			Class<?> clazz = Class.forName(elem);
+			Constructor<?> constructor = clazz.getConstructor(String.class, Integer.class);
+			SubInterpreter instance = (SubInterpreter)constructor.newInstance(model, stateUpdater);
+			list.add(instance);
+		}
+		
+		return list;
 	}
 	
 	private String[] createParsedArray(String[] in, ProgramParser lang){
