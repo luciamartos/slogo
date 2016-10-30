@@ -110,7 +110,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			InstantiationException, IllegalAccessException, InvocationTargetException {
 		
 		if(returnValue != erroneousReturnValue){
-			int remainingActionableIndex = hasRemainingActionable(parsed, currSearchIndex);
+			int remainingActionableIndex = hasRemainingActionable(parsed, searchStartIndex);
 			System.out.println("remainder index: " + remainingActionableIndex);
 			if(remainingActionableIndex < 0){
 				stateUpdater.applyChanges(model);
@@ -121,9 +121,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 				stateUpdater.applyChanges(model);
 				System.out.println("Return Value: "+returnValue);
 				//TODO: Use currsearchindex or just index?
-				currSearchIndex = remainingActionableIndex;
-				System.out.println("xxx: " + currSearchIndex);
-				return interpretCommand(input, currSearchIndex);
+//				currSearchIndex = remainingActionableIndex;
+				System.out.println("xxx: " + remainingActionableIndex);
+				return interpretCommand(input, remainingActionableIndex);
 			}
 		}
 		else{
@@ -174,10 +174,11 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			double res = 0;
 			String[] temp = listQueue.peek();
 			for(String elem: temp){
-				System.out.println("elem: "+elem);
+				System.out.println("ttt elem: "+elem);
 			}
 			for(int i=0;i<param[0];i++){
 				res = interpretCommand(temp, 0);
+				System.out.println("repcount: " + repCount);
 				repCount++;
 			}
 			listQueue.remove();
@@ -285,8 +286,13 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		
 		//TODO: Is this the best way to tell TurtleCommand or not? Is instantiating new TurtleCommandInterpreter OK?
 		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model, stateUpdater);
-		if(index == parsed.length || parsed[index].equalsIgnoreCase(rb.getString("ListStartLabel"))) return resIndex;
+		if(index == parsed.length) return resIndex;
 		for(int i=index+1;i<parsed.length;i++){
+			
+			//TODO: Right now, if at any point the command includes '[', return "There are no further actionables"
+			if(parsed[i].equalsIgnoreCase(rb.getString("ListStartLabel"))){
+				return resIndex;
+			}
 			if(interpreter.isBinaryTurtleCommand(parsed[i]) || interpreter.isUnaryTurtleCommand(parsed[i]) ||
 				interpreter.isNonInputTurtleCommand(parsed[i])){
 				resIndex = i;

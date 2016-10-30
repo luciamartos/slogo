@@ -19,13 +19,13 @@ public class TestMain extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		BoardStateController controller = new BoardStateController();
 		MainInterpreter main = new MainInterpreter();
-		TabViewController vc = new TabViewController(primaryStage);
+//		TabViewController vc = new TabViewController(primaryStage);
 		
 		//controller is passed in three times because there are three different interfaces
 		main.setStateDataSource(controller);
 		main.setStateUpdater(controller);
 		main.setVarDataSource(controller);
-		main.setErrorPresenter(vc);
+//		main.setErrorPresenter(vc);
 		
 //		main.setLanguage(language);
 		main.parseInput(input);   
