@@ -113,7 +113,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		
 		if(returnValue != erroneousReturnValue){
 			int remainingActionableIndex = hasRemainingActionable(parsed, searchStartIndex);
-			System.out.println("remainder index: " + remainingActionableIndex);
+//			System.out.println("remainder index: " + remainingActionableIndex);
 			if(remainingActionableIndex < 0){
 				stateUpdater.applyChanges(model);
 				System.out.println("Return Value: "+returnValue);
@@ -284,7 +284,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	 */
 	private int hasRemainingActionable(String[] parsed, int index){
 		int resIndex = -1;
-		System.out.println("input index: " + index + ", Parsed length: " + parsed.length);
+//		System.out.println("input index: " + index + ", Parsed length: " + parsed.length);
 		
 		//TODO: Is this the best way to tell TurtleCommand or not? Is instantiating new TurtleCommandInterpreter OK?
 		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model, stateUpdater);
