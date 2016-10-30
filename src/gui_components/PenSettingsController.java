@@ -34,12 +34,10 @@ public class PenSettingsController extends Observable {
 	private VBox vBox;
 
 	private Color newPenColor;
-	private Stage stage;
 	private double newPenThickness;
 	private String newPenType;
 
-	public PenSettingsController(Stage myStage, Properties viewProperties) {
-		stage = myStage;
+	public PenSettingsController(Properties viewProperties) {
 		vBox = new VBox(viewProperties.getDoubleProperty("padding"));
 		Label lbl = new Label();
 		lbl.setText("Pen settings");
@@ -119,7 +117,7 @@ public class PenSettingsController extends Observable {
 
 
 
-	public VBox getVBox() {
+	public VBox getNode() {
 		return vBox;
 	}
 

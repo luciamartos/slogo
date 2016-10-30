@@ -1,6 +1,7 @@
 package model;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 import java.util.Observer;
 import general.Properties;
 import gui.BoardStateDataSource;
@@ -13,7 +14,7 @@ import interpreter.UserVariablesDataSource;
  * @author Andrew Bihl
  */
 
-public class BoardStateController implements TurtleStateDataSource, BoardStateDataSource, TurtleStateUpdater, UserVariablesDataSource {
+public class BoardStateController extends Observable implements TurtleStateDataSource, BoardStateDataSource, TurtleStateUpdater, UserVariablesDataSource {
 	private final String VIEW_PROPERTIES_FILE_PATH = "resources.properties.View";
 	private final String BOARD_WIDTH_KEY = "canvas_width";
 	private final String BOARD_HEIGHT_KEY = "canvas_height";
@@ -21,6 +22,7 @@ public class BoardStateController implements TurtleStateDataSource, BoardStateDa
 	private double minXCoordinate;
 	private double maxYCoordinate;
 	private double minYCoordinate;
+	private BoardState boardState;
 	
 	private class Coordinates{
 		public double x;
@@ -32,6 +34,7 @@ public class BoardStateController implements TurtleStateDataSource, BoardStateDa
 	}
 	
 	public BoardStateController(){
+		boardState = new BoardState();
 		Properties visualProperties = new Properties(VIEW_PROPERTIES_FILE_PATH);
 		double boardWidth = visualProperties.getDoubleProperty(BOARD_WIDTH_KEY);
 		double boardHeight = visualProperties.getDoubleProperty(BOARD_HEIGHT_KEY);
@@ -42,26 +45,27 @@ public class BoardStateController implements TurtleStateDataSource, BoardStateDa
 	}
 	
 	public void applyChanges(SlogoUpdate changes){
-		BoardState modelToUpdate = BoardState.getCurrentState();
-		modelToUpdate.setAngle(changes.getAngle());
-		modelToUpdate.setDrawing(changes.getTurtleShouldDraw());
-		modelToUpdate.setShowing(changes.getTurtleShouldShow());
-		Coordinates oldCoordinates = new Coordinates(modelToUpdate.getXCoordinate(), modelToUpdate.getYCoordinate());
+		setChanged();
+		boardState.setAngle(changes.getAngle());
+		boardState.setDrawing(changes.getTurtleShouldDraw());
+		boardState.setShowing(changes.getTurtleShouldShow());
+		Coordinates oldCoordinates = new Coordinates(boardState.getXCoordinate(), boardState.getYCoordinate());
 		Coordinates newCoordinates = new Coordinates(changes.getXCoordinate(), changes.getYCoordinate());
 		newCoordinates = calculateValidUpdatedCoordinates(oldCoordinates, newCoordinates, Math.toRadians(changes.getAngle()));
-		modelToUpdate.setXCoordinate(newCoordinates.x);
-		modelToUpdate.setYCoordinate(newCoordinates.y);
-		PathLine line = new PathLine(oldCoordinates.x, oldCoordinates.y, modelToUpdate.getXCoordinate(), modelToUpdate.getYCoordinate());
-		if (modelToUpdate.isDrawing()){
-			modelToUpdate.addLineCoordinates(line);
+		boardState.setXCoordinate(newCoordinates.x);
+		boardState.setYCoordinate(newCoordinates.y);
+		PathLine line = new PathLine(oldCoordinates.x, oldCoordinates.y, boardState.getXCoordinate(), boardState.getYCoordinate());
+		if (boardState.isDrawing()){
+			boardState.addLineCoordinates(line);
 		}
-		modelToUpdate.setDistanceMoved(modelToUpdate.getDistanceMoved() + line.getLength());
-		modelToUpdate.notifyObservers(this);
+		boardState.setDistanceMoved(boardState.getDistanceMoved() + line.getLength());
+		notifyObservers();
 	}
 	
 	public void addBoardStateListener(Observer o){
-		BoardState.getCurrentState().addObserver(o);
-		BoardState.getCurrentState().notifyObservers(this);
+		this.addObserver(o);
+		setChanged();
+		this.notifyObservers();
 	}
 
 	//Restrict movement to the bounds of the board.
@@ -104,27 +108,27 @@ public class BoardStateController implements TurtleStateDataSource, BoardStateDa
  */
 	@Override
 	public double getXCoordinate() {
-		return BoardState.getCurrentState().getXCoordinate();
+		return boardState.getXCoordinate();
 	}
 
 	@Override
 	public double getYCoordinate() {
-		return BoardState.getCurrentState().getYCoordinate();
+		return boardState.getYCoordinate();
 	}
 
 	@Override
 	public double getAngle() {
-		return BoardState.getCurrentState().getAngle();
+		return boardState.getAngle();
 	}
 
 	@Override
 	public boolean getTurtleIsShowing() {
-		return BoardState.getCurrentState().isShowing();
+		return boardState.isShowing();
 	}
 
 	@Override
 	public boolean getTurtleIsDrawing() {
-		return BoardState.getCurrentState().isDrawing();
+		return boardState.isDrawing();
 	}
 
 	
@@ -133,12 +137,12 @@ public class BoardStateController implements TurtleStateDataSource, BoardStateDa
  */
 	@Override
 	public List<PathLine> getLineCoordinates() {
-		return BoardState.getCurrentState().getLineCoordinates();
+		return boardState.getLineCoordinates();
 	}
 
 	@Override
 	public Map<String, String> getUserDefinedVariables() {
-		return BoardState.getCurrentState().getUserDefinedVariables();
+		return boardState.getUserDefinedVariables();
 	}
 	
 /*
@@ -146,12 +150,12 @@ public class BoardStateController implements TurtleStateDataSource, BoardStateDa
  */
 	@Override
 	public void addUserDefinedVariable(String varName, String userInput) {
-		BoardState.getCurrentState().addUserDefinedVariable(varName, userInput);
+		boardState.addUserDefinedVariable(varName, userInput);
 	}
 
 	@Override
 	public String getUserDefinedVariable(String key) {
-		return BoardState.getCurrentState().getUserDefinedVariables().get(key);
+		return boardState.getUserDefinedVariables().get(key);
 	}
 
 	@Override

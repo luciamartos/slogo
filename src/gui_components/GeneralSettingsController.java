@@ -2,8 +2,13 @@ package gui_components;
 
 import java.util.Observable;
 
+
+import XMLparser.XMLReader;
+
+import general.NewSlogoInstanceCreator;
+
 import general.Properties;
-import gui.ViewImageChooser;
+import gui.FileChooserPath;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -16,21 +21,53 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class GeneralSettingsController extends Observable {
+public class GeneralSettingsController extends Observable implements ReadCommandFileInterface {
 	private Properties viewProperties;
-	private VBox vBox;
+	private HBox hBox;
+	private boolean newTab;
 
 	private Image newImage;
+	private String newCommandString; 
+	private NewSlogoInstanceCreator instanceCreator;
 
-	public GeneralSettingsController(Stage myStage, Properties viewProperties) {
+	public GeneralSettingsController(Properties viewProperties, NewSlogoInstanceCreator instanceCreator) {
+		this.instanceCreator = instanceCreator;
 		this.viewProperties = viewProperties;
-		vBox = new VBox(viewProperties.getDoubleProperty("padding"));
-		vBox.getChildren().add(initializeUndoButton());
-		vBox.getChildren().add(initalizeFileLoader());
-		vBox.getChildren().add(initializeGetHelpButton());
+		
+		VBox vBoxLeft = new VBox(viewProperties.getDoubleProperty("padding"));
+		vBoxLeft.getChildren().add(initializeUndoButton());
+		vBoxLeft.getChildren().add(initalizeFileLoader());
+		vBoxLeft.getChildren().add(initalizeCommandFileLoader());
+		
+		VBox vBoxRight = new VBox(viewProperties.getDoubleProperty("padding"));
+		vBoxRight.getChildren().add(initializeAddTabButton());
+		vBoxRight.getChildren().add(initializeGetHelpButton());
+
+		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
+		hBox.getChildren().addAll(vBoxLeft,vBoxRight);
+	}
+	
+	private Node initializeAddTabButton(){
+		Button addTab = createButton("Add Tab", viewProperties.getDoubleProperty("help_button_width"));
+		addTab.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				instanceCreator.addSlogoInstance();
+			}
+		});
+		return addTab;
+	}
+
+	private Node initalizeCommandFileLoader() {
+		CommandFileUploader myUploader = new CommandFileUploader(this);
+		return myUploader.getCommandFileUploaderButton();
 	}
 
 	private Node initalizeFileLoader() {
+		
+//		XMLReader myReader = new XMLReader();
+//		myReader.readFile("test1.xml");
+		
 		ComboBox<String> fileLoaderComboBox = new ComboBox<String>();
 		fileLoaderComboBox.setVisibleRowCount(3);
 		fileLoaderComboBox.getItems().addAll("test.xml");
@@ -80,12 +117,23 @@ public class GeneralSettingsController extends Observable {
 		return button;
 	}
 
-	public VBox getVBox() {
-		return vBox;
+	public Node getNode() {
+		return hBox;
 	}
 
 	public Image getNewImage() {
 		return newImage;
+	}
+
+	@Override
+	public void getCommandLineFromFile(String myCommand) {
+		setChanged();
+		newCommandString = myCommand;
+		notifyObservers();
+	}
+	
+	public String getNewCommandLineFromFile(){
+		return newCommandString;
 	}
 
 }

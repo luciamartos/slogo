@@ -1,6 +1,8 @@
 package gui;
 import java.util.List;
 import java.util.Map;
+
+import javafx.scene.paint.Color;
 import model.PathLine;
 /**
  * @author Andrew Bihl
@@ -13,4 +15,8 @@ public interface BoardStateDataSource {
 	public boolean getTurtleIsDrawing();
 	public List<PathLine> getLineCoordinates();
 	public Map<String, String> getUserDefinedVariables();
+	public Color getPenColor();
+	public Color getBackgroundColor();
+	public double getPenThickness();
+	public String getImage();
 }

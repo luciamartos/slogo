@@ -8,7 +8,7 @@ import java.util.Observable;
 
 import general.Main;
 import general.Properties;
-import gui.ViewImageChooser;
+import gui.FileChooserPath;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -47,16 +47,14 @@ public class TurtleSettingsController extends Observable {
 	private VBox vBox;
 
 	private Image newImage;
-	private Stage stage;
 
 
-	public TurtleSettingsController(Stage myStage, Properties viewProperties) {
-		stage = myStage;
+	public TurtleSettingsController(Properties viewProperties) {
 		vBox = new VBox(7);
 		Label lbl = new Label();
 		lbl.setText("Turtle settings");
 		vBox.getChildren().add(lbl);
-		vBox.getChildren().add(initializeTurtleImageSetting(stage));
+		vBox.getChildren().add(initializeTurtleImageSetting());
 		vBox.getChildren().add(initializeTurtleNumber());
 	}
 
@@ -77,7 +75,7 @@ public class TurtleSettingsController extends Observable {
 		return turtleNumberSlider;
 	}
 	
-	private Node initializeTurtleImageSetting(Stage stage) {
+	private Node initializeTurtleImageSetting() {
 		ComboBox<String> shapesComboBox = new ComboBox<String>();
 		shapesComboBox.setVisibleRowCount(3);
 		shapesComboBox.getItems().addAll("elephant", "turtle", "pig", "frog");
@@ -88,7 +86,7 @@ public class TurtleSettingsController extends Observable {
 			public void changed(ObservableValue ov, String t, String t1) {
 				if(t1!=null){
 				setChanged();
-				Image image = ViewImageChooser.selectImage(IMAGE_PATH+t1+".png", 50, 50);
+				Image image = FileChooserPath.selectImage(IMAGE_PATH+t1+".png", 50, 50);
 				newImage = image;
 				notifyObservers();
 				}
@@ -98,7 +96,7 @@ public class TurtleSettingsController extends Observable {
 
 	}
 
-	public VBox getVBox() {
+	public VBox getNode() {
 		return vBox;
 	}
 
@@ -106,9 +104,9 @@ public class TurtleSettingsController extends Observable {
 		return newImage;
 	}
 
-	public Node getTurtleSettingsController() {
-		return vBox;
-	}
+//	public Node getTurtleSettingsController() {
+//		return vBox;
+//	}
 	
 	public int getNewTurtleNumber(){
 		return newTurtleNumber;

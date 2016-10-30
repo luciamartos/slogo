@@ -11,8 +11,11 @@ import java.util.Observable;
 import java.util.Observer;
 
 import general.MainController;
+import general.NewSlogoInstanceCreator;
 import general.Properties;
+import general.SlogoCommandHandler;
 import gui_components.ErrorConsole;
+import gui_components.GeneralSettingsController;
 import gui_components.InputPanel;
 import gui_components.PenSettingsController;
 import gui_components.SettingsController;
@@ -56,16 +59,12 @@ import tableviews.VariableTableView;
 
 /**
  * 
- * @author LuciaMartos
+ * @author LuciaMartos, Eric Song
  */
 public class TabViewController implements Observer, ErrorPresenter {
 	private Properties viewProperties;
 
-	private static final String VIEW_PROPERTIES_PACKAGE = "resources.properties/";
-	private static final Paint BACKGROUND_COLOR_SCENE = Color.ALICEBLUE;
-
 	private static final double HIDE_SHOW_BUTTON_WIDTH = 140;
-	private Group sceneRoot;
 	private TitleBox titleBox;
 	private InputPanel inputPanel;
 	private ObservableList<String> pastCommands;
@@ -74,59 +73,35 @@ public class TabViewController implements Observer, ErrorPresenter {
 	// private WorkspaceSettingsController workspaceSettingsController;
 	// private PenSettingsController penSettingsController;
 	// private TurtleSettingsController turtleSettingsController;
-	private Stage stage;
 	private ErrorConsole errorConsole;
 	private BoardStateDataSource modelController;
-	private SlogoCommandInterpreter interpreter;
+	private SlogoCommandHandler commandHandler;
 	private TurtleDataTranslator turtleTranslator;
 	private ListView<String> pastCommandsListView;
-
-	// private TableColumn userDefinedCommandNames;
-	// private TableColumn userDefinedCommandValues;
-	// private TableColumn variableNames;
-	// private TableColumn variableValues;
+	private Tab tab;
+	private NewSlogoInstanceCreator instanceCreator;
 
 	TableView<Variable> variableTableView;
 	TableView<UserDefinedCommand> userDefinedTableView;
 
-	public TabViewController(Stage stage) {
-		viewProperties = new Properties(VIEW_PROPERTIES_PACKAGE + "View");
+	public TabViewController(TabPane tabPane, Properties viewProperties, String tabTitle,
+			NewSlogoInstanceCreator instanceCreator) {
+		this.instanceCreator = instanceCreator;
+		this.viewProperties = viewProperties;
+		setupTab(tabTitle);
+		tabPane.getTabs().add(tab);
 		turtleTranslator = new TurtleDataTranslator(viewProperties.getDoubleProperty("canvas_width"),
 				viewProperties.getDoubleProperty("canvas_height"), getImageWidth(), getImageHeight());
-		setupStage(stage);
-		sceneRoot.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
-
 	}
 
-	private void setupStage(Stage stage) {
-		int numTabs = 5;
+	private void setupTab(String tabTitle) {
+		tab = new Tab();
+		tab.setText(tabTitle);
+		tab.setContent(setupBoxes());
+	}
 
-		TabPane tabPane = new TabPane();
-		BorderPane borderPane = new BorderPane();
-		for (int i = 0; i < numTabs; i++) {
-			Tab tab = new Tab();
-			tab.setText("Tab" + i);
-//			HBox hbox = new HBox();
-//			hbox.getChildren().add(new Label("Tab" + i));
-//			hbox.setAlignment(Pos.CENTER);
-			tab.setContent(setupBoxes());
-			tabPane.getTabs().add(tab);	
-		}
-		// bind to take available space
-		
-		double appWidth = viewProperties.getDoubleProperty("app_width");
-		double appHeight = viewProperties.getDoubleProperty("app_height");
-		
-
-		borderPane.setCenter(tabPane);
-		sceneRoot = new Group();
-		sceneRoot.getChildren().add(borderPane);
-		stage.setTitle(viewProperties.getStringProperty("title"));
-		Scene scene = new Scene(sceneRoot, appWidth, appHeight, BACKGROUND_COLOR_SCENE);
-		borderPane.prefHeightProperty().bind(scene.heightProperty());
-		borderPane.prefWidthProperty().bind(scene.widthProperty());
-		stage.setScene(scene);
-		stage.show();
+	public Tab getTab() {
+		return tab;
 	}
 
 	private Node setupBoxes() {
@@ -141,6 +116,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 		box1.getChildren().add(box2);
 		box1.getChildren().add(box4);
 		box1.getChildren().add(createErrorConsole());
+		box1.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
 
 		box2.getChildren().add(box3);
 		box2.getChildren().add(createPastCommandsListView());
@@ -162,15 +138,15 @@ public class TabViewController implements Observer, ErrorPresenter {
 		// initialise buttons
 		VBox hideShowButtons = new VBox(2);
 		Button historicCommands = createButton("Hide history", HIDE_SHOW_BUTTON_WIDTH);
-		Button variables = createButton("Hide variales", HIDE_SHOW_BUTTON_WIDTH);
+		Button variables = createButton("Hide variables", HIDE_SHOW_BUTTON_WIDTH);
 		Button userVariables = createButton("Hide user variables", HIDE_SHOW_BUTTON_WIDTH);
 		Button drawSettings = createButton("Hide settings", HIDE_SHOW_BUTTON_WIDTH);
 
 		// initialise button actions
 		hideShowButtonActions(historicCommands, pastCommandsListView, "Hide history", "Show history");
-		hideShowButtonActions(variables, variableTableView, "Hide variales", "Show variales");
+		hideShowButtonActions(variables, variableTableView, "Hide variales", "Show variables");
 		hideShowButtonActions(userVariables, userDefinedTableView, "Hide user variables", "Show user variables");
-		hideShowButtonActions(drawSettings, settingsController.getHBox(), "Hide settings", "Show settings");
+		hideShowButtonActions(drawSettings, settingsController.getNode(), "Hide settings", "Show settings");
 
 		hideShowButtons.getChildren().addAll(historicCommands, userVariables, variables, drawSettings);
 		return hideShowButtons;
@@ -208,13 +184,13 @@ public class TabViewController implements Observer, ErrorPresenter {
 	}
 
 	private Node initializeSettingsController() {
-		settingsController = new SettingsController(stage, viewProperties);
+		settingsController = new SettingsController(viewProperties, instanceCreator);
 		settingsController.addObserver(this);
 		settingsController.getPenSettingsController().addObserver(this);
 		settingsController.getWorkspaceSettingsController().addObserver(this);
 		settingsController.getGeneralSettingsController().addObserver(this);
 		settingsController.getTurtleSettingsController().addObserver(this);
-		return settingsController.getHBox();
+		return settingsController.getNode();
 	}
 
 	private void handleKeyInput(KeyCode code) {
@@ -286,12 +262,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 		// String currentCommandLine = inputPanel.getCurrentCommandLine();
 		if (!(currentCommandLine == null) && !(currentCommandLine.length() == 0)) {
 			pastCommands.add(currentCommandLine);
-			try {
-				interpreter.parseInput(currentCommandLine);
-			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-					| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				e.printStackTrace();
-			}
+			commandHandler.parseInput(this, currentCommandLine);
 		}
 	}
 
@@ -309,20 +280,20 @@ public class TabViewController implements Observer, ErrorPresenter {
 		}
 		try {
 			Method update;
-			if (o != null) {
-				for (Class c : o.getClass().getInterfaces()) {
+				for (Class c : obs.getClass().getInterfaces()) {
 					if (c.equals(BoardStateDataSource.class)) {
-						update = getClass().getMethod("update", Object.class, BoardStateDataSource.class);
+						update = getClass().getMethod("update", BoardStateDataSource.class, Object.class);
 						update.invoke(this, obs, o);
+						return;
 					}
 				}
-			} else {
 				update = getClass().getMethod("update", obs.getClass(), Object.class);
 				update.invoke(this, obs, o);
-			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 	@Override
@@ -330,47 +301,51 @@ public class TabViewController implements Observer, ErrorPresenter {
 		errorConsole.displayErrorMessage(errorMessage);
 	}
 
-	public void update(Object obs, BoardStateDataSource o) {
+	public void update(BoardStateDataSource obs, Object o) {
 		canvasActions.removeTurtle();
 		canvasActions.setShowTurtle(modelController.getTurtleIsShowing());
 		canvasActions.setHeading(turtleTranslator.convertAngle(modelController.getAngle()));
 		canvasActions.setPenDown(modelController.getTurtleIsDrawing());
+		// canvasActions.setPenColor(modelController.getPenColor());
+		// canvasActions.setBackgroundColorCanvas(modelController.getBackgroundColor());
+		// canvasActions.setPenThickness(modelController.getPenThickness());
 		canvasActions.setXandYLoc(turtleTranslator.convertXImageCordinate(modelController.getXCoordinate()),
 				turtleTranslator.convertYImageCordinate(modelController.getYCoordinate()));
 		canvasActions.setPathLine(turtleTranslator.convertLineCordinates(modelController.getLineCoordinates()));
-		// canvasActions.animatedMovementToXY();
-		canvasActions.addTurtleAtXY();
+		canvasActions.animatedMovementToXY();
+		// canvasActions.addTurtleAtXY();
 		canvasActions.drawPath();
 		updateVariables();
 
 	}
 
-	public void update(SettingsController obs, Object o) {
-
+	public void update(GeneralSettingsController obs, Object o) {
+		if(obs.getNewCommandLineFromFile()!=null)
+			 runCommand(obs.getNewCommandLineFromFile());
 	}
 
 	public void update(TurtleSettingsController obs, Object o) {
-		if (settingsController.getTurtleSettingsController().getNewImage() != null)
-			canvasActions.changeImage(settingsController.getTurtleSettingsController().getNewImage(),
-					modelController.getXCoordinate(), modelController.getYCoordinate());
+		if (obs.getNewImage() != null)
+			canvasActions.changeImage(obs.getNewImage(), modelController.getXCoordinate(),
+					modelController.getYCoordinate());
 	}
 
 	public void update(WorkspaceSettingsController obs, Object o) {
-		if (settingsController.getWorkspaceSettingsController().getNewBackgroundColor() != null)
-			canvasActions.setBackgroundColorCanvas(
-					settingsController.getWorkspaceSettingsController().getNewBackgroundColor());
-		if (settingsController.getWorkspaceSettingsController().getNewLanguage() != null)
-			interpreter.setLanguage(settingsController.getWorkspaceSettingsController().getNewLanguage());
+		if (obs.getNewBackgroundColor() != null)
+			canvasActions.setBackgroundColorCanvas(obs.getNewBackgroundColor());
+		if (obs.getNewLanguage() != null)
+			commandHandler.setLanguage(this, obs.getNewLanguage());
 	}
 
 	public void update(PenSettingsController obs, Object o) {
-		if (settingsController.getPenSettingsController().getNewPenColor() != null)
-			canvasActions.setPenColor(settingsController.getPenSettingsController().getNewPenColor());
-		if (settingsController.getPenSettingsController().getNewPenType() != null)
-			canvasActions.setPenType(settingsController.getPenSettingsController().getNewPenType());
-		if (settingsController.getPenSettingsController().getNewPenThickness() != 0)
-			canvasActions.setPenThickness(settingsController.getPenSettingsController().getNewPenThickness());
+		if (obs.getNewPenColor() != null)
+			canvasActions.setPenColor(obs.getNewPenColor());
+		if (obs.getNewPenType() != null)
+			canvasActions.setPenType(obs.getNewPenType());
+		if (obs.getNewPenThickness() != 0)
+			canvasActions.setPenThickness(obs.getNewPenThickness());
 	}
+	
 
 	public void setModelController(BoardStateDataSource modelController) {
 		this.modelController = modelController;
@@ -421,8 +396,8 @@ public class TabViewController implements Observer, ErrorPresenter {
 
 	}
 
-	public void setInterpreter(SlogoCommandInterpreter interpreter) {
-		this.interpreter = interpreter;
+	public void setCommandHandler(SlogoCommandHandler commandHandler) {
+		this.commandHandler = commandHandler;
 	}
 
 	// WHY CANT WE JUST PASS VIEWPROPERTIES TO INTERPRETER?

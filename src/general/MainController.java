@@ -1,5 +1,10 @@
 package general;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+
+import gui.SlogoCommandInterpreter;
 import gui.TabViewController;
+import gui.WindowViewController;
 import interpreter.MainInterpreter;
 import javafx.stage.Stage;
 import model.BoardStateController;
@@ -8,36 +13,68 @@ import model.BoardStateController;
  * 
  * @author Eric Song, Andrew Bihl
  */
-public class MainController {
+public class MainController implements NewSlogoInstanceCreator, SlogoCommandHandler{
 	
-	private TabViewController viewController;
-	private BoardStateController modelController;
+	private WindowViewController windowViewController;
+	private HashMap<TabViewController,BoardStateController> vcMap;
 	private MainInterpreter interpreter;
 
 	public MainController(Stage stage) {
-    	modelController = new BoardStateController();
-    	viewController = new TabViewController(stage);
+    	windowViewController = new WindowViewController(stage, this);
+    	vcMap = new HashMap<TabViewController,BoardStateController>();
     	interpreter = new MainInterpreter();
+    	addSlogoInstance();
+	}
+	
+	@Override
+	public void addSlogoInstance(){
+		TabViewController viewController = makeTabViewController("Tab "+(vcMap.keySet().size()+1));
+    	BoardStateController modelController = new BoardStateController();
+    	vcMap.put(viewController, modelController);
     	
     	viewController.setModelController(modelController);
-    	viewController.setInterpreter(interpreter);
+    	viewController.setCommandHandler(this);
     	
     	modelController.addBoardStateListener(viewController);
-    	
-    	interpreter.setStateDataSource(modelController);
+		
+	}
+	
+	public TabViewController makeTabViewController(String title){
+		return windowViewController.makeTabViewController(title);
+	}
+	
+	public void closeTabViewController(TabViewController closedTab){
+		windowViewController.closeTabViewController(closedTab);
+		vcMap.remove(closedTab);
+	}
+	
+	private void updateInterpreter(TabViewController viewController,BoardStateController modelController){
+		interpreter.setStateDataSource(modelController);
     	interpreter.setVarDataSource(modelController);
     	interpreter.setStateUpdater(modelController);
     	interpreter.setErrorPresenter(viewController);
 	}
-	
-	public TabViewController makeTab(String title){
+
+	@Override
+	public void parseInput(TabViewController viewController, String input){
+		BoardStateController modelController = vcMap.get(viewController);
+		updateInterpreter(viewController, modelController);
+		try{
+		interpreter.parseInput(input);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 		
-		return null;
 	}
-	
-	public void closeTab(TabViewController closedTab){
-		
+
+	@Override
+	public void setLanguage(TabViewController viewController, String language) {
+		BoardStateController modelController = vcMap.get(viewController);
+		updateInterpreter(viewController, modelController);
+		interpreter.setLanguage(language);
 	}
+
 	
 
 }

@@ -2,9 +2,10 @@ package gui_components;
 
 import java.util.Observable;
 
+import general.NewSlogoInstanceCreator;
 import general.Properties;
 import gui.TabViewController;
-import gui.ViewImageChooser;
+import gui.FileChooserPath;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -34,26 +35,24 @@ public class SettingsController extends Observable {
 	private GeneralSettingsController generalSettingsController;
 	private Properties viewProperties;
 	private HBox hBox;
+	private NewSlogoInstanceCreator instanceCreator;
 
-	private Stage stage;
-
-
-	public SettingsController(Stage myStage, Properties viewProperties) {
-		stage = myStage;
+	public SettingsController(Properties viewProperties, NewSlogoInstanceCreator instanceCreator) {
+		this.instanceCreator = instanceCreator;
 		this.viewProperties = viewProperties;
 		initializeSettingsControllers();
 		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
-		hBox.getChildren().add(penSettingsController.getVBox());
-		hBox.getChildren().add(workspaceSettingsController.getVBox());
-		hBox.getChildren().add(turtleSettingsController.getVBox());
-		hBox.getChildren().add(generalSettingsController.getVBox());
+		hBox.getChildren().add(penSettingsController.getNode());
+		hBox.getChildren().add(workspaceSettingsController.getNode());
+		hBox.getChildren().add(turtleSettingsController.getNode());
+		hBox.getChildren().add(generalSettingsController.getNode());
 	}
 
 	private void initializeSettingsControllers() {
-		 penSettingsController = new PenSettingsController(stage,viewProperties);
-		 turtleSettingsController = new TurtleSettingsController(stage, viewProperties);
-		 workspaceSettingsController = new WorkspaceSettingsController(stage, viewProperties);
-		 generalSettingsController = new GeneralSettingsController(stage, viewProperties);
+		 penSettingsController = new PenSettingsController(viewProperties);
+		 turtleSettingsController = new TurtleSettingsController(viewProperties);
+		 workspaceSettingsController = new WorkspaceSettingsController(viewProperties);
+		 generalSettingsController = new GeneralSettingsController(viewProperties,instanceCreator);
 	}
 	
 	public PenSettingsController getPenSettingsController(){
@@ -73,7 +72,7 @@ public class SettingsController extends Observable {
 	}
 
 
-	public HBox getHBox() {
+	public HBox getNode() {
 		return hBox;
 	}
 
