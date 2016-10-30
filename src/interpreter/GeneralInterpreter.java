@@ -13,5 +13,11 @@ public class GeneralInterpreter extends SubInterpreter{
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	SlogoUpdate getModel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

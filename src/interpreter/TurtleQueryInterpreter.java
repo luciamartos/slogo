@@ -1,5 +1,8 @@
 package interpreter;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 public class TurtleQueryInterpreter extends SubInterpreter{
 
 	private SlogoUpdate model;
@@ -14,9 +17,18 @@ public class TurtleQueryInterpreter extends SubInterpreter{
 	}
 
 	@Override
-	double handle(String[] input, String keyword, double[] param, int searchStartIndex) {
-		// TODO Auto-generated method stub
-		return 0;
+	double handle(String[] input, String keyword, double[] param, int searchStartIndex) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		if(isTurtleQuery(keyword)){
+			Class[] args = createDoubleArgs(0);
+			Method method = this.getClass().getDeclaredMethod(keyword, args);
+			return (double) method.invoke(this);
+		}
+		else throw new IllegalArgumentException();
+	}
+	
+	@Override
+	SlogoUpdate getModel() {
+		return null;
 	}
 	
 	boolean isTurtleQuery(String input){

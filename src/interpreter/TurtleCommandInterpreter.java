@@ -1,6 +1,7 @@
 package interpreter;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class TurtleCommandInterpreter extends SubInterpreter{
 	
@@ -16,40 +17,25 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 	boolean canHandle(String keyword) {
 		return isNonInputTurtleCommand(keyword) || isUnaryTurtleCommand(keyword) || isBinaryTurtleCommand(keyword);
 	}
-
+	
 	@Override
-	double handle(String[] input, String keyword, double[] param, int searchStartIndex) {
-		
+	double handle(String[] input, String keyword, double[] param, int searchStartIndex) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		if(isNonInputTurtleCommand(keyword)){
-			return handleNonInputKeywordWithModel(keyword, param, searchStartIndex);
+			Class[] args = createDoubleArgs(0);
+			Method method = this.getClass().getDeclaredMethod(keyword, args);
+			return (double) method.invoke(this);
 		}
 		else if(isUnaryTurtleCommand(keyword)){
-			return handleUnaryKeywordWithModel(input, keyword, param, searchStartIndex);
+			Class[] args = createDoubleArgs(1);
+			Method method = this.getClass().getDeclaredMethod(keyword, args);
+			return (double) method.invoke(this, param[0]);
 		}
 		else if(isBinaryTurtleCommand(keyword)){
-			return handleBinaryKeywordWithModel(input, keyword, param, searchStartIndex);
+			Class[] args = createDoubleArgs(2);
+			Method method = this.getClass().getDeclaredMethod(keyword, args);
+			return (double) method.invoke(this, param[0], param[1]);
 		}
 		else throw new IllegalArgumentException();
-	}
-	
-	private double handleNonInputKeywordWithModel(String keyword, double[] param, int searchStartIndex)
-			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		double res = helpHandleNonInputKeyword(keyword, param, searchStartIndex);
-		return res;
-	}
-
-	private double handleUnaryKeywordWithModel(String[] input, String keyword, double[] param, int searchStartIndex) throws ClassNotFoundException,
-			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-		double res = helpHandleUnaryKeyword(input, keyword, param, searchStartIndex);
-		model = interpreter.getModel();
-		return res;
-	}
-	
-	private double handleBinaryKeywordWithModel(String[] input, String keyword, double[] param, int searchStartIndex) throws ClassNotFoundException,
-			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-		double res = helpHandleBinaryKeyword(input, keyword, param, searchStartIndex);
-		model = interpreter.getModel();
-		return res;
 	}
 	
 	boolean isNonInputTurtleCommand(String input){
@@ -93,8 +79,6 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 	}
 	
 	double settowards(double x, double y){
-//		double tempX = model.getXCoordinate();
-//		double tempY = model.getYCoordinate();
 		return model.turnToward(x, y);
 	}
 	
@@ -133,7 +117,7 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 	}
 	
 	
-	double clearScreen(){
+	double clearscreen(){
 		double tempX = model.getXCoordinate();
 		double tempY = model.getYCoordinate();
 		model.moveTo(0, 0);

@@ -1,5 +1,8 @@
 package interpreter;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 public class BooleanInterpreter extends SubInterpreter{
 	
 	@Override
@@ -8,9 +11,23 @@ public class BooleanInterpreter extends SubInterpreter{
 	}
 
 	@Override
-	double handle(String[] input, String keyword, double[] param, int searchStartIndex) {
-		// TODO Auto-generated method stub
-		return 0;
+	double handle(String[] input, String keyword, double[] param, int searchStartIndex) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		if(isUnaryBooleanExpression(keyword)){
+			Class[] args = createDoubleArgs(1);
+			Method method = this.getClass().getDeclaredMethod(keyword, args);
+			return (double) method.invoke(this, param[0]);
+		}
+		else if(isBinaryBooleanExpression(keyword)){
+			Class[] args = createDoubleArgs(2);
+			Method method = this.getClass().getDeclaredMethod(keyword, args);
+			return (double) method.invoke(this, param[0],param[1]);
+		}
+		else throw new IllegalArgumentException();
+	}
+	
+	@Override
+	SlogoUpdate getModel() {
+		return null;
 	}
 	
 	boolean isUnaryBooleanExpression(String input){
@@ -21,13 +38,6 @@ public class BooleanInterpreter extends SubInterpreter{
 		return input.equalsIgnoreCase(rb.getString("less")) || input.equalsIgnoreCase(rb.getString("greater")) ||
 				input.equalsIgnoreCase(rb.getString("equal")) || input.equalsIgnoreCase(rb.getString("notequal")) ||
 				input.equalsIgnoreCase(rb.getString("and")) || input.equalsIgnoreCase(rb.getString("or"));
-	}
-	
-	boolean isControl(String input){
-		return input.equalsIgnoreCase(rb.getString("makevar")) || input.equalsIgnoreCase(rb.getString("repeat")) ||
-				input.equalsIgnoreCase(rb.getString("dotimes")) || input.equalsIgnoreCase(rb.getString("for")) ||
-				input.equalsIgnoreCase(rb.getString("if")) || input.equalsIgnoreCase(rb.getString("ifelse"))|| 
-				input.equalsIgnoreCase(rb.getString("to")) ;
 	}
 	
 	double lessthan(double a, double b){
