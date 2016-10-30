@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Queue;
 import java.util.ResourceBundle;
@@ -34,7 +33,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private ErrorPresenter errorPresenter;
 	private ResourceBundle rb;
 	private Queue<String[]> listQueue;
-	private int currSearchIndex;
+//	private int currSearchIndex;
 	
 	private int repCount;
 	
@@ -97,6 +96,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		//if current keyword is a variable
 		if(keyword.equalsIgnoreCase(rb.getString("VariableLabel"))){
 			String newKeyword = input[searchStartIndex].toLowerCase();
+			if(newKeyword.equalsIgnoreCase(rb.getString("RepCountLabel"))){
+				returnValue = repCount;
+			}
 			if(varDataSource.getUserDefinedVariable(newKeyword) != null){
 				returnValue = Double.parseDouble(varDataSource.getUserDefinedVariable(newKeyword));
 			}
@@ -155,7 +157,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		double[] param;
 		if(keyword.equalsIgnoreCase(rb.getString("makevar"))){
 			param = parseParam(input, searchStartIndex+2, 1);
-			currSearchIndex = searchStartIndex+2;
+//			currSearchIndex = searchStartIndex+2;
 			if(parsed[searchStartIndex+1].equalsIgnoreCase(rb.getString("VariableLabel"))){
 				varDataSource.addUserDefinedVariable(input[searchStartIndex+1], Double.toString(param[0]));
 				System.out.println(param[0]);
@@ -182,7 +184,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 				repCount++;
 			}
 			listQueue.remove();
-			currSearchIndex = searchStartIndex+2;
+//			currSearchIndex = searchStartIndex+2;
 			return res;
 		}
 		
