@@ -1,8 +1,11 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+
 import interpreter.SlogoUpdate;
 import interpreter.TurtleStateDataSource;
 import interpreter.TurtleStateUpdater;
@@ -158,6 +161,11 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 		return turtle.isDrawing();
 	}
 
+	@Override
+	public Iterator<Integer> getTurtleIDs(){
+		return this.turtles.keySet().iterator();
+	}
+	
 	@Override
 	public List<Integer> getActiveTurtleIDs() {
 		ArrayList<Integer> turtleIDs = new ArrayList<Integer>();

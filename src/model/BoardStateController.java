@@ -11,7 +11,7 @@ import interpreter.UserVariablesDataSource;
 import javafx.scene.paint.Color;
 
 /**
- * @author Andrew Bihl, Eric Song
+ * @author Andrew Bihl
  */
 
 public class BoardStateController extends Observable implements BoardStateDataSource, BoardStateUpdater, UserVariablesDataSource {
@@ -109,7 +109,6 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	public boolean getTurtleIsDrawing() {
 		return true;
 	}
-
 	
 /*
  * gui.BoardStateDataSource 
@@ -141,30 +140,6 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	public void resetBoard() {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public Color getPenColor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Color getBackgroundColor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public double getPenThickness() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public String getImage() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	double getMaxXCoordinate(){

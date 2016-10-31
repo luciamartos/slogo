@@ -1,5 +1,6 @@
 package gui;
 
+import java.util.Iterator;
 import javafx.scene.paint.Color;
 
 public interface TurtleStateDataSource {
@@ -11,4 +12,6 @@ public interface TurtleStateDataSource {
 	public Color getPenColor(int turtleID);
 	public double getPenThickness(int turtleID);
 	public int getShape(int turtleID);
+	
+	public Iterator<Integer> getTurtleIDs();
 }
