@@ -1,13 +1,12 @@
 package interpreter;
 
-import gui.TabViewController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import model.BoardStateController;
 
 public class TestMain extends Application{
 	
-	String input = "qi 50";
+	String input = "ifelse less? 1000 100 [ fd 100 ] [ fd 50 ]";
 //	String input2 = ""
 	String language = "Chinese";
 	
@@ -27,7 +26,7 @@ public class TestMain extends Application{
 		main.setVarDataSource(controller);
 //		main.setErrorPresenter(vc);
 		
-		main.setLanguage(language);
+//		main.setLanguage(language);
 		main.parseInput(input);   
 	}
 }
