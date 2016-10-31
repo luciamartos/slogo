@@ -34,6 +34,7 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 		minXCoordinate = -maxXCoordinate;
 		maxYCoordinate = boardHeight/2;
 		minYCoordinate = -maxYCoordinate;
+		this.turtleController = new TurtleStatesController();
 	}
 	
 	public void addBoardStateListener(Observer o){
@@ -108,4 +109,9 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	RGBColor getColorForIndex(int i){
 		return this.boardState.getColorForIndex(i);
 	}
+	
+	public TurtleStatesController getTurtleStatesController(){
+		return this.turtleController;
+	}
+	
 }

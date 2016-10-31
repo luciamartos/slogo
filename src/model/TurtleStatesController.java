@@ -27,6 +27,7 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 	
 	public TurtleStatesController(){
 		this.turtles = new HashMap<Integer, TurtleState>();
+		addNewTurtle(0);
 	}
 	
 	void addNewTurtle(){

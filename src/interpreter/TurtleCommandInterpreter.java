@@ -6,11 +6,11 @@ import java.lang.reflect.Method;
 public class TurtleCommandInterpreter extends SubInterpreter{
 	
 	private SlogoUpdate model;
-	private TurtleStateUpdater stateUpdater;
+	private BoardStateUpdater boardStateUpdater;
 	
-	TurtleCommandInterpreter(SlogoUpdate model, TurtleStateUpdater stateUpdater){
+	TurtleCommandInterpreter(SlogoUpdate model, BoardStateUpdater boardStateUpdater){
 		this.model = model;
-		this.stateUpdater = stateUpdater;
+		this.boardStateUpdater = boardStateUpdater;
 	}
 	
 	@Override
@@ -121,7 +121,7 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 		double tempX = model.getXCoordinate();
 		double tempY = model.getYCoordinate();
 		model.moveTo(0, 0);
-		stateUpdater.resetBoard();  //this will clear the trail of paths
+		boardStateUpdater.resetBoard();  //this will clear the trail of paths
 		return Math.abs(tempX) + Math.abs(tempY);
 	}
 	
