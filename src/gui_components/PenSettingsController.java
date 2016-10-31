@@ -34,7 +34,7 @@ public class PenSettingsController extends Observable {
 	private VBox vBox;
 
 	private Color newPenColor;
-	private double newPenThickness;
+	private int newPenThickness;
 	private String newPenType;
 
 	public PenSettingsController(Properties viewProperties) {
@@ -98,7 +98,7 @@ public class PenSettingsController extends Observable {
 		thicknessSlider.valueProperty().addListener(new ChangeListener<Number>(){
 			public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val){
 				setChanged();
-				newPenThickness = new_val.doubleValue();
+				newPenThickness = new_val.intValue();
 				notifyObservers();
 			}
 		});
@@ -126,7 +126,7 @@ public class PenSettingsController extends Observable {
 		return newPenColor;
 	}
 
-	public double getNewPenThickness() {
+	public int getNewPenThickness() {
 		return newPenThickness;
 	}
 	

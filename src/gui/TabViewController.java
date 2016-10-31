@@ -347,7 +347,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 		canvasActions.setBackgroundColorCanvas(obs.getBackgroundColor());
 
 	}
-
+	
 	public void update(GeneralSettingsController obs, Object o) {
 		// TODO FIND A WAY TO REMOVE DUPLICATED CODE, they are different types
 		// :S
