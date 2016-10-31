@@ -26,12 +26,12 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	private HBox hBox;
 	private boolean newTab;
 	private String newImageURL;
-	private Color newBackgroundColor;
+	private int newBackgroundColor;
 	private String newLanguage;
 	private int newTurtleCount;
 	private int newPenColor;
 	private boolean newPenDown;
-	private String newLineStyle;
+	private int newLineStyle;
 	private int newPenThickness;
 	
 	private Image newImage;
@@ -125,13 +125,13 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	@Override
-	public void getLineTypeFromFile(String lineStyle) {
+	public void getLineTypeFromFile(int lineStyle) {
 		setChanged();
 		newLineStyle = lineStyle;
 		notifyObservers();
 	}
 
-	public String getNewPenType() {
+	public int getNewPenType() {
 		return newLineStyle;
 	}
 
@@ -150,9 +150,9 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	@Override
-	public void getPenColorFromFile(String penColor) {
+	public void getPenColorFromFile(int penColor) {
 		setChanged();
-		newPenColor = myMap.get(penColor);
+		newPenColor =  penColor;
 		notifyObservers();
 	}
 
@@ -183,13 +183,13 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	@Override
-	public void getBackgroundColorFromFile(String backgroundColor) {
+	public void getBackgroundColorFromFile(int backgroundColor) {
 		setChanged();
-		newBackgroundColor = Color.valueOf(backgroundColor);
+		newBackgroundColor = backgroundColor;
 		notifyObservers();
 	}
 
-	public Color getNewBackgroundColor() {
+	public int getNewBackgroundColor() {
 		return newBackgroundColor;
 	}
 	
@@ -206,9 +206,9 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	@Override
-	public void getPenThicknessFromFile(String penThickness) {
+	public void getPenThicknessFromFile(int penThickness) {
 		setChanged();
-		newPenThickness = Integer.parseInt(penThickness);
+		newPenThickness = penThickness;
 		notifyObservers();
 	}
 	

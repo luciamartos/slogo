@@ -362,13 +362,11 @@ public class TabViewController implements Observer, ErrorPresenter {
 		if (obs.getNewCommandLineFromFile() != null)
 			runCommand(obs.getNewCommandLineFromFile());
 		if (obs.getNewBackgroundColor() != null)
-			canvasActions.setBackgroundColorCanvas(obs.getNewBackgroundColor());
+			canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getNewBackgroundColor()));
 		if (obs.getNewLanguage() != null)
 			commandHandler.setLanguage(this, obs.getNewLanguage());
-		if (obs.getNewPenColor() != null)
-			turtleActionsHandler.setPenColor(obs.getNewPenColor());
-		if (obs.getNewPenType() != null)
-			turtleActionsHandler.setPenType(obs.getNewPenType());
+		turtleActionsHandler.setPenColor(obs.getNewPenColor());
+		turtleActionsHandler.setPenType(obs.getNewPenType());
 		if (obs.getNewPenThickness() != 0)
 			turtleActionsHandler.setPenThickness(obs.getNewPenThickness());
 	}
