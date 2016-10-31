@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 
 import gui.TurtleActionsHandler;
 import interpreter.SlogoUpdate;
@@ -114,20 +115,6 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 	}
 
 	@Override
-	public Color getPenColor(int turtleID) {
-		TurtleState turtle = this.turtles.get(turtleID);
-		int index = turtle.getPenColorIndex();
-		RGBColor rgb = this.board.getColorForIndex(index);
-		return Color.color(rgb.getRed(), rgb.getGreen(), rgb.getBlue());
-	}
-
-	@Override
-	public double getPenThickness(int turtleID) {
-		TurtleState turtle = this.turtles.get(turtleID);
-		return turtle.getPenSize();
-	}
-
-	@Override
 	public int getShape(int turtleID) {
 		TurtleState turtle = this.turtles.get(turtleID);
 		return turtle.getShapeIndex();
@@ -178,5 +165,51 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 			}
 		}
 		return turtleIDs;
+	}
+
+	@Override
+	public void setPenColor(int color) {
+		Consumer<TurtleState> changePenColor = (TurtleState turtle) -> {
+			turtle.setPenColorIndex(color);
+		};
+		this.applyChangesToActiveTurtles(changePenColor);
+	}
+
+	@Override
+	public void setPenThickness(int thickness) {
+		Consumer<TurtleState> changePenThickness = (TurtleState turtle) -> {
+			turtle.setPenSize(thickness);
+		};
+		this.applyChangesToActiveTurtles(changePenThickness);
+	}
+
+	@Override
+	public void setPenType(int type) {
+		Consumer<TurtleState> changePenType = (TurtleState turtle) -> {
+			turtle.setPenType(type);
+		};
+		this.applyChangesToActiveTurtles(changePenType);
+	}
+
+	@Override
+	public void setShape(int shape) {
+		Consumer<TurtleState> changeShape = (TurtleState turtle) -> {
+			turtle.setShapeIndex(shape);
+		};
+		this.applyChangesToActiveTurtles(changeShape);
+	}
+
+	@Override
+	public void toggleTurtle(int id) {
+		TurtleState turtle = this.turtles.get(id);
+		turtle.setActive(!turtle.isActive());
+	}
+	
+	private void applyChangesToActiveTurtles(Consumer<TurtleState> lambda){
+		for (TurtleState turtle : this.turtles.values()){
+			if (turtle.isActive()){
+				lambda.accept(turtle);
+			}
+		}
 	}
 }
