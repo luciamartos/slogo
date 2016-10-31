@@ -331,9 +331,11 @@ public class TabViewController implements Observer, ErrorPresenter {
 			// canvasActions.setPenThickness(modelController.getPenThickness());
 			// canvasActions.setXandYLoc(currId,turtleTranslator.convertXImageCordinate(turtleStateDataSource.getXCoordinate(currId)),
 			// turtleTranslator.convertYImageCordinate(turtleStateDataSource.getYCoordinate(currId)));
-//			canvasActions
-//					.setPathLine(turtleTranslator.convertLineCordinates(boardStateDataSource.getLineCoordinates()));
-			canvasActions.animatedMovementToXY(currId,turtleStateDataSource.getXCoordinate(currId),turtleStateDataSource.getYCoordinate(currId),turtleStateDataSource.getAngle(currId),turtleStateDataSource.getTurtleIsShowing(currId));
+			// canvasActions
+			// .setPathLine(turtleTranslator.convertLineCordinates(boardStateDataSource.getLineCoordinates()));
+			canvasActions.animatedMovementToXY(currId, turtleStateDataSource.getXCoordinate(currId),
+					turtleStateDataSource.getYCoordinate(currId), turtleStateDataSource.getAngle(currId),
+					turtleStateDataSource.getTurtleIsShowing(currId));
 
 		}
 
@@ -347,7 +349,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 		canvasActions.setBackgroundColorCanvas(obs.getBackgroundColor());
 
 	}
-
+	
 	public void update(GeneralSettingsController obs, Object o) {
 		// TODO FIND A WAY TO REMOVE DUPLICATED CODE, they are different types
 		// :S
@@ -362,13 +364,11 @@ public class TabViewController implements Observer, ErrorPresenter {
 		if (obs.getNewCommandLineFromFile() != null)
 			runCommand(obs.getNewCommandLineFromFile());
 		if (obs.getNewBackgroundColor() != null)
-			canvasActions.setBackgroundColorCanvas(obs.getNewBackgroundColor());
+			canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getNewBackgroundColor()));
 		if (obs.getNewLanguage() != null)
 			commandHandler.setLanguage(this, obs.getNewLanguage());
-		if (obs.getNewPenColor() != null)
-			turtleActionsHandler.setPenColor(obs.getNewPenColor());
-		if (obs.getNewPenType() != null)
-			turtleActionsHandler.setPenType(obs.getNewPenType());
+		turtleActionsHandler.setPenColor(obs.getNewPenColor());
+		turtleActionsHandler.setPenType(obs.getNewPenType());
 		if (obs.getNewPenThickness() != 0)
 			turtleActionsHandler.setPenThickness(obs.getNewPenThickness());
 	}

@@ -25,9 +25,9 @@ public class SlogoUpdate {
 		turtleShouldShow = source.getTurtleIsShowing(turtleID);
 		xCoordinate = source.getXCoordinate(turtleID);
 		yCoordinate = source.getYCoordinate(turtleID);
-		penColor = source.getPenColor();
-		penSize = source.getPenSize();
-		shape = source.getShape();
+		penColor = source.getPenColor(turtleID);
+		penSize = source.getPenSize(turtleID);
+		shape = source.getShape(turtleID);
 	}
 	
 	public Boolean getTurtleShouldDraw(){
@@ -48,6 +48,18 @@ public class SlogoUpdate {
 	
 	public Double getAngle(){
 		return angle;
+	}
+	
+	public int getPenColor(){
+		return penColor;
+	}
+	
+	public int getPenSize(){
+		return penSize;
+	}
+	
+	public int getShape(){
+		return shape;
 	}
 	
 //Interpreter should call these methods to update the data object as it handles commands

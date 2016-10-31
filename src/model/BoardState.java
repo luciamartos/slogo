@@ -11,14 +11,14 @@ import java.util.List;
 public class BoardState{
 	private ArrayList<PathLine> lineCoordinates;
 	private HashMap<String, String> userDefinedVariables;
-	private ArrayList <RGBColor> colors;
+	private HashMap<Integer, RGBColor> colors;
 	private int backgroundColorIndex;
 	
 	
 	BoardState(){
 		this.lineCoordinates= new ArrayList<PathLine>();
 		this.userDefinedVariables = new HashMap<String, String>();
-		this.colors = new ArrayList<RGBColor>();
+		this.colors = new HashMap<Integer, RGBColor>();
 		this.backgroundColorIndex = 0;
 	}
 
@@ -46,9 +46,8 @@ public class BoardState{
 		this.backgroundColorIndex = index;
 	}
 	
-	int addColorToMap(RGBColor color){
-		this.colors.add(color);
-		return this.colors.size()-1;
+	void addColorToMap(RGBColor color, int index){
+		this.colors.put(index, color);
 	}
 	
 	RGBColor getColorForIndex(int i){

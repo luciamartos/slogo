@@ -121,13 +121,14 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	}
 
 	@Override
-	public void setBackgroundColor(String hex) {
-		// TODO Auto-generated method stub
-		Integer red = Integer.parseInt(hex.substring(0, 2), 16);
-		Integer green = Integer.parseInt(hex.substring(2, 4), 16);
-		Integer blue = Integer.parseInt(hex.substring(4, 6), 16);
-		int colorIndex = this.boardState.addColorToMap(new RGBColor(red, green, blue));
+	public void setBackgroundColor(int colorIndex) {
 		this.boardState.setBackgroundColorIndex(colorIndex);
+	}
+
+	@Override
+	public void addColorToPalette(int index, int red, int green, int blue) {
+		RGBColor color = new RGBColor(red, green, blue);
+		this.boardState.addColorToMap(color, index);
 	}
 
 

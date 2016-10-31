@@ -11,8 +11,7 @@ public interface TurtleStateDataSource {
 	public boolean getTurtleIsShowing(int turtleID);
 	public boolean getTurtleIsDrawing(int turtleID);
 	public List<Integer> getActiveTurtleIDs();
-	public void addNewTurtle(int index);
-	public int getShape();
-	public int getPenColor();
-	public int getPenSize();
+	public int getShape(int turtleID);
+	public int getPenColor(int turtleID);
+	public int getPenSize(int turtleID);
 }
