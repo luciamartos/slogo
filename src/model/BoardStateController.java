@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import general.Properties;
+import gui.BoardActionsHandler;
 import gui.BoardStateDataSource;
 import interpreter.BoardStateUpdater;
 import interpreter.UserVariablesDataSource;
@@ -13,7 +14,7 @@ import javafx.scene.paint.Color;
  * @author Andrew Bihl
  */
 
-public class BoardStateController extends Observable implements BoardStateDataSource, BoardStateUpdater, UserVariablesDataSource {
+public class BoardStateController extends Observable implements BoardStateDataSource, BoardStateUpdater, UserVariablesDataSource, BoardActionsHandler{
 	private final String VIEW_PROPERTIES_FILE_PATH = "resources.properties.View";
 	private final String BOARD_WIDTH_KEY = "canvas_width";
 	private final String BOARD_HEIGHT_KEY = "canvas_height";

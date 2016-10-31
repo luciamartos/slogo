@@ -6,12 +6,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import gui.TurtleActionsHandler;
 import interpreter.SlogoUpdate;
 import interpreter.TurtleStateDataSource;
 import interpreter.TurtleStateUpdater;
 import javafx.scene.paint.Color;
 
-public class TurtleStatesController implements interpreter.TurtleStateDataSource, gui.TurtleStateDataSource, TurtleStateUpdater {
+public class TurtleStatesController implements interpreter.TurtleStateDataSource, gui.TurtleStateDataSource, TurtleStateUpdater, TurtleActionsHandler {
 	private BoardStateController board;
 	private HashMap<Integer, TurtleState> turtles;
 	

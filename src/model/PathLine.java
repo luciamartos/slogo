@@ -1,5 +1,7 @@
 package model;
 
+import javafx.scene.paint.Color;
+
 /**
  * @author Andrew Bihl
  */
@@ -14,6 +16,19 @@ public class PathLine {
 		this.x2 = x2;
 		this.y2 = y2;
 		this.length = Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2-y1), 2));
+	}
+	
+	//TODO: implement these methods
+	public Color getPenColor(){
+		
+	}
+	
+	public double getPenThickness(){
+		
+	}
+	
+	public String getPenType(){
+		
 	}
 	
 	public double getLength(){

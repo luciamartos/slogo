@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
@@ -73,8 +74,13 @@ public class TabViewController implements Observer, ErrorPresenter {
 	// private PenSettingsController penSettingsController;
 	// private TurtleSettingsController turtleSettingsController;
 	private ErrorConsole errorConsole;
+
 	private BoardStateDataSource boardStateDataSource;
 	private TurtleStateDataSource turtleStateDataSource;
+
+	private BoardActionsHandler boardActionsHandler;
+	private TurtleActionsHandler turtleActionsHandler;
+
 	private SlogoCommandHandler commandHandler;
 	private TurtleDataTranslator turtleTranslator;
 	private ListView<String> pastCommandsListView;
@@ -123,12 +129,12 @@ public class TabViewController implements Observer, ErrorPresenter {
 
 		canvasAndTablesBox.getChildren().add(canvasAndCommandsBox);
 		canvasAndTablesBox.getChildren().add(createPastCommandsListView());
-		
+
 		VBox leftTableBox = new VBox(15);
 		leftTableBox.getChildren().add(createDefaultVariableTableView());
 		leftTableBox.getChildren().add(createColorTableView());
 		canvasAndTablesBox.getChildren().add(leftTableBox);
-		
+
 		VBox rightTableBox = new VBox(15);
 		rightTableBox.getChildren().add(createUserDefinedVariableTableView());
 		rightTableBox.getChildren().add(createUserDefinedCommandTableView());
@@ -229,12 +235,12 @@ public class TabViewController implements Observer, ErrorPresenter {
 	}
 
 	private Node createDefaultVariableTableView() {
-		defaultVariableTableView = new VariableTableView("Workspace Parameters","Name", "Value");
+		defaultVariableTableView = new VariableTableView("Workspace Parameters", "Name", "Value");
 		return defaultVariableTableView;
 	}
-	
+
 	private Node createUserDefinedVariableTableView() {
-		userDefinedVariableTableView = new VariableTableView("User Defined Variables", "Name","Value");
+		userDefinedVariableTableView = new VariableTableView("User Defined Variables", "Name", "Value");
 		return userDefinedVariableTableView;
 	}
 
@@ -242,9 +248,9 @@ public class TabViewController implements Observer, ErrorPresenter {
 		userDefinedCommandTableView = new VariableTableView("User Defined Commands", "Name", "Value");
 		return userDefinedCommandTableView;
 	}
-	
+
 	private Node createColorTableView() {
-		colorTableView = new VariableTableView("Color Mapping","ID Number","Color");
+		colorTableView = new VariableTableView("Color Mapping", "ID Number", "Color");
 		return colorTableView;
 	}
 
@@ -301,20 +307,20 @@ public class TabViewController implements Observer, ErrorPresenter {
 		}
 		try {
 			Method update;
-				for (Class c : obs.getClass().getInterfaces()) {
-					if (c.equals(BoardStateDataSource.class)) {
-						update = getClass().getMethod("update", BoardStateDataSource.class, Object.class);
-						update.invoke(this, obs, o);
-						return;
-					}
+			for (Class c : obs.getClass().getInterfaces()) {
+				if (c.equals(BoardStateDataSource.class)) {
+					update = getClass().getMethod("update", BoardStateDataSource.class, Object.class);
+					update.invoke(this, obs, o);
+					return;
 				}
-				update = getClass().getMethod("update", obs.getClass(), Object.class);
-				update.invoke(this, obs, o);
+			}
+			update = getClass().getMethod("update", obs.getClass(), Object.class);
+			update.invoke(this, obs, o);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+		updateVariables();
 	}
 
 	@Override
@@ -322,47 +328,73 @@ public class TabViewController implements Observer, ErrorPresenter {
 		errorConsole.displayErrorMessage(errorMessage);
 	}
 
-	public void update(BoardStateDataSource obs, Object o) {
-		canvasActions.removeTurtle();
-		canvasActions.setShowTurtle(boardStateDataSource.getTurtleIsShowing());
-		canvasActions.setHeading(turtleTranslator.convertAngle(boardStateDataSource.getAngle()));
-		canvasActions.setPenDown(boardStateDataSource.getTurtleIsDrawing());
-		// canvasActions.setPenColor(modelController.getPenColor());
-		// canvasActions.setBackgroundColorCanvas(modelController.getBackgroundColor());
-		// canvasActions.setPenThickness(modelController.getPenThickness());
-		canvasActions.setXandYLoc(turtleTranslator.convertXImageCordinate(boardStateDataSource.getXCoordinate()),
-				turtleTranslator.convertYImageCordinate(boardStateDataSource.getYCoordinate()));
-		canvasActions.setPathLine(turtleTranslator.convertLineCordinates(boardStateDataSource.getLineCoordinates()));
-		canvasActions.animatedMovementToXY();
+	public void update(TurtleStateDataSource obs, Object o) {
+		Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
+		while (turtleIds.hasNext()) {
+			int currId = turtleIds.next();
+
+			// TODO: make sure all ids are in map first before
+			// calling all the canvasactions methods
+
+			// canvasActions.removeTurtle();
+			// canvasActions.setShowTurtle(currId,turtleStateDataSource.getTurtleIsShowing(currId));
+			// canvasActions.setHeading(currId,turtleTranslator.convertAngle(turtleStateDataSource.getAngle(currId)));
+			// canvasActions.setPenDown(currId,turtleStateDataSource.getTurtleIsDrawing(currId));
+			// canvasActions.setPenColor(modelController.getPenColor());
+			// canvasActions.setBackgroundColorCanvas(modelController.getBackgroundColor());
+			// canvasActions.setPenThickness(modelController.getPenThickness());
+			// canvasActions.setXandYLoc(currId,turtleTranslator.convertXImageCordinate(turtleStateDataSource.getXCoordinate(currId)),
+			// turtleTranslator.convertYImageCordinate(turtleStateDataSource.getYCoordinate(currId)));
+//			canvasActions
+//					.setPathLine(turtleTranslator.convertLineCordinates(boardStateDataSource.getLineCoordinates()));
+			canvasActions.animatedMovementToXY(currId,turtleStateDataSource.getXCoordinate(currId),turtleStateDataSource.getYCoordinate(currId),turtleStateDataSource.getAngle(currId),turtleStateDataSource.getTurtleIsShowing(currId));
+
+		}
+
 		// canvasActions.addTurtleAtXY();
-		canvasActions.drawPath();
-		updateVariables();
+
+	}
+
+	// TODO:
+	public void update(BoardStateDataSource obs, Object o) {
+		// canvasActions.drawPath(obs.getLineCoordinates());
+		canvasActions.setBackgroundColorCanvas(obs.getBackgroundColor());
 
 	}
 
 	public void update(GeneralSettingsController obs, Object o) {
-		//TODO FIND A WAY TO REMOVE DUPLICATED CODE, they are different types :S 
-		if (obs.getNewImage() != null)
-			canvasActions.changeImage(obs.getNewImage(),
-					boardStateDataSource.getXCoordinate(), boardStateDataSource.getYCoordinate());
-		if(obs.getNewCommandLineFromFile()!=null)
-			 runCommand(obs.getNewCommandLineFromFile());
-		if(obs.getNewBackgroundColor()!=null)
+		// TODO FIND A WAY TO REMOVE DUPLICATED CODE, they are different types
+		// :S
+		if (obs.getNewImage() != null) {
+			Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
+			while (turtleIds.hasNext()) {
+				int currId = turtleIds.next();
+				canvasActions.setTurtleImage(currId, obs.getNewImage());
+			}
+		}
+
+		if (obs.getNewCommandLineFromFile() != null)
+			runCommand(obs.getNewCommandLineFromFile());
+		if (obs.getNewBackgroundColor() != null)
 			canvasActions.setBackgroundColorCanvas(obs.getNewBackgroundColor());
 		if (obs.getNewLanguage() != null)
-			commandHandler.setLanguage(this,obs.getNewLanguage());
+			commandHandler.setLanguage(this, obs.getNewLanguage());
 		if (obs.getNewPenColor() != null)
-			canvasActions.setPenColor(obs.getNewPenColor());
+			turtleActionsHandler.setPenColor(obs.getNewPenColor());
 		if (obs.getNewPenType() != null)
-			canvasActions.setPenType(obs.getNewPenType());
+			turtleActionsHandler.setPenType(obs.getNewPenType());
 		if (obs.getNewPenThickness() != 0)
-			canvasActions.setPenThickness(obs.getNewPenThickness());
+			turtleActionsHandler.setPenThickness(obs.getNewPenThickness());
 	}
 
 	public void update(TurtleSettingsController obs, Object o) {
-		if (obs.getNewImage() != null)
-			canvasActions.changeImage(obs.getNewImage(), boardStateDataSource.getXCoordinate(),
-					boardStateDataSource.getYCoordinate());
+		if (obs.getNewImage() != null) {
+			Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
+			while (turtleIds.hasNext()) {
+				int currId = turtleIds.next();
+				canvasActions.setTurtleImage(currId, obs.getNewImage());
+			}
+		}
 	}
 
 	public void update(WorkspaceSettingsController obs, Object o) {
@@ -374,43 +406,48 @@ public class TabViewController implements Observer, ErrorPresenter {
 
 	public void update(PenSettingsController obs, Object o) {
 		if (obs.getNewPenColor() != null)
-			canvasActions.setPenColor(obs.getNewPenColor());
+			turtleActionsHandler.setPenColor(obs.getNewPenColor());
 		if (obs.getNewPenType() != null)
-			canvasActions.setPenType(obs.getNewPenType());
+			turtleActionsHandler.setPenType(obs.getNewPenType());
 		if (obs.getNewPenThickness() != 0)
-			canvasActions.setPenThickness(obs.getNewPenThickness());
+			turtleActionsHandler.setPenThickness(obs.getNewPenThickness());
 	}
-	
 
 	public void setBoardStateDataSource(BoardStateDataSource boardStateDataSource) {
 		this.boardStateDataSource = boardStateDataSource;
-		updateVariables();
-	}
-	
-	public void setTurtleStateDataSource(TurtleStateDataSource turtleStateDataSource) {
-		this.turtleStateDataSource = turtleStateDataSource;
-		currentlySelectedID = turtleStateDataSource.getIterator.get(0);
-		updateVariables();
 	}
 
-	private void updateVariables() {
+	public void setTurtleStateDataSource(TurtleStateDataSource turtleStateDataSource) {
+		this.turtleStateDataSource = turtleStateDataSource;
+		currentlySelectedID = turtleStateDataSource.getTurtleIDs().next();
+	}
+
+	public void setBoardActionsHandler(BoardActionsHandler boardActionsHandler) {
+		this.boardActionsHandler = boardActionsHandler;
+	}
+
+	public void setTurtleActionsHandler(TurtleActionsHandler turtleActionsHandler) {
+		this.turtleActionsHandler = turtleActionsHandler;
+	}
+
+	public void updateVariables() {
 
 		ObservableList<Variable> defaultVariableList = createDefaultVariablesList();
 		defaultVariableTableView.setItems(defaultVariableList);
-		
+
 		ObservableList<Variable> userDefinedVariablesList = createUserDefinedVariablesList();
 		userDefinedVariableTableView.setItems(userDefinedVariablesList);
 
 		ObservableList<Variable> userDefinedVariableList = createUserDefinedCommandsList();
 		userDefinedCommandTableView.setItems(userDefinedVariableList);
-		
+
 		ObservableList<Variable> colorList = createColorList();
 		colorTableView.setItems(colorList);
 
 	}
-	
+
 	private ObservableList<Variable> createColorList() {
-		Map<String, String> map = new HashMap<String,String>();
+		Map<String, String> map = new HashMap<String, String>();
 		map.put("1", "yellow");
 		map.put("2", "red");
 
@@ -424,15 +461,19 @@ public class TabViewController implements Observer, ErrorPresenter {
 	private ObservableList<Variable> createDefaultVariablesList() {
 
 		ObservableList<Variable> data = FXCollections.observableArrayList();
-		data.add(new Variable("X Coordinate", Double.toString(boardStateDataSource.getXCoordinate())));
-		data.add(new Variable("Y Coordinate", Double.toString(boardStateDataSource.getYCoordinate())));
-		data.add(new Variable("Angle", Double.toString(boardStateDataSource.getAngle())));
-		data.add(new Variable("Turtle is Showing", Boolean.toString(boardStateDataSource.getTurtleIsShowing())));
-		data.add(new Variable("Pen is Down", Boolean.toString(boardStateDataSource.getTurtleIsDrawing())));
-		
+		data.add(new Variable("X Coordinate",
+				Double.toString(turtleStateDataSource.getXCoordinate(currentlySelectedID))));
+		data.add(new Variable("Y Coordinate",
+				Double.toString(turtleStateDataSource.getYCoordinate(currentlySelectedID))));
+		data.add(new Variable("Angle", Double.toString(turtleStateDataSource.getAngle(currentlySelectedID))));
+		data.add(new Variable("Turtle is Showing",
+				Boolean.toString(turtleStateDataSource.getTurtleIsShowing(currentlySelectedID))));
+		data.add(new Variable("Pen is Down",
+				Boolean.toString(turtleStateDataSource.getTurtleIsDrawing(currentlySelectedID))));
+
 		return data;
 	}
-	
+
 	private ObservableList<Variable> createUserDefinedVariablesList() {
 
 		ObservableList<Variable> data = FXCollections.observableArrayList();
