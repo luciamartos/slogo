@@ -47,19 +47,6 @@ public class BoardStateController extends Observable implements TurtleStateDataS
 	
 	public void applyChanges(SlogoUpdate changes){
 		setChanged();
-		boardState.setAngle(changes.getAngle());
-		boardState.setDrawing(changes.getTurtleShouldDraw());
-		boardState.setShowing(changes.getTurtleShouldShow());
-		Coordinates oldCoordinates = new Coordinates(boardState.getXCoordinate(), boardState.getYCoordinate());
-		Coordinates newCoordinates = new Coordinates(changes.getXCoordinate(), changes.getYCoordinate());
-		newCoordinates = calculateValidUpdatedCoordinates(oldCoordinates, newCoordinates, Math.toRadians(changes.getAngle()));
-		boardState.setXCoordinate(newCoordinates.x);
-		boardState.setYCoordinate(newCoordinates.y);
-		PathLine line = new PathLine(oldCoordinates.x, oldCoordinates.y, boardState.getXCoordinate(), boardState.getYCoordinate());
-		if (boardState.isDrawing()){
-			boardState.addLineCoordinates(line);
-		}
-		boardState.setDistanceMoved(boardState.getDistanceMoved() + line.getLength());
 		notifyObservers();
 	}
 	
@@ -109,27 +96,27 @@ public class BoardStateController extends Observable implements TurtleStateDataS
  */
 	@Override
 	public double getXCoordinate() {
-		return boardState.getXCoordinate();
+		return 0;
 	}
 
 	@Override
 	public double getYCoordinate() {
-		return boardState.getYCoordinate();
+		return 0;
 	}
 
 	@Override
 	public double getAngle() {
-		return boardState.getAngle();
+		return 0;
 	}
 
 	@Override
 	public boolean getTurtleIsShowing() {
-		return boardState.isShowing();
+		return true;
 	}
 
 	@Override
 	public boolean getTurtleIsDrawing() {
-		return boardState.isDrawing();
+		return true;
 	}
 
 	
