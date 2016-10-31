@@ -9,7 +9,7 @@ public class PathLine {
 	private double length;
 	private RGBColor penColor;
 	private double penThickness;
-	private int penType;
+	private String penType;
 	
 	public PathLine(double x1, double y1, double x2, double y2){
 		this.x1 = x1;
@@ -28,7 +28,7 @@ public class PathLine {
 		return this.penThickness;
 	}
 	
-	public int getPenType(){
+	public String getPenType(){
 		return this.penType;
 	}
 	

@@ -5,8 +5,11 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
@@ -41,6 +44,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import model.RGBColor;
 import tableviews.VariableTableView;
 
 /**
@@ -73,6 +77,8 @@ public class TabViewController implements Observer, ErrorPresenter {
 	private Tab tab;
 	private NewSlogoInstanceCreator instanceCreator;
 	private int currentlySelectedID;
+	private Map<Integer, RGBColor> colorMap;
+	private List<String> penTypeList;
 
 	TableView<Variable> defaultVariableTableView;
 	TableView<Variable> userDefinedVariableTableView;
@@ -81,8 +87,10 @@ public class TabViewController implements Observer, ErrorPresenter {
 
 	public TabViewController(TabPane tabPane, Properties viewProperties, String tabTitle,
 			NewSlogoInstanceCreator instanceCreator) {
+
 		this.instanceCreator = instanceCreator;
 		this.viewProperties = viewProperties;
+		penTypeList = new ArrayList<String>(Arrays.asList(viewProperties.getStringProperty("pen_type").split(" ")));
 		setupTab(tabTitle);
 		tabPane.getTabs().add(tab);
 		turtleTranslator = new TurtleDataTranslator(viewProperties.getDoubleProperty("canvas_width"),
@@ -345,14 +353,15 @@ public class TabViewController implements Observer, ErrorPresenter {
 
 	// TODO:
 	public void update(BoardStateDataSource obs, Object o) {
+		colorMap = boardStateDataSource.getColorMap();
 		// canvasActions.drawPath(obs.getLineCoordinates());
-		canvasActions.setBackgroundColorCanvas(obs.getBackgroundColor());
-
+		canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getBackgroundColor()));
 	}
-	
+
 	public void update(GeneralSettingsController obs, Object o) {
 		// TODO FIND A WAY TO REMOVE DUPLICATED CODE, they are different types
 		// :S
+		colorMap = boardStateDataSource.getColorMap();
 		if (obs.getNewImage() != null) {
 			Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
 			while (turtleIds.hasNext()) {
@@ -363,13 +372,15 @@ public class TabViewController implements Observer, ErrorPresenter {
 
 		if (obs.getNewCommandLineFromFile() != null)
 			runCommand(obs.getNewCommandLineFromFile());
-		if (obs.getNewBackgroundColor() != null)
+		if (obs.getNewBackgroundColor() != -1)
 			canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getNewBackgroundColor()));
 		if (obs.getNewLanguage() != null)
 			commandHandler.setLanguage(this, obs.getNewLanguage());
-		turtleActionsHandler.setPenColor(obs.getNewPenColor());
-		turtleActionsHandler.setPenType(obs.getNewPenType());
-		if (obs.getNewPenThickness() != 0)
+		if (obs.getNewPenColor() != -1)
+			turtleActionsHandler.setPenColor(obs.getNewPenColor());
+		if (obs.getNewPenType() != null)
+			turtleActionsHandler.setPenType(obs.getNewPenType());
+		if (obs.getNewPenThickness() != -1)
 			turtleActionsHandler.setPenThickness(obs.getNewPenThickness());
 	}
 
@@ -384,17 +395,25 @@ public class TabViewController implements Observer, ErrorPresenter {
 	}
 
 	public void update(WorkspaceSettingsController obs, Object o) {
+		colorMap = boardStateDataSource.getColorMap();
 		if (obs.getNewBackgroundColor() != null)
-			canvasActions.setBackgroundColorCanvas(obs.getNewBackgroundColor());
+			canvasActions.setBackgroundColorCanvas(new RGBColor(obs.getNewBackgroundColor().getRed(),
+					obs.getNewBackgroundColor().getGreen(), obs.getNewBackgroundColor().getBlue()));
 		if (obs.getNewLanguage() != null)
 			commandHandler.setLanguage(this, obs.getNewLanguage());
 	}
 
 	public void update(PenSettingsController obs, Object o) {
-		if (obs.getNewPenColor() != null)
-			turtleActionsHandler.setPenColor(obs.getNewPenColor());
-		if (obs.getNewPenType() != null)
-			turtleActionsHandler.setPenType(obs.getNewPenType());
+		if (obs.getNewPenColor() != null) {
+			for (Integer myElem : colorMap.keySet()) {
+				if (colorMap.get(myElem).equals(obs.getNewPenColor())) {
+					turtleActionsHandler.setPenColor(myElem);
+					break;
+				}
+			}
+		}
+		if (obs.getNewPenType() != null && penTypeList.contains(obs.getNewPenType())) 
+				turtleActionsHandler.setPenType(obs.getNewPenType());
 		if (obs.getNewPenThickness() != 0)
 			turtleActionsHandler.setPenThickness(obs.getNewPenThickness());
 	}

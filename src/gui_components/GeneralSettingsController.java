@@ -31,7 +31,7 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	private int newTurtleCount;
 	private int newPenColor;
 	private boolean newPenDown;
-	private int newLineStyle;
+	private String newLineStyle;
 	private int newPenThickness;
 	
 	private Image newImage;
@@ -42,6 +42,9 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 		this.instanceCreator = instanceCreator;
 		this.viewProperties = viewProperties;
 
+		newPenThickness = -1;
+		newBackgroundColor = -1;
+		newPenColor = -1;
 		VBox vBoxLeft = new VBox(viewProperties.getDoubleProperty("padding"));
 		vBoxLeft.getChildren().add(initializeUndoButton());
 		vBoxLeft.getChildren().add(initalizeFileLoader());
@@ -125,13 +128,13 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	@Override
-	public void getLineTypeFromFile(int lineStyle) {
+	public void getLineTypeFromFile(String lineStyle) {
 		setChanged();
 		newLineStyle = lineStyle;
 		notifyObservers();
 	}
 
-	public int getNewPenType() {
+	public String getNewPenType() {
 		return newLineStyle;
 	}
 

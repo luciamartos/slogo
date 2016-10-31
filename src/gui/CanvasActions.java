@@ -37,9 +37,10 @@ import javafx.scene.shape.Path;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import model.PathLine;
+import model.RGBColor;
 
 public class CanvasActions {
-	private static final Color COLOR_CANVAS = Color.WHITE;
+	private static final RGBColor COLOR_CANVAS = new RGBColor(255, 255, 255);
 	private static final String IMAGE_PATH = "resources/images/";
 	private GraphicsContext gc;
 	private Canvas canvas;
@@ -72,8 +73,9 @@ public class CanvasActions {
 		map = new HashMap<Integer, ImageView>();
 	}
 
-	public void setBackgroundColorCanvas(Color color) {
-		pane.setBackground(new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY)));
+	public void setBackgroundColorCanvas(RGBColor rgbColor) {
+		Color myColor = Color.rgb(rgbColor.getRed(), rgbColor.getGreen(), rgbColor.getBlue());
+		pane.setBackground(new Background(new BackgroundFill(myColor, CornerRadii.EMPTY, Insets.EMPTY)));
 	}
 
 	private void initializeCanvas(double canvasWidth, double canvasHeight) {
@@ -109,15 +111,12 @@ public class CanvasActions {
 	public void drawPath(Iterator<PathLine> pathLine) {
 		while (pathLine.hasNext()) {
 			PathLine currPathLine = pathLine.next();
-			gc.setStroke(currPathLine.getPenColor());
+			gc.setStroke(Color.rgb(currPathLine.getPenColor().getRed(), currPathLine.getPenColor().getGreen(),
+					currPathLine.getPenColor().getBlue()));
 			gc.setLineWidth(currPathLine.getPenThickness());
 			gc.strokeLine(currPathLine.getX1(), currPathLine.getY1(), currPathLine.getX2(), currPathLine.getY2());
-			if (currPathLine.getPenType() != null) { // MAKE SURE ITS
-														// INITIALISED TO NOT
-														// NULL SO I
-				// CAN REMOVE THIS
-				handleDifferentPenTypes(currPathLine.getPenType());
-			}
+
+			handleDifferentPenTypes(currPathLine.getPenType());
 		}
 
 	}
