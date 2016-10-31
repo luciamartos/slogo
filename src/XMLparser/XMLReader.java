@@ -16,12 +16,12 @@ import java.util.HashMap;
 
 public class XMLReader {
 	private  String imageURL;
-	private String backgroundColor;
+	private int backgroundColor;
 	private String language;
 	private String turtleCount;
-	private String penColor;
+	private int penColor;
 	private String penDown;
-	private String lineStyle;
+	private int lineStyle;
 	private String penThickness;
 
 
@@ -41,13 +41,13 @@ public class XMLReader {
 				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 					Element eElement = (Element) nNode;
 					imageURL = eElement.getElementsByTagName("imageURL").item(0).getTextContent();
-					backgroundColor= eElement.getElementsByTagName("backgroundcolor").item(0).getTextContent();
+					backgroundColor= Integer.parseInt(eElement.getElementsByTagName("backgroundcolor").item(0).getTextContent());
 					language = eElement.getElementsByTagName("language").item(0).getTextContent();
 					turtleCount = eElement.getElementsByTagName("turtlecount").item(0).getTextContent();
-					penColor = eElement.getElementsByTagName("pencolor").item(0).getTextContent();
+					penColor = Integer.parseInt(eElement.getElementsByTagName("pencolor").item(0).getTextContent());
 					penThickness = eElement.getElementsByTagName("penthickness").item(0).getTextContent();
 					penDown = eElement.getElementsByTagName("pendown").item(0).getTextContent();
-					lineStyle = eElement.getElementsByTagName("linestyle").item(0).getTextContent();
+					lineStyle = Integer.parseInt(eElement.getElementsByTagName("linestyle").item(0).getTextContent());
 				}
 			}
 		} catch (Exception e) {
@@ -59,7 +59,7 @@ public class XMLReader {
 		return imageURL;
 	}
 
-	public String getBackgroundColor() {
+	public int getBackgroundColor() {
 		return backgroundColor;
 	}
 
@@ -71,7 +71,7 @@ public class XMLReader {
 		return turtleCount;
 	}
 
-	public String getPenColor() {
+	public int getPenColor() {
 		return penColor;
 	}
 
@@ -82,7 +82,7 @@ public class XMLReader {
 	public String getLineStyle() {
 		return lineStyle;
 	}
-	public String getPenThickness() {
+	public int getPenThickness() {
 		return penThickness;
 	}
 }

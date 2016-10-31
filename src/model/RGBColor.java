@@ -11,6 +11,12 @@ public class RGBColor {
 		this.blue = blue;
 	}
 
+	public RGBColor(double red, double green, double blue){
+		this.red = (int) red;
+		this.green = (int) green;
+		this.blue = (int) blue;
+	}
+	
 	public int getBlue() {
 		return blue;
 	}
