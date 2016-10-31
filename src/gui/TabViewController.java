@@ -124,10 +124,11 @@ public class TabViewController implements Observer, ErrorPresenter {
 		
 		VBox leftTableBox = new VBox(15);
 		leftTableBox.getChildren().add(createDefaultVariableTableView());
-		leftTableBox.getChildren().add(createUserDefinedVariableTableView());
+		leftTableBox.getChildren().add(createColorTableView());
 		canvasAndTablesBox.getChildren().add(leftTableBox);
 		
 		VBox rightTableBox = new VBox(15);
+		rightTableBox.getChildren().add(createUserDefinedVariableTableView());
 		rightTableBox.getChildren().add(createUserDefinedCommandTableView());
 		canvasAndTablesBox.getChildren().add(rightTableBox);
 
@@ -226,22 +227,22 @@ public class TabViewController implements Observer, ErrorPresenter {
 	}
 
 	private Node createDefaultVariableTableView() {
-		defaultVariableTableView = new VariableTableView("Workspace Variables");
+		defaultVariableTableView = new VariableTableView("Workspace Parameters","Name", "Value");
 		return defaultVariableTableView;
 	}
 	
 	private Node createUserDefinedVariableTableView() {
-		userDefinedVariableTableView = new VariableTableView("User Defined Variables");
+		userDefinedVariableTableView = new VariableTableView("User Defined Variables", "Name","Value");
 		return userDefinedVariableTableView;
 	}
 
 	private Node createUserDefinedCommandTableView() {
-		userDefinedCommandTableView = new VariableTableView("User Defined Commands");
+		userDefinedCommandTableView = new VariableTableView("User Defined Commands", "Name", "Value");
 		return userDefinedCommandTableView;
 	}
 	
-	private Node ColorTableView() {
-		colorTableView = new VariableTableView("Color Mapping");
+	private Node createColorTableView() {
+		colorTableView = new VariableTableView("Color Mapping","ID Number","Color");
 		return colorTableView;
 	}
 
@@ -380,7 +381,22 @@ public class TabViewController implements Observer, ErrorPresenter {
 
 		ObservableList<Variable> userDefinedVariableList = createUserDefinedCommandsList();
 		userDefinedCommandTableView.setItems(userDefinedVariableList);
+		
+		ObservableList<Variable> colorList = createColorList();
+		colorTableView.setItems(colorList);
 
+	}
+	
+	private ObservableList<Variable> createColorList() {
+		Map<String, String> map = new HashMap<String,String>();
+		map.put("1", "yellow");
+		map.put("2", "red");
+
+		ObservableList<Variable> data = FXCollections.observableArrayList();
+		for (String s : map.keySet()) {
+			data.add(new Variable(s, map.get(s)));
+		}
+		return data;
 	}
 
 	private ObservableList<Variable> createDefaultVariablesList() {
