@@ -29,10 +29,10 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	private Color newBackgroundColor;
 	private String newLanguage;
 	private int newTurtleCount;
-	private Color newPenColor;
+	private int newPenColor;
 	private boolean newPenDown;
 	private String newLineStyle;
-	private double newPenThickness;
+	private int newPenThickness;
 	
 	private Image newImage;
 	private String newCommandString;
@@ -152,11 +152,11 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	@Override
 	public void getPenColorFromFile(String penColor) {
 		setChanged();
-		newPenColor = Color.valueOf(penColor);
+		newPenColor = myMap.get(penColor);
 		notifyObservers();
 	}
 
-	public Color getNewPenColor() {
+	public int getNewPenColor() {
 		return newPenColor;
 	}
 
@@ -208,11 +208,11 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	@Override
 	public void getPenThicknessFromFile(String penThickness) {
 		setChanged();
-		newPenThickness = Double.parseDouble(penThickness);
+		newPenThickness = Integer.parseInt(penThickness);
 		notifyObservers();
 	}
 	
-	public double getNewPenThickness(){
+	public int getNewPenThickness(){
 		return newPenThickness;
 	}
 
