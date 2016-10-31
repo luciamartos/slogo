@@ -1,5 +1,8 @@
 package interpreter;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 public class TurtleCommandInterpreter extends SubInterpreter{
 	
 	private SlogoUpdate model;
@@ -8,6 +11,47 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 	TurtleCommandInterpreter(SlogoUpdate model, TurtleStateUpdater stateUpdater){
 		this.model = model;
 		this.stateUpdater = stateUpdater;
+	}
+	
+	@Override
+	boolean canHandle(String keyword) {
+		return isNonInputTurtleCommand(keyword) || isUnaryTurtleCommand(keyword) || isBinaryTurtleCommand(keyword);
+	}
+	
+	@Override
+	double handle(String[] input, String keyword, double[] param, int searchStartIndex) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
+		if(isNonInputTurtleCommand(keyword)){
+			Class[] args = createDoubleArgs(0);
+			Method method = this.getClass().getDeclaredMethod(keyword, args);
+			return (double) method.invoke(this);
+		}
+		else if(isUnaryTurtleCommand(keyword)){
+			Class[] args = createDoubleArgs(1);
+			Method method = this.getClass().getDeclaredMethod(keyword, args);
+			return (double) method.invoke(this, param[0]);
+		}
+		else if(isBinaryTurtleCommand(keyword)){
+			Class[] args = createDoubleArgs(2);
+			Method method = this.getClass().getDeclaredMethod(keyword, args);
+			return (double) method.invoke(this, param[0], param[1]);
+		}
+		else throw new IllegalArgumentException();
+	}
+	
+	boolean isNonInputTurtleCommand(String input){
+		return input.equalsIgnoreCase(rb.getString("pd")) || input.equalsIgnoreCase(rb.getString("pu")) ||
+				input.equalsIgnoreCase(rb.getString("st")) || input.equalsIgnoreCase(rb.getString("ht")) ||
+				input.equalsIgnoreCase(rb.getString("home")) || input.equalsIgnoreCase(rb.getString("cs"));
+	}
+	
+	boolean isUnaryTurtleCommand(String input){
+		return input.equalsIgnoreCase(rb.getString("fd")) || input.equalsIgnoreCase(rb.getString("bk")) ||
+				input.equalsIgnoreCase(rb.getString("lt")) || input.equalsIgnoreCase(rb.getString("rt")) ||
+				input.equalsIgnoreCase(rb.getString("seth"));
+	}
+	
+	boolean isBinaryTurtleCommand(String input){
+		return input.equalsIgnoreCase(rb.getString("towards")) || input.equalsIgnoreCase(rb.getString("setxy"));
 	}
 	
 	double forward(double pixels){
@@ -35,8 +79,6 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 	}
 	
 	double settowards(double x, double y){
-//		double tempX = model.getXCoordinate();
-//		double tempY = model.getYCoordinate();
 		return model.turnToward(x, y);
 	}
 	
@@ -75,7 +117,7 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 	}
 	
 	
-	double clearScreen(){
+	double clearscreen(){
 		double tempX = model.getXCoordinate();
 		double tempY = model.getYCoordinate();
 		model.moveTo(0, 0);

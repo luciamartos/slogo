@@ -9,6 +9,10 @@ public class TurtleState extends Observable {
 	private double distanceMoved;
 	private boolean drawing;
 	private boolean showing;
+	private int penColorIndex;
+	private int shapeIndex;
+	private int penSize;
+	private boolean active;
 	
 	// Getters and Setters
 	
