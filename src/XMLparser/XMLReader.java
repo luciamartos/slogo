@@ -21,8 +21,8 @@ public class XMLReader {
 	private String turtleCount;
 	private int penColor;
 	private String penDown;
-	private int lineStyle;
-	private String penThickness;
+	private String lineStyle;
+	private int penThickness;
 
 
 	public XMLReader(String file) {
@@ -45,9 +45,9 @@ public class XMLReader {
 					language = eElement.getElementsByTagName("language").item(0).getTextContent();
 					turtleCount = eElement.getElementsByTagName("turtlecount").item(0).getTextContent();
 					penColor = Integer.parseInt(eElement.getElementsByTagName("pencolor").item(0).getTextContent());
-					penThickness = eElement.getElementsByTagName("penthickness").item(0).getTextContent();
+					penThickness = Integer.parseInt(eElement.getElementsByTagName("penthickness").item(0).getTextContent());
 					penDown = eElement.getElementsByTagName("pendown").item(0).getTextContent();
-					lineStyle = Integer.parseInt(eElement.getElementsByTagName("linestyle").item(0).getTextContent());
+					lineStyle = eElement.getElementsByTagName("linestyle").item(0).getTextContent();
 				}
 			}
 		} catch (Exception e) {
