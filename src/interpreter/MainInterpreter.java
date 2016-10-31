@@ -60,8 +60,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			InvocationTargetException{
 		model = new SlogoUpdate(stateDatasource);
 		String[] split = input.split("\\s+");
-		lang = new ProgramParser();
-		lang = addLanguagePatterns(lang);	
+		lang = addLanguagePatterns();	
 		listOfSubInterpreters = createListOfInterpreters();
 		interpretCommand(split, 0);   //first search(non-recursive) begins at index 0;
 	}
@@ -83,7 +82,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 				returnValue = elem.handle(input, keyword, param, searchStartIndex);
 //				currSearchIndex = elem.getCurrSearchIndex();
 				if(elem.getModel() != null){
-					model = elem.getModel();    //what if on non-actionables, mode is just NULL?
+					model = elem.getModel();    //what if on non-actionables, model is just NULL?
 				}
 				break;
 			}
@@ -256,7 +255,8 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		return out;
 	}
 	
-	private ProgramParser addLanguagePatterns(ProgramParser lang){
+	private ProgramParser addLanguagePatterns(){
+		ProgramParser lang = new ProgramParser();
 		for(String language:languages){
 			lang.addPatterns(DEFAULT_RESOURCE_LANGUAGE+language);
 		}
