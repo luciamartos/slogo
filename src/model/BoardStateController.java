@@ -5,16 +5,15 @@ import java.util.Observable;
 import java.util.Observer;
 import general.Properties;
 import gui.BoardStateDataSource;
-import interpreter.SlogoUpdate;
-import interpreter.TurtleStateDataSource;
-import interpreter.TurtleStateUpdater;
+import interpreter.BoardStateUpdater;
 import interpreter.UserVariablesDataSource;
+import javafx.scene.paint.Color;
 
 /**
- * @author Andrew Bihl
+ * @author Andrew Bihl, Eric Song
  */
 
-public class BoardStateController extends Observable implements TurtleStateDataSource, BoardStateDataSource, TurtleStateUpdater, UserVariablesDataSource {
+public class BoardStateController extends Observable implements BoardStateDataSource, BoardStateUpdater, UserVariablesDataSource {
 	private final String VIEW_PROPERTIES_FILE_PATH = "resources.properties.View";
 	private final String BOARD_WIDTH_KEY = "canvas_width";
 	private final String BOARD_HEIGHT_KEY = "canvas_height";
@@ -23,16 +22,8 @@ public class BoardStateController extends Observable implements TurtleStateDataS
 	private double maxYCoordinate;
 	private double minYCoordinate;
 	private BoardState boardState;
-	
-	private class Coordinates{
-		public double x;
-		public double y;
-		public Coordinates(double x, double y){
-			this.x = x;
-			this.y = y;
-		}
-	}
-	
+	private TurtleStatesController turtleController;
+
 	public BoardStateController(){
 		boardState = new BoardState();
 		Properties visualProperties = new Properties(VIEW_PROPERTIES_FILE_PATH);
@@ -44,29 +35,20 @@ public class BoardStateController extends Observable implements TurtleStateDataS
 		minYCoordinate = -maxYCoordinate;
 	}
 	
+<<<<<<< HEAD
 	public void applyChanges(SlogoUpdate changes){
 		setChanged();
-		boardState.setAngle(changes.getAngle());
-		boardState.setDrawing(changes.getTurtleShouldDraw());
-		boardState.setShowing(changes.getTurtleShouldShow());
-		Coordinates oldCoordinates = new Coordinates(boardState.getXCoordinate(), boardState.getYCoordinate());
-		Coordinates newCoordinates = new Coordinates(changes.getXCoordinate(), changes.getYCoordinate());
-		newCoordinates = calculateValidUpdatedCoordinates(oldCoordinates, newCoordinates, Math.toRadians(changes.getAngle()));
-		boardState.setXCoordinate(newCoordinates.x);
-		boardState.setYCoordinate(newCoordinates.y);
-		PathLine line = new PathLine(oldCoordinates.x, oldCoordinates.y, boardState.getXCoordinate(), boardState.getYCoordinate());
-		if (boardState.isDrawing()){
-			boardState.addLineCoordinates(line);
-		}
-		boardState.setDistanceMoved(boardState.getDistanceMoved() + line.getLength());
 		notifyObservers();
 	}
 	
+=======
+>>>>>>> 9787258bc1dc1f68b2bca689b6a17b8ae98e3097
 	public void addBoardStateListener(Observer o){
 		this.addObserver(o);
 		setChanged();
 		this.notifyObservers();
 	}
+<<<<<<< HEAD
 
 	//Restrict movement to the bounds of the board.
 	private Coordinates calculateValidUpdatedCoordinates(Coordinates current, Coordinates updated, double thetaInRadians){
@@ -108,29 +90,31 @@ public class BoardStateController extends Observable implements TurtleStateDataS
  */
 	@Override
 	public double getXCoordinate() {
-		return boardState.getXCoordinate();
+		return 0;
 	}
 
 	@Override
 	public double getYCoordinate() {
-		return boardState.getYCoordinate();
+		return 0;
 	}
 
 	@Override
 	public double getAngle() {
-		return boardState.getAngle();
+		return 0;
 	}
 
 	@Override
 	public boolean getTurtleIsShowing() {
-		return boardState.isShowing();
+		return true;
 	}
 
 	@Override
 	public boolean getTurtleIsDrawing() {
-		return boardState.isDrawing();
+		return true;
 	}
 
+=======
+>>>>>>> 9787258bc1dc1f68b2bca689b6a17b8ae98e3097
 	
 /*
  * gui.BoardStateDataSource 
@@ -163,5 +147,63 @@ public class BoardStateController extends Observable implements TurtleStateDataS
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public Color getPenColor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Color getBackgroundColor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double getPenThickness() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String getImage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
+	double getMaxXCoordinate(){
+		return this.maxXCoordinate;
+	}
+	
+	double getMinXCoordinate(){
+		return this.minXCoordinate;
+	}
+	
+	double getMaxYCoordinate(){
+		return this.maxYCoordinate;
+	}
+	
+	double getMinYCoordinate(){
+		return this.minYCoordinate;
+	}
+	
+	void addLine(PathLine line){
+		boardState.addLineCoordinates(line);
+	}
+
+	@Override
+	public Color getBackgroundColor() {
+		RGBColor rgb = boardState.getBackgroundColor();
+		return Color.color(rgb.getRed(), rgb.getGreen(), rgb.getBlue());
+	}
+
+	@Override
+	public void setBackgroundColorIndex(int i) {
+		boardState.setBackgroundColorIndex(i);
+	}
+	
+	RGBColor getColorForIndex(int i){
+		return this.boardState.getColorForIndex(i);
+	}
 }

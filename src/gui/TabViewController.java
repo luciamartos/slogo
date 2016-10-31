@@ -21,7 +21,6 @@ import gui_components.PenSettingsController;
 import gui_components.SettingsController;
 import gui_components.TitleBox;
 import gui_components.TurtleSettingsController;
-import gui_components.UserDefinedCommand;
 import gui_components.WorkspaceSettingsController;
 import interpreter.ErrorPresenter;
 import javafx.beans.property.SimpleStringProperty;
@@ -81,8 +80,10 @@ public class TabViewController implements Observer, ErrorPresenter {
 	private Tab tab;
 	private NewSlogoInstanceCreator instanceCreator;
 
-	TableView<Variable> variableTableView;
-	TableView<UserDefinedCommand> userDefinedTableView;
+	TableView<Variable> defaultVariableTableView;
+	TableView<Variable> userDefinedVariableTableView;
+	TableView<Variable> userDefinedCommandTableView;
+	TableView<Variable> colorTableView;
 
 	public TabViewController(TabPane tabPane, Properties viewProperties, String tabTitle,
 			NewSlogoInstanceCreator instanceCreator) {
@@ -105,33 +106,41 @@ public class TabViewController implements Observer, ErrorPresenter {
 	}
 
 	private Node setupBoxes() {
-		VBox box1 = new VBox(15);
-		HBox box2 = new HBox(15);
-		VBox box3 = new VBox(15);
-		HBox box4 = new HBox(15);
-		box2.setAlignment(Pos.CENTER);
+		VBox windowBox = new VBox(15);
+		HBox canvasAndTablesBox = new HBox(15);
+		VBox canvasAndCommandsBox = new VBox(15);
+		HBox settingsBox = new HBox(15);
+		canvasAndTablesBox.setAlignment(Pos.CENTER);
 
-		box1.setPadding(new Insets(15, 15, 15, 15));
-		box1.getChildren().add(createTitleBox());
-		box1.getChildren().add(box2);
-		box1.getChildren().add(box4);
-		box1.getChildren().add(createErrorConsole());
-		box1.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
+		windowBox.setPadding(new Insets(15, 15, 15, 15));
+		windowBox.getChildren().add(createTitleBox());
+		windowBox.getChildren().add(canvasAndTablesBox);
+		windowBox.getChildren().add(settingsBox);
+		windowBox.getChildren().add(createErrorConsole());
+		windowBox.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
 
-		box2.getChildren().add(box3);
-		box2.getChildren().add(createPastCommandsListView());
-		box2.getChildren().add(createVariableTableView());
-		box2.getChildren().add(createUserDefinedTableView());
+		canvasAndTablesBox.getChildren().add(canvasAndCommandsBox);
+		canvasAndTablesBox.getChildren().add(createPastCommandsListView());
+		
+		VBox leftTableBox = new VBox(15);
+		leftTableBox.getChildren().add(createDefaultVariableTableView());
+		leftTableBox.getChildren().add(createColorTableView());
+		canvasAndTablesBox.getChildren().add(leftTableBox);
+		
+		VBox rightTableBox = new VBox(15);
+		rightTableBox.getChildren().add(createUserDefinedVariableTableView());
+		rightTableBox.getChildren().add(createUserDefinedCommandTableView());
+		canvasAndTablesBox.getChildren().add(rightTableBox);
 
-		box3.getChildren().add(createCanvas());
-		box3.getChildren().add(createCommandInputter());
+		canvasAndCommandsBox.getChildren().add(createCanvas());
+		canvasAndCommandsBox.getChildren().add(createCommandInputter());
 		// HBox.setHgrow(box2, Priority.ALWAYS);
 
 		Node settingsController = initializeSettingsController();
-		box4.getChildren().add(createViewSelector());
-		box4.getChildren().add(settingsController);
+		settingsBox.getChildren().add(createViewSelector());
+		settingsBox.getChildren().add(settingsController);
 
-		return box1;
+		return windowBox;
 	}
 
 	private Node createViewSelector() {
@@ -144,8 +153,8 @@ public class TabViewController implements Observer, ErrorPresenter {
 
 		// initialise button actions
 		hideShowButtonActions(historicCommands, pastCommandsListView, "Hide history", "Show history");
-		hideShowButtonActions(variables, variableTableView, "Hide variales", "Show variables");
-		hideShowButtonActions(userVariables, userDefinedTableView, "Hide user variables", "Show user variables");
+		hideShowButtonActions(variables, defaultVariableTableView, "Hide variables", "Show variables");
+		hideShowButtonActions(userVariables, userDefinedCommandTableView, "Hide user variables", "Show user variables");
 		hideShowButtonActions(drawSettings, settingsController.getNode(), "Hide settings", "Show settings");
 
 		hideShowButtons.getChildren().addAll(historicCommands, userVariables, variables, drawSettings);
@@ -217,14 +226,24 @@ public class TabViewController implements Observer, ErrorPresenter {
 		return pastCommandsListView;
 	}
 
-	private Node createVariableTableView() {
-		variableTableView = new VariableTableView();
-		return variableTableView;
+	private Node createDefaultVariableTableView() {
+		defaultVariableTableView = new VariableTableView("Workspace Parameters","Name", "Value");
+		return defaultVariableTableView;
+	}
+	
+	private Node createUserDefinedVariableTableView() {
+		userDefinedVariableTableView = new VariableTableView("User Defined Variables", "Name","Value");
+		return userDefinedVariableTableView;
 	}
 
-	private Node createUserDefinedTableView() {
-		userDefinedTableView = new TableView<UserDefinedCommand>();
-		return userDefinedTableView;
+	private Node createUserDefinedCommandTableView() {
+		userDefinedCommandTableView = new VariableTableView("User Defined Commands", "Name", "Value");
+		return userDefinedCommandTableView;
+	}
+	
+	private Node createColorTableView() {
+		colorTableView = new VariableTableView("Color Mapping","ID Number","Color");
+		return colorTableView;
 	}
 
 	private Node createCommandInputter() {
@@ -321,9 +340,9 @@ public class TabViewController implements Observer, ErrorPresenter {
 
 	public void update(GeneralSettingsController obs, Object o) {
 		//TODO FIND A WAY TO REMOVE DUPLICATED CODE, they are different types :S 
-//		if (obs.getNewImage() != null)
-//			canvasActions.changeImage(obs.getNewImage(),
-//					modelController.getXCoordinate(), modelController.getYCoordinate());
+		if (obs.getNewImage() != null)
+			canvasActions.changeImage(obs.getNewImage(),
+					modelController.getXCoordinate(), modelController.getYCoordinate());
 		if(obs.getNewCommandLineFromFile()!=null)
 			 runCommand(obs.getNewCommandLineFromFile());
 		if(obs.getNewBackgroundColor()!=null)
@@ -368,15 +387,33 @@ public class TabViewController implements Observer, ErrorPresenter {
 
 	private void updateVariables() {
 
-		ObservableList<Variable> variableList = createVariablesList();
-		variableTableView.setItems(variableList);
+		ObservableList<Variable> defaultVariableList = createDefaultVariablesList();
+		defaultVariableTableView.setItems(defaultVariableList);
+		
+		ObservableList<Variable> userDefinedVariablesList = createUserDefinedVariablesList();
+		userDefinedVariableTableView.setItems(userDefinedVariablesList);
 
-		ObservableList<UserDefinedCommand> userDefinedVariableList = createUserDefinedCommandsList();
-		userDefinedTableView.setItems(userDefinedVariableList);
+		ObservableList<Variable> userDefinedVariableList = createUserDefinedCommandsList();
+		userDefinedCommandTableView.setItems(userDefinedVariableList);
+		
+		ObservableList<Variable> colorList = createColorList();
+		colorTableView.setItems(colorList);
 
 	}
+	
+	private ObservableList<Variable> createColorList() {
+		Map<String, String> map = new HashMap<String,String>();
+		map.put("1", "yellow");
+		map.put("2", "red");
 
-	private ObservableList<Variable> createVariablesList() {
+		ObservableList<Variable> data = FXCollections.observableArrayList();
+		for (String s : map.keySet()) {
+			data.add(new Variable(s, map.get(s)));
+		}
+		return data;
+	}
+
+	private ObservableList<Variable> createDefaultVariablesList() {
 
 		ObservableList<Variable> data = FXCollections.observableArrayList();
 		data.add(new Variable("X Coordinate", Double.toString(modelController.getXCoordinate())));
@@ -384,11 +421,13 @@ public class TabViewController implements Observer, ErrorPresenter {
 		data.add(new Variable("Angle", Double.toString(modelController.getAngle())));
 		data.add(new Variable("Turtle is Showing", Boolean.toString(modelController.getTurtleIsShowing())));
 		data.add(new Variable("Pen is Down", Boolean.toString(modelController.getTurtleIsDrawing())));
+		
+		return data;
+	}
+	
+	private ObservableList<Variable> createUserDefinedVariablesList() {
 
-		// add an empty line for separation between environment and user defined
-		// variables
-		data.add(new Variable("", ""));
-
+		ObservableList<Variable> data = FXCollections.observableArrayList();
 		Map<String, String> map = modelController.getUserDefinedVariables();
 
 		for (String s : map.keySet()) {
@@ -398,13 +437,13 @@ public class TabViewController implements Observer, ErrorPresenter {
 		return data;
 	}
 
-	private ObservableList<UserDefinedCommand> createUserDefinedCommandsList() {
+	private ObservableList<Variable> createUserDefinedCommandsList() {
 		Map<String, String> map = modelController.getUserDefinedVariables();
 
-		ObservableList<UserDefinedCommand> data = FXCollections.observableArrayList();
+		ObservableList<Variable> data = FXCollections.observableArrayList();
 		for (String s : map.keySet()) {
 			if (s.charAt(0) != ':')
-				data.add(new UserDefinedCommand(s.substring(1), map.get(s)));
+				data.add(new Variable(s.substring(1), map.get(s)));
 		}
 		return data;
 
