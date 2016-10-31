@@ -24,7 +24,6 @@ import gui_components.TitleBox;
 import gui_components.TurtleSettingsController;
 import gui_components.WorkspaceSettingsController;
 import interpreter.ErrorPresenter;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -33,28 +32,15 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.text.Font;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import tableviews.VariableTableView;
 
 /**
@@ -363,7 +349,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 		canvasActions.setBackgroundColorCanvas(obs.getBackgroundColor());
 
 	}
-
+	
 	public void update(GeneralSettingsController obs, Object o) {
 		// TODO FIND A WAY TO REMOVE DUPLICATED CODE, they are different types
 		// :S
@@ -378,13 +364,11 @@ public class TabViewController implements Observer, ErrorPresenter {
 		if (obs.getNewCommandLineFromFile() != null)
 			runCommand(obs.getNewCommandLineFromFile());
 		if (obs.getNewBackgroundColor() != null)
-			canvasActions.setBackgroundColorCanvas(obs.getNewBackgroundColor());
+			canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getNewBackgroundColor()));
 		if (obs.getNewLanguage() != null)
 			commandHandler.setLanguage(this, obs.getNewLanguage());
-		if (obs.getNewPenColor() != null)
-			turtleActionsHandler.setPenColor(obs.getNewPenColor());
-		if (obs.getNewPenType() != null)
-			turtleActionsHandler.setPenType(obs.getNewPenType());
+		turtleActionsHandler.setPenColor(obs.getNewPenColor());
+		turtleActionsHandler.setPenType(obs.getNewPenType());
 		if (obs.getNewPenThickness() != 0)
 			turtleActionsHandler.setPenThickness(obs.getNewPenThickness());
 	}

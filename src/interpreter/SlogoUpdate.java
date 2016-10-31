@@ -13,6 +13,9 @@ public class SlogoUpdate {
 	private double yCoordinate;
 	private double angle;
 	private HashSet<Integer> turtles;
+	private int penColor;
+	private int penSize;
+	private int shape;
 	private int turtleID;
 	
 	public SlogoUpdate(TurtleStateDataSource source, int turtleID){
@@ -22,6 +25,9 @@ public class SlogoUpdate {
 		turtleShouldShow = source.getTurtleIsShowing(turtleID);
 		xCoordinate = source.getXCoordinate(turtleID);
 		yCoordinate = source.getYCoordinate(turtleID);
+		penColor = source.getPenColor(turtleID);
+		penSize = source.getPenSize(turtleID);
+		shape = source.getShape(turtleID);
 	}
 	
 	public Boolean getTurtleShouldDraw(){
@@ -42,6 +48,18 @@ public class SlogoUpdate {
 	
 	public Double getAngle(){
 		return angle;
+	}
+	
+	public int getPenColor(){
+		return penColor;
+	}
+	
+	public int getPenSize(){
+		return penSize;
+	}
+	
+	public int getShape(){
+		return shape;
 	}
 	
 //Interpreter should call these methods to update the data object as it handles commands
@@ -113,6 +131,17 @@ public class SlogoUpdate {
 		return this.turtles;
 	}
 	
+	public void setShape(int index){
+		this.shape = index;
+	}
+	
+	public void setPenColor(int index){
+		this.penColor = index;
+	}
+	
+	public void setPenSize(int pixels){
+		this.penSize = pixels;
+	}
 	/**
 	 * @param unconvertedAngle
 	 * @return The angle converted to a positive value between 0.0 and 360.0

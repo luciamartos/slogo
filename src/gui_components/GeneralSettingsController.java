@@ -26,13 +26,13 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	private HBox hBox;
 	private boolean newTab;
 	private String newImageURL;
-	private Color newBackgroundColor;
+	private int newBackgroundColor;
 	private String newLanguage;
 	private int newTurtleCount;
-	private Color newPenColor;
+	private int newPenColor;
 	private boolean newPenDown;
-	private String newLineStyle;
-	private double newPenThickness;
+	private int newLineStyle;
+	private int newPenThickness;
 	
 	private Image newImage;
 	private String newCommandString;
@@ -125,13 +125,13 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	@Override
-	public void getLineTypeFromFile(String lineStyle) {
+	public void getLineTypeFromFile(int lineStyle) {
 		setChanged();
 		newLineStyle = lineStyle;
 		notifyObservers();
 	}
 
-	public String getNewPenType() {
+	public int getNewPenType() {
 		return newLineStyle;
 	}
 
@@ -150,13 +150,13 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	@Override
-	public void getPenColorFromFile(String penColor) {
+	public void getPenColorFromFile(int penColor) {
 		setChanged();
-		newPenColor = Color.valueOf(penColor);
+		newPenColor =  penColor;
 		notifyObservers();
 	}
 
-	public Color getNewPenColor() {
+	public int getNewPenColor() {
 		return newPenColor;
 	}
 
@@ -183,13 +183,13 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	@Override
-	public void getBackgroundColorFromFile(String backgroundColor) {
+	public void getBackgroundColorFromFile(int backgroundColor) {
 		setChanged();
-		newBackgroundColor = Color.valueOf(backgroundColor);
+		newBackgroundColor = backgroundColor;
 		notifyObservers();
 	}
 
-	public Color getNewBackgroundColor() {
+	public int getNewBackgroundColor() {
 		return newBackgroundColor;
 	}
 	
@@ -206,13 +206,13 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	@Override
-	public void getPenThicknessFromFile(String penThickness) {
+	public void getPenThicknessFromFile(int penThickness) {
 		setChanged();
-		newPenThickness = Double.parseDouble(penThickness);
+		newPenThickness = penThickness;
 		notifyObservers();
 	}
 	
-	public double getNewPenThickness(){
+	public int getNewPenThickness(){
 		return newPenThickness;
 	}
 

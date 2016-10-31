@@ -14,6 +14,7 @@ public class TurtleState extends Observable {
 	private int penColorIndex;
 	private int shapeIndex;
 	private int penSize;
+	private int penType;
 	private boolean active;
 
 	TurtleState(){
@@ -33,15 +34,19 @@ public class TurtleState extends Observable {
 		
 	}
 	
-	private void setPenSize(int pixels) {
+	void setPenType(int type){
+		this.penType = type;
+	}
+	
+	void setPenSize(int pixels) {
 		this.penSize = pixels;
 	}
 
-	private void setShapeIndex(int index) {
+	void setShapeIndex(int index) {
 		this.shapeIndex = index;
 	}
 
-	private void setPenColorIndex(int index) {
+	void setPenColorIndex(int index) {
 		this.penColorIndex = index;	
 	}
 
@@ -106,6 +111,10 @@ public class TurtleState extends Observable {
 		}
 	}
 
+	void setActive(boolean active){
+		this.active = active;
+	}
+	
 	boolean isActive(){
 		return this.active;
 	}

@@ -1,5 +1,5 @@
 package model;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
@@ -47,8 +47,8 @@ public class BoardStateController extends Observable implements BoardStateDataSo
  * gui.BoardStateDataSource 
  */
 	@Override
-	public List<PathLine> getLineCoordinates() {
-		return boardState.getLineCoordinates();
+	public Iterator<PathLine> getLineCoordinates() {
+		return boardState.getLineCoordinates().iterator();
 	}
 
 	@Override
@@ -113,5 +113,23 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	public TurtleStatesController getTurtleStatesController(){
 		return this.turtleController;
 	}
-	
+
+	@Override
+	public void undo() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setBackgroundColor(int colorIndex) {
+		this.boardState.setBackgroundColorIndex(colorIndex);
+	}
+
+	@Override
+	public void addColorToPalette(int index, int red, int green, int blue) {
+		RGBColor color = new RGBColor(red, green, blue);
+		this.boardState.addColorToMap(color, index);
+	}
+
+
 }
