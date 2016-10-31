@@ -13,6 +13,7 @@ public class SlogoUpdate {
 	private double yCoordinate;
 	private double angle;
 	private HashSet<Integer> turtles;
+	private int turtleID;
 	
 	public SlogoUpdate(TurtleStateDataSource source, int turtleID){
 		turtles = new HashSet<Integer>();
@@ -127,6 +128,10 @@ public class SlogoUpdate {
 			numerator = denominator + numerator;
 		}		
 		return numerator;
+	}
+	
+	public int getTurtleID(){
+		return this.turtleID;
 	}
 	
 }
