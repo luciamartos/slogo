@@ -6,6 +6,7 @@ import java.util.Observer;
 import general.Properties;
 import gui.BoardStateDataSource;
 import interpreter.BoardStateUpdater;
+import interpreter.SlogoUpdate;
 import interpreter.UserVariablesDataSource;
 import javafx.scene.paint.Color;
 
@@ -34,21 +35,17 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 		maxYCoordinate = boardHeight/2;
 		minYCoordinate = -maxYCoordinate;
 	}
-	
-<<<<<<< HEAD
+
 	public void applyChanges(SlogoUpdate changes){
 		setChanged();
 		notifyObservers();
 	}
-	
-=======
->>>>>>> 9787258bc1dc1f68b2bca689b6a17b8ae98e3097
+
 	public void addBoardStateListener(Observer o){
 		this.addObserver(o);
 		setChanged();
 		this.notifyObservers();
 	}
-<<<<<<< HEAD
 
 	//Restrict movement to the bounds of the board.
 	private Coordinates calculateValidUpdatedCoordinates(Coordinates current, Coordinates updated, double thetaInRadians){
@@ -113,8 +110,6 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 		return true;
 	}
 
-=======
->>>>>>> 9787258bc1dc1f68b2bca689b6a17b8ae98e3097
 	
 /*
  * gui.BoardStateDataSource 
