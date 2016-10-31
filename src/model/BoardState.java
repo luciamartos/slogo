@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Observable;
 
 /**
- * @author Andrew Bihl
+ * @author Andrew Bihl, Eric Song
  */
 
 public class BoardState{
