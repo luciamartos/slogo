@@ -1,6 +1,7 @@
 package interpreter;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class MultipleTurtleInterpreter extends SubInterpreter{
 	
@@ -21,8 +22,12 @@ public class MultipleTurtleInterpreter extends SubInterpreter{
 	double handle(String[] input, String keyword, double[] param, int searchStartIndex)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException,
 			SecurityException, InstantiationException {
-		// TODO Auto-generated method stub
-		return 0;
+		if(isMultipleTurtleCommand(keyword)){
+			Class[] args = createDoubleArgs(0);
+			Method method = this.getClass().getDeclaredMethod(keyword, args);
+			return (double) method.invoke(this);
+		}
+		else throw new IllegalArgumentException();
 	}
 
 	@Override
