@@ -9,6 +9,7 @@ import interpreter.SlogoUpdate;
 import interpreter.TurtleStateDataSource;
 import interpreter.TurtleStateUpdater;
 import interpreter.UserVariablesDataSource;
+import javafx.scene.paint.Color;
 
 /**
  * @author Andrew Bihl
@@ -162,6 +163,30 @@ public class BoardStateController extends Observable implements TurtleStateDataS
 	public void resetBoard() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Color getPenColor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Color getBackgroundColor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double getPenThickness() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String getImage() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

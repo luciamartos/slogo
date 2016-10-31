@@ -21,7 +21,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private final String NONINPUT_TITLE = "NonInputCommand";
 	private final String UNARY_TITLE = "UnaryCommand";
 	private final String BINARY_TITLE = "BinaryCommand";
-	private final double erroneousReturnValue = Double.NaN;
+	private final double erroneousReturnValue = Double.NEGATIVE_INFINITY;
 	private String[] languages = {"English", "Syntax"};  //default language is English
 	
 	private ProgramParser lang;
@@ -60,7 +60,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			InvocationTargetException{
 		model = new SlogoUpdate(stateDatasource);
 		String[] split = input.split("\\s+");
-		lang = addLanguagePatterns();	
+		lang = new ProgramParser();
+		lang = addLanguagePatterns(lang);
+//		lang = addLanguagePatterns();	
 		listOfSubInterpreters = createListOfInterpreters();
 		interpretCommand(split, 0);   //first search(non-recursive) begins at index 0;
 	}
@@ -69,6 +71,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		String[] parsed = createParsedArray(input, lang);
+		for(String elem: parsed){
+			System.out.println("ttt: " + elem);
+		}
 		String keyword = parsed[searchStartIndex].toLowerCase();
 
 		//scan for list first before anything else
@@ -131,7 +136,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			String errorMessage = "Invalid argument detected: '"+input[searchStartIndex]+"' is not a valid command!";
 			System.out.println(errorMessage);
 			errorPresenter.presentError(errorMessage);
-			throw new IllegalArgumentException();
+			System.out.println("Return Value: "+returnValue);
+			return returnValue;
+//			throw new IllegalArgumentException();
 		}
 	}
 
@@ -255,8 +262,8 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		return out;
 	}
 	
-	private ProgramParser addLanguagePatterns(){
-		ProgramParser lang = new ProgramParser();
+	private ProgramParser addLanguagePatterns(ProgramParser lang){
+//		ProgramParser lang = new ProgramParser();
 		for(String language:languages){
 			lang.addPatterns(DEFAULT_RESOURCE_LANGUAGE+language);
 		}
@@ -306,6 +313,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	public void setLanguage(String language){
 		ProgramParser checkLang = new ProgramParser();
+		System.out.println("lang: "+language);
 		try{
 			checkLang.addPatterns(DEFAULT_RESOURCE_LANGUAGE+language);
 			String[] temp = {language, "Syntax"};

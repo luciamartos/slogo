@@ -7,9 +7,9 @@ import model.BoardStateController;
 
 public class TestMain extends Application{
 	
-	String input = "fd 50";
+	String input = "qi 50";
 //	String input2 = ""
-//	String language = "Chinese";
+	String language = "Chinese";
 	
 	public static void main(String[] args){
 		launch(args);
@@ -27,7 +27,7 @@ public class TestMain extends Application{
 		main.setVarDataSource(controller);
 //		main.setErrorPresenter(vc);
 		
-//		main.setLanguage(language);
+		main.setLanguage(language);
 		main.parseInput(input);   
 	}
 }

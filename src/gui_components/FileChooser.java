@@ -15,7 +15,7 @@ public abstract class FileChooser {
 
 	public FileChooser(ReadCommandFileInterface myInterface) {
 		
-		createComboBox(initVal, filePath);
+//		createComboBox(initVal, filePath);
 		
 			this.myInterface = myInterface;
 			fileSelect = new ComboBox<>();
@@ -30,7 +30,7 @@ public abstract class FileChooser {
 			selectedFilename = null;
 			fileSelect.valueProperty().addListener((observable, oldValue, newValue) -> {
 				selectedFilename = newValue;
-				myCommandLine = "";
+//				myCommandLine = "";
 				readFile();
 	        });
 		}
@@ -44,9 +44,9 @@ public abstract class FileChooser {
 			try {
 				Scanner sc = new Scanner(file);
 				while (sc.hasNextLine()) {
-					myCommandLine += " " + sc.nextLine();
+//					myCommandLine += " " + sc.nextLine();
 				}
-				myInterface.getCommandLineFromFile(myCommandLine);
+//				myInterface.getCommandLineFromFile(myCommandLine);
 				sc.close();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
