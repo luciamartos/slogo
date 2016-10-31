@@ -12,6 +12,15 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 	private BoardStateController board;
 	private HashMap<Integer, TurtleState> turtles;
 	
+	private class Coordinates{
+		double x;
+		double y;
+		public Coordinates(double x, double y){
+			this.x = x;
+			this.y = y;
+		}
+	}
+	
 	public TurtleStatesController(){
 		this.turtles = new HashMap<Integer, TurtleState>();
 	}
