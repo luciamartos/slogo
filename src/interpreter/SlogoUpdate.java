@@ -1,4 +1,7 @@
 package interpreter;
+
+import java.util.HashSet;
+
 /**
  * @author Andrew Bihl
  */
@@ -8,8 +11,10 @@ public class SlogoUpdate {
 	private double xCoordinate;
 	private double yCoordinate;
 	private double angle;
+	private HashSet<Integer> turtles;
 	
 	public SlogoUpdate(TurtleStateDataSource source){
+		turtles = new HashSet<Integer>();
 		angle = source.getAngle();
 		turtleShouldDraw = source.getTurtleIsDrawing();
 		turtleShouldShow = source.getTurtleIsShowing();
