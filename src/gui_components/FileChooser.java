@@ -8,21 +8,24 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 
 public abstract class FileChooser {
-	private ComboBox<String> fileSelect;
-	private String selectedFilename;
-	//private String myCommandLine;
-	private ReadCommandFileInterface myInterface;
 
-	public FileChooser(ReadCommandFileInterface myInterface) {
-		
-//		createComboBox(initVal, filePath);
-		
-			this.myInterface = myInterface;
+	protected ComboBox<String> fileSelect;
+	protected String selectedFilename;
+	protected ReadCommandFileInterface myInterface;
+	protected String myPath;
+
+	public FileChooser(ReadCommandFileInterface myInterface, String initVal, String filePath) {
+		this.myInterface = myInterface;
+		myPath = filePath;
+		createComboBox(initVal);
+		}
+	
+		protected void createComboBox(String initVal){
 			fileSelect = new ComboBox<>();
 			fileSelect.setPrefWidth(120);
 			fileSelect.setVisibleRowCount(3);
-			fileSelect.setValue("Command file");
-			File dataDirectory = new File("data/examples/simple/");
+			fileSelect.setValue(initVal);
+			File dataDirectory = new File(myPath);
 			File[] dataFiles = dataDirectory.listFiles();
 			for (File file : dataFiles) {
 				fileSelect.getItems().add(file.getName());
@@ -30,32 +33,16 @@ public abstract class FileChooser {
 			selectedFilename = null;
 			fileSelect.valueProperty().addListener((observable, oldValue, newValue) -> {
 				selectedFilename = newValue;
-//				myCommandLine = "";
-				readFile();
+
+				executeActionsFromFile();
 	        });
 		}
-	
-		private void createComboBox(String initVal, String filePath){
-			
-		}
-
-		private void readFile() {
-			File file = new File("data/examples/simple/" +selectedFilename);
-			try {
-				Scanner sc = new Scanner(file);
-				while (sc.hasNextLine()) {
-//					myCommandLine += " " + sc.nextLine();
-				}
-//				myInterface.getCommandLineFromFile(myCommandLine);
-				sc.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-
-		public Node getCommandFileUploaderButton() {
+		protected abstract void executeActionsFromFile();
+		
+		public Node getFileUploaderButton() {
 			return fileSelect;
 		}
+
 	}
 
 

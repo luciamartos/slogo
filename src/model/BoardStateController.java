@@ -5,9 +5,7 @@ import java.util.Observable;
 import java.util.Observer;
 import general.Properties;
 import gui.BoardStateDataSource;
-import interpreter.SlogoUpdate;
-import interpreter.TurtleStateDataSource;
-import interpreter.TurtleStateUpdater;
+import interpreter.BoardStateUpdater;
 import interpreter.UserVariablesDataSource;
 import javafx.scene.paint.Color;
 
@@ -15,7 +13,7 @@ import javafx.scene.paint.Color;
  * @author Andrew Bihl, Eric Song
  */
 
-public class BoardStateController extends Observable implements TurtleStateDataSource, BoardStateDataSource, TurtleStateUpdater, UserVariablesDataSource {
+public class BoardStateController extends Observable implements BoardStateDataSource, BoardStateUpdater, UserVariablesDataSource {
 	private final String VIEW_PROPERTIES_FILE_PATH = "resources.properties.View";
 	private final String BOARD_WIDTH_KEY = "canvas_width";
 	private final String BOARD_HEIGHT_KEY = "canvas_height";
@@ -24,16 +22,8 @@ public class BoardStateController extends Observable implements TurtleStateDataS
 	private double maxYCoordinate;
 	private double minYCoordinate;
 	private BoardState boardState;
-	
-	private class Coordinates{
-		public double x;
-		public double y;
-		public Coordinates(double x, double y){
-			this.x = x;
-			this.y = y;
-		}
-	}
-	
+	private TurtleStatesController turtleController;
+
 	public BoardStateController(){
 		boardState = new BoardState();
 		Properties visualProperties = new Properties(VIEW_PROPERTIES_FILE_PATH);
@@ -45,16 +35,20 @@ public class BoardStateController extends Observable implements TurtleStateDataS
 		minYCoordinate = -maxYCoordinate;
 	}
 	
+<<<<<<< HEAD
 	public void applyChanges(SlogoUpdate changes){
 		setChanged();
 		notifyObservers();
 	}
 	
+=======
+>>>>>>> 9787258bc1dc1f68b2bca689b6a17b8ae98e3097
 	public void addBoardStateListener(Observer o){
 		this.addObserver(o);
 		setChanged();
 		this.notifyObservers();
 	}
+<<<<<<< HEAD
 
 	//Restrict movement to the bounds of the board.
 	private Coordinates calculateValidUpdatedCoordinates(Coordinates current, Coordinates updated, double thetaInRadians){
@@ -119,6 +113,8 @@ public class BoardStateController extends Observable implements TurtleStateDataS
 		return true;
 	}
 
+=======
+>>>>>>> 9787258bc1dc1f68b2bca689b6a17b8ae98e3097
 	
 /*
  * gui.BoardStateDataSource 
@@ -176,4 +172,38 @@ public class BoardStateController extends Observable implements TurtleStateDataS
 		return null;
 	}
 	
+	double getMaxXCoordinate(){
+		return this.maxXCoordinate;
+	}
+	
+	double getMinXCoordinate(){
+		return this.minXCoordinate;
+	}
+	
+	double getMaxYCoordinate(){
+		return this.maxYCoordinate;
+	}
+	
+	double getMinYCoordinate(){
+		return this.minYCoordinate;
+	}
+	
+	void addLine(PathLine line){
+		boardState.addLineCoordinates(line);
+	}
+
+	@Override
+	public Color getBackgroundColor() {
+		RGBColor rgb = boardState.getBackgroundColor();
+		return Color.color(rgb.getRed(), rgb.getGreen(), rgb.getBlue());
+	}
+
+	@Override
+	public void setBackgroundColorIndex(int i) {
+		boardState.setBackgroundColorIndex(i);
+	}
+	
+	RGBColor getColorForIndex(int i){
+		return this.boardState.getColorForIndex(i);
+	}
 }
