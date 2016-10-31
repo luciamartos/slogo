@@ -1,5 +1,10 @@
 package XMLparser;
 
+/**
+ * 
+ * adjusted from online resource: https://www.mkyong.com/java/how-to-read-xml-file-in-java-dom-parser/
+ * 
+ */
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
@@ -10,49 +15,74 @@ import java.io.File;
 import java.util.HashMap;
 
 public class XMLReader {
-	private HashMap<String, String> myMap;
-  public static void readFile(String file) {
+	private  String imageURL;
+	private String backgroundColor;
+	private String language;
+	private String turtleCount;
+	private String penColor;
+	private String penDown;
+	private String lineStyle;
+	private String penThickness;
 
-    try {
 
-	File fXmlFile = new File("data/examples/workspace_settings/"+file);
-	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-	Document doc = dBuilder.parse(fXmlFile);
+	public XMLReader(String file) {
 
-	//optional, but recommended
-	//read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
-	doc.getDocumentElement().normalize();
+		try {
+			File fXmlFile = new File(file);
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(fXmlFile);
+			doc.getDocumentElement().normalize();
+			NodeList nList = doc.getElementsByTagName("type");
 
-	System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+			for (int temp = 0; temp < nList.getLength(); temp++) {
 
-	NodeList nList = doc.getElementsByTagName("type");
-
-	System.out.println("----------------------------");
-
-	for (int temp = 0; temp < nList.getLength(); temp++) {
-
-		Node nNode = nList.item(temp);
-
-		System.out.println("\nCurrent Element :" + nNode.getNodeName());
-
-		if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
-			Element eElement = (Element) nNode;
-
-			System.out.println("Type : " + eElement.getAttribute("id"));
-			System.out.println("imageURL : " + eElement.getElementsByTagName("imageURL").item(0).getTextContent());
-			System.out.println("backgroundcolor : " + eElement.getElementsByTagName("backgroundcolor").item(0).getTextContent());
-			System.out.println("language : " + eElement.getElementsByTagName("language").item(0).getTextContent());
-			System.out.println("turtlecount : " + eElement.getElementsByTagName("turtlecount").item(0).getTextContent());
-			System.out.println("pencolor : " + eElement.getElementsByTagName("pencolor").item(0).getTextContent());
-			System.out.println("pendown : " + eElement.getElementsByTagName("pendown").item(0).getTextContent());
-			System.out.println("linestyle : " + eElement.getElementsByTagName("linestyle").item(0).getTextContent());
+				Node nNode = nList.item(temp);
+				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+					Element eElement = (Element) nNode;
+					imageURL = eElement.getElementsByTagName("imageURL").item(0).getTextContent();
+					backgroundColor= eElement.getElementsByTagName("backgroundcolor").item(0).getTextContent();
+					language = eElement.getElementsByTagName("language").item(0).getTextContent();
+					turtleCount = eElement.getElementsByTagName("turtlecount").item(0).getTextContent();
+					penColor = eElement.getElementsByTagName("pencolor").item(0).getTextContent();
+					penThickness = eElement.getElementsByTagName("penthickness").item(0).getTextContent();
+					penDown = eElement.getElementsByTagName("pendown").item(0).getTextContent();
+					lineStyle = eElement.getElementsByTagName("linestyle").item(0).getTextContent();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
-    } catch (Exception e) {
-	e.printStackTrace();
-    }
-  }
+	
+	public String getImageURL() {
+		return imageURL;
+	}
 
+	public String getBackgroundColor() {
+		return backgroundColor;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public String getTurtleCount() {
+		return turtleCount;
+	}
+
+	public String getPenColor() {
+		return penColor;
+	}
+
+	public String getPenDown() {
+		return penDown;
+	}
+
+	public String getLineStyle() {
+		return lineStyle;
+	}
+	public String getPenThickness() {
+		return penThickness;
+	}
 }

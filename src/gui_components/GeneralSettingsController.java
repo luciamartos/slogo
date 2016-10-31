@@ -2,7 +2,6 @@ package gui_components;
 
 import java.util.Observable;
 
-
 import XMLparser.XMLReader;
 
 import general.NewSlogoInstanceCreator;
@@ -19,35 +18,44 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class GeneralSettingsController extends Observable implements ReadCommandFileInterface {
 	private Properties viewProperties;
 	private HBox hBox;
 	private boolean newTab;
-
+	private String newImageURL;
+	private Color newBackgroundColor;
+	private String newLanguage;
+	private int newTurtleCount;
+	private Color newPenColor;
+	private boolean newPenDown;
+	private String newLineStyle;
+	private double newPenThickness;
+	
 	private Image newImage;
-	private String newCommandString; 
+	private String newCommandString;
 	private NewSlogoInstanceCreator instanceCreator;
 
 	public GeneralSettingsController(Properties viewProperties, NewSlogoInstanceCreator instanceCreator) {
 		this.instanceCreator = instanceCreator;
 		this.viewProperties = viewProperties;
-		
+
 		VBox vBoxLeft = new VBox(viewProperties.getDoubleProperty("padding"));
 		vBoxLeft.getChildren().add(initializeUndoButton());
 		vBoxLeft.getChildren().add(initalizeFileLoader());
 		vBoxLeft.getChildren().add(initalizeCommandFileLoader());
-		
+
 		VBox vBoxRight = new VBox(viewProperties.getDoubleProperty("padding"));
 		vBoxRight.getChildren().add(initializeAddTabButton());
 		vBoxRight.getChildren().add(initializeGetHelpButton());
 
 		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
-		hBox.getChildren().addAll(vBoxLeft,vBoxRight);
+		hBox.getChildren().addAll(vBoxLeft, vBoxRight);
 	}
-	
-	private Node initializeAddTabButton(){
+
+	private Node initializeAddTabButton() {
 		Button addTab = createButton("Add Tab", viewProperties.getDoubleProperty("help_button_width"));
 		addTab.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -59,31 +67,13 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	private Node initalizeCommandFileLoader() {
-		CommandFileUploader myUploader = new CommandFileUploader(this);
-		return myUploader.getCommandFileUploaderButton();
+		CommandFileUploader myUploader = new CommandFileUploader(this, "Command file", "data/examples/simple/");
+		return myUploader.getFileUploaderButton();
 	}
 
 	private Node initalizeFileLoader() {
-		
-//		XMLReader myReader = new XMLReader();
-//		myReader.readFile("test1.xml");
-		
-		ComboBox<String> fileLoaderComboBox = new ComboBox<String>();
-		fileLoaderComboBox.setVisibleRowCount(3);
-		fileLoaderComboBox.getItems().addAll("test.xml");
-		fileLoaderComboBox.setValue("Pick file");
-
-		fileLoaderComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue ov, String t, String t1) {
-				if (t1 != null) {
-					setChanged();
-					
-					notifyObservers();
-				}
-			}
-		});
-		return fileLoaderComboBox;
+		EnvironmentFileUploader myUploader = new EnvironmentFileUploader(this, "Settings file", "data/examples/workspace_settings/");
+		return myUploader.getFileUploaderButton();
 	}
 
 	private Node initializeUndoButton() {
@@ -104,7 +94,8 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 		helpButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				BrowserView myView = new BrowserView(new Stage(),viewProperties.getDoubleProperty("help_width"), viewProperties.getDoubleProperty("help_height"));
+				BrowserView myView = new BrowserView(new Stage(), viewProperties.getDoubleProperty("help_width"),
+						viewProperties.getDoubleProperty("help_height"));
 			}
 		});
 
@@ -121,9 +112,6 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 		return hBox;
 	}
 
-	public Image getNewImage() {
-		return newImage;
-	}
 
 	@Override
 	public void getCommandLineFromFile(String myCommand) {
@@ -131,9 +119,100 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 		newCommandString = myCommand;
 		notifyObservers();
 	}
-	
-	public String getNewCommandLineFromFile(){
+
+	public String getNewCommandLineFromFile() {
 		return newCommandString;
+	}
+
+	@Override
+	public void getLineTypeFromFile(String lineStyle) {
+		setChanged();
+		newLineStyle = lineStyle;
+		notifyObservers();
+	}
+
+	public String getNewPenType() {
+		return newLineStyle;
+	}
+
+	@Override
+	public void getPenDownFromFile(String penDown) {
+		setChanged();
+		if(penDown.equals("no")) newPenDown = false;
+		else{
+			newPenDown =true;
+		}
+		notifyObservers();
+	}
+
+	public boolean getNewPenDown() {
+		return newPenDown;
+	}
+
+	@Override
+	public void getPenColorFromFile(String penColor) {
+		setChanged();
+		newPenColor = Color.valueOf(penColor);
+		notifyObservers();
+	}
+
+	public Color getNewPenColor() {
+		return newPenColor;
+	}
+
+	@Override
+	public void getTurtleCountFromFile(String turtleCount) {
+		setChanged();
+		newTurtleCount = Integer.parseInt(turtleCount);
+		notifyObservers();
+	}
+
+	public int getNewTurtleCount() {
+		return newTurtleCount;
+	}
+
+	@Override
+	public void getLanguageFromFile(String language) {
+		setChanged();
+		newLanguage = language;
+		notifyObservers();
+	}
+
+	public String getNewLanguage() {
+		return newLanguage;
+	}
+
+	@Override
+	public void getBackgroundColorFromFile(String backgroundColor) {
+		setChanged();
+		newBackgroundColor = Color.valueOf(backgroundColor);
+		notifyObservers();
+	}
+
+	public Color getNewBackgroundColor() {
+		return newBackgroundColor;
+	}
+	
+	@Override
+	public void getImageURLFromFile(String imageURL) {
+		setChanged();
+		newImageURL = imageURL;
+		notifyObservers();
+	}
+	
+	public Image getNewImage() {
+		return new Image(newImageURL);
+	}
+
+	@Override
+	public void getPenThicknessFromFile(String penThickness) {
+		setChanged();
+		newPenThickness = Double.parseDouble(penThickness);
+		notifyObservers();
+	}
+	
+	public double getNewPenThickness(){
+		return newPenThickness;
 	}
 
 }

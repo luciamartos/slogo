@@ -78,6 +78,11 @@ public class TurtleSettingsController extends Observable {
 	private Node initializeTurtleImageSetting() {
 		ComboBox<String> shapesComboBox = new ComboBox<String>();
 		shapesComboBox.setVisibleRowCount(3);
+//		File dataDirectory = new File(IMAGE_PATH);
+//		File[] dataFiles = dataDirectory.listFiles();
+//		for (File file : dataFiles) {
+//			shapesComboBox.getItems().add(file.getName());
+//		}
 		shapesComboBox.getItems().addAll("elephant", "turtle", "pig", "frog");
 		shapesComboBox.setValue("Change Shape");
 
