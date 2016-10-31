@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Queue;
 import java.util.ResourceBundle;
@@ -27,8 +28,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private ProgramParser lang;
 	private SlogoUpdate model;
 	private Collection<SubInterpreter> listOfSubInterpreters;
+	private BoardStateUpdater boardStateUpdater;
 	private TurtleStateDataSource stateDatasource;
-	private TurtleStateUpdater stateUpdater;
+	private TurtleStateUpdater turtleStateUpdater;
 	private UserVariablesDataSource varDataSource;
 	private ErrorPresenter errorPresenter;
 	private ResourceBundle rb;
@@ -44,11 +46,12 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	/**
 	 * Overload of parseInput() method that enables a global interpreter for multiple turtles
 	 */
- 	public void parseInput(String input, TurtleStateDataSource stateDataSource, TurtleStateUpdater stateUpdater, UserVariablesDataSource varDataSource, ErrorPresenter errorPresenter) throws ClassNotFoundException, NoSuchMethodException, 
+ 	public void parseInput(String input, TurtleStateDataSource stateDataSource, TurtleStateUpdater turtleStateUpdater, BoardStateUpdater boardStateUpdater, UserVariablesDataSource varDataSource, ErrorPresenter errorPresenter) throws ClassNotFoundException, NoSuchMethodException, 
  	SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
  	InvocationTargetException{
  		this.stateDatasource = stateDataSource;
- 		this.stateUpdater = stateUpdater;
+ 		this.turtleStateUpdater = turtleStateUpdater;
+ 		this.boardStateUpdater = boardStateUpdater;
  		this.varDataSource = varDataSource;
  		this.errorPresenter = errorPresenter;
  		this.parseInput(input);
@@ -57,7 +60,14 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	public void parseInput(String input) throws ClassNotFoundException, NoSuchMethodException, 
 			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
 			InvocationTargetException{
-		model = new SlogoUpdate(stateDatasource);
+		List<Integer> listOfActiveTurtles = stateDatasource.getActiveTurtleIDs();
+		for(int turtleID: listOfActiveTurtles){
+			parseInputForActiveTurtles(input, turtleID);
+		}
+	}
+	
+	public void parseInputForActiveTurtles(String input, int turtleID) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		model = new SlogoUpdate(stateDatasource, turtleID);
 		String[] split = input.split("\\s+");
 		lang = addLanguagePatterns();	
 		listOfSubInterpreters = createListOfInterpreters();
@@ -112,12 +122,12 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		if(returnValue != erroneousReturnValue){
 			int remainingActionableIndex = hasRemainingActionable(parsed, searchStartIndex);
 			if(remainingActionableIndex < 0){
-				stateUpdater.applyChanges(model);
+				turtleStateUpdater.applyChanges(model);
 				System.out.println("Return Value: "+returnValue);
 				return returnValue;
 			}
 			else{
-				stateUpdater.applyChanges(model);
+				turtleStateUpdater.applyChanges(model);
 				System.out.println("Return Value: "+returnValue);
 				return interpretCommand(input, remainingActionableIndex);
 			}
@@ -277,7 +287,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	private Collection<SubInterpreter> createListOfInterpreters(){
 		Collection<SubInterpreter> list = new ArrayList<SubInterpreter>();
-		list.add(new TurtleCommandInterpreter(model, stateUpdater));
+		list.add(new TurtleCommandInterpreter(model, boardStateUpdater));
 		list.add(new MathInterpreter());
 		list.add(new TurtleQueryInterpreter(model));
 		list.add(new BooleanInterpreter());		
@@ -335,7 +345,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 //		System.out.println("input index: " + index + ", Parsed length: " + parsed.length);
 		
 		//TODO: Is this the best way to tell TurtleCommand or not? Is instantiating new TurtleCommandInterpreter OK?
-		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model, stateUpdater);
+		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model, boardStateUpdater);
 		if(index == parsed.length) return resIndex;
 		for(int i=index+1;i<parsed.length;i++){
 			
@@ -367,12 +377,16 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 
 	}
 	
+	public void setBoardStateUpdater(BoardStateUpdater boardStateUpdater){
+		this.boardStateUpdater = boardStateUpdater;
+	}
+	
 	public void setStateDataSource(TurtleStateDataSource stateDataSource){
 		this.stateDatasource = stateDataSource;
 	}
 	
-	public void setStateUpdater(TurtleStateUpdater stateUpdater){
-		this.stateUpdater = stateUpdater;
+	public void setTurtleStateUpdater(TurtleStateUpdater turtleStateUpdater){
+		this.turtleStateUpdater = turtleStateUpdater;
 	}
 	
 	public void setVarDataSource(UserVariablesDataSource varDataSource){

@@ -8,6 +8,7 @@ import gui.WindowViewController;
 import interpreter.MainInterpreter;
 import javafx.stage.Stage;
 import model.BoardStateController;
+import model.TurtleStatesController;
 
 /**
  * 
@@ -51,7 +52,7 @@ public class MainController implements NewSlogoInstanceCreator, SlogoCommandHand
 	private void updateInterpreter(TabViewController viewController,BoardStateController modelController){
 		interpreter.setStateDataSource(modelController);
     	interpreter.setVarDataSource(modelController);
-    	interpreter.setStateUpdater(modelController);
+    	interpreter.setTurtleStateUpdater(modelController);
     	interpreter.setErrorPresenter(viewController);
 	}
 
