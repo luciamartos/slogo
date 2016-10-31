@@ -7,10 +7,12 @@ public class MultipleTurtleInterpreter extends SubInterpreter{
 	
 	SlogoUpdate model;
 	TurtleStateDataSource stateDataSource;
+	TurtleStateUpdater turtleStateUpdater;
 	
-	MultipleTurtleInterpreter(SlogoUpdate model, TurtleStateDataSource stateDataSource){
+	MultipleTurtleInterpreter(SlogoUpdate model, TurtleStateDataSource stateDataSource, TurtleStateUpdater turtleStateUpdater){
 		this.model = model;
 		this.stateDataSource = stateDataSource;
+		this.turtleStateUpdater = turtleStateUpdater;
 	}
 
 	@Override
@@ -42,6 +44,10 @@ public class MultipleTurtleInterpreter extends SubInterpreter{
 	
 	double turtles(){
 		return stateDataSource.getActiveTurtleIDs().size();
+	}
+	
+	double tell(){
+		return 0;
 	}
 	
 	boolean isMultipleTurtleCommand(String input){
