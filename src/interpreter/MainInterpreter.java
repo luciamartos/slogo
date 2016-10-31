@@ -126,9 +126,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			String errorMessage = "Invalid argument detected: '"+input[searchStartIndex]+"' is not a valid command!";
 			System.out.println(errorMessage);
 			errorPresenter.presentError(errorMessage);
-//			System.out.println("Return Value: "+returnValue);
-//			return returnValue;
-			throw new IllegalArgumentException();
+			System.out.println("Return Value: "+returnValue);
+			return returnValue;
+//			throw new IllegalArgumentException();
 		}
 	}
 	
@@ -165,10 +165,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private double interpretControl(String[] input, String[] parsed, String keyword, int searchStartIndex) throws ClassNotFoundException, 
 	NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, 
 	IllegalArgumentException, InvocationTargetException{
-//		Class[] args = new Class[3];
-//		args[0] = input.getClass().getComponentType();
-//		args[1] = parsed.getClass().getComponentType();
-//		args[2] = Integer.TYPE;
 		
 		if(keyword.equalsIgnoreCase(rb.getString("makevar"))){
 			return handleMakeVariable(input, parsed, searchStartIndex);
@@ -199,7 +195,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			temp = listQueue.poll();
 			res = interpretCommand(temp, 0);
 		}
-		
 		return res;
 	}
 	
@@ -219,12 +214,11 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		double[] param = parseParam(input, searchStartIndex+1, 1);
 		repCount = 0;
 		double res = 0;
-		String[] temp = listQueue.peek();
+		String[] temp = listQueue.poll();
 		for(int i=0;i<param[0];i++){
 			res = interpretCommand(temp, 0);
 			repCount++;
 		}
-		listQueue.remove();
 //			currSearchIndex = searchStartIndex+2;
 		return res;
 	}
@@ -287,6 +281,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		list.add(new MathInterpreter());
 		list.add(new TurtleQueryInterpreter(model));
 		list.add(new BooleanInterpreter());		
+		list.add(new DisplayInterpreter());
 		return list;
 	}
 	
@@ -299,7 +294,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		}	
 		return false;
 	}
-	
 	
 	private String[] createParsedArray(String[] in, ProgramParser lang){
 		String[] out = new String[in.length];
@@ -326,8 +320,8 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		}
 	}
 	
-	boolean isControl(String input){
-	return input.equalsIgnoreCase(rb.getString("makevar")) || input.equalsIgnoreCase(rb.getString("repeat")) ||
+	private boolean isControl(String input){
+		return input.equalsIgnoreCase(rb.getString("makevar")) || input.equalsIgnoreCase(rb.getString("repeat")) ||
 			input.equalsIgnoreCase(rb.getString("dotimes")) || input.equalsIgnoreCase(rb.getString("for")) ||
 			input.equalsIgnoreCase(rb.getString("if")) || input.equalsIgnoreCase(rb.getString("ifelse"))|| 
 			input.equalsIgnoreCase(rb.getString("to")) ;
@@ -345,7 +339,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		if(index == parsed.length) return resIndex;
 		for(int i=index+1;i<parsed.length;i++){
 			
-			//TODO: Right now, if at any point the command includes '[', return "There are no further actionables"
+			//TODO: Right now, if at any point the command includes '[', method returns "There are no further actionables"
 			if(parsed[i].equalsIgnoreCase(rb.getString("ListStartLabel"))){
 				return resIndex;
 			}
