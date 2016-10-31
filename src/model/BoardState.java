@@ -3,7 +3,6 @@ package model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Observable;
 
 /**
  * @author Andrew Bihl
@@ -16,34 +15,38 @@ public class BoardState{
 	private int backgroundColorIndex;
 	
 	
-	public BoardState(){
+	BoardState(){
 		this.lineCoordinates= new ArrayList<PathLine>();
 		this.userDefinedVariables = new HashMap<String, String>();
 		this.colorMap = new HashMap<Integer, RGBColor>();
 		this.backgroundColorIndex = 0;
 	}
 
-	public List<PathLine> getLineCoordinates(){
+	List<PathLine> getLineCoordinates(){
 		return lineCoordinates;
 	}
 	
-	public void addLineCoordinates(PathLine line){
+	void addLineCoordinates(PathLine line){
 		lineCoordinates.add(line);
 	}
 	
-	public void addUserDefinedVariable(String varName, String userInput){
+	void addUserDefinedVariable(String varName, String userInput){
 		this.userDefinedVariables.put(varName, userInput);
 	}
 	
-	public HashMap<String, String> getUserDefinedVariables(){
+	HashMap<String, String> getUserDefinedVariables(){
 		return userDefinedVariables;
 	}
 	
-	public RGBColor getBackgroundColor(){
+	RGBColor getBackgroundColor(){
 		return colorMap.get(this.backgroundColorIndex);
 	}
 
-	public RGBColor getColorForIndex(int i){
+	void setBackgroundColorIndex(int index){
+		this.backgroundColorIndex = index;
+	}
+	
+	RGBColor getColorForIndex(int i){
 		return colorMap.get(i);
 	}
 }

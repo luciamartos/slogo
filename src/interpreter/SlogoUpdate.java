@@ -1,5 +1,6 @@
 package interpreter;
 
+import java.util.Collection;
 import java.util.HashSet;
 
 /**
@@ -13,13 +14,13 @@ public class SlogoUpdate {
 	private double angle;
 	private HashSet<Integer> turtles;
 	
-	public SlogoUpdate(TurtleStateDataSource source){
+	public SlogoUpdate(TurtleStateDataSource source, int turtleID){
 		turtles = new HashSet<Integer>();
-		angle = source.getAngle();
-		turtleShouldDraw = source.getTurtleIsDrawing();
-		turtleShouldShow = source.getTurtleIsShowing();
-		xCoordinate = source.getXCoordinate();
-		yCoordinate = source.getYCoordinate();
+		angle = source.getAngle(turtleID);
+		turtleShouldDraw = source.getTurtleIsDrawing(turtleID);
+		turtleShouldShow = source.getTurtleIsShowing(turtleID);
+		xCoordinate = source.getXCoordinate(turtleID);
+		yCoordinate = source.getYCoordinate(turtleID);
 	}
 	
 	public Boolean getTurtleShouldDraw(){
@@ -105,6 +106,10 @@ public class SlogoUpdate {
 	
 	public void putPenUp(){
 		turtleShouldDraw = false;
+	}
+	
+	public Collection<Integer> getTurtles(){
+		return this.turtles;
 	}
 	
 	/**
