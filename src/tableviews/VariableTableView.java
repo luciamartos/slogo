@@ -7,11 +7,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class VariableTableView<Variable> extends TableView<Variable> {
 
-	public VariableTableView() {
+	public VariableTableView(String title) {
 		setEditable(true);
 		managedProperty().bind(this.visibleProperty());
 
-		TableColumn<Variable, String> variables = new TableColumn<Variable, String>("Variables");
+		TableColumn<Variable, String> variables = new TableColumn<Variable, String>(title);
 		variables.setEditable(true);
 
 		TableColumn<Variable, String> variableNames = new TableColumn<Variable, String>("Name");
