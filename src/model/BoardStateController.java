@@ -12,7 +12,7 @@ import interpreter.UserVariablesDataSource;
 import javafx.scene.paint.Color;
 
 /**
- * @author Andrew Bihl
+ * @author Andrew Bihl, Eric Song
  */
 
 public class BoardStateController extends Observable implements TurtleStateDataSource, BoardStateDataSource, TurtleStateUpdater, UserVariablesDataSource {
