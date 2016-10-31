@@ -6,7 +6,6 @@ import java.util.Observer;
 import general.Properties;
 import gui.BoardStateDataSource;
 import interpreter.BoardStateUpdater;
-import interpreter.SlogoUpdate;
 import interpreter.UserVariablesDataSource;
 import javafx.scene.paint.Color;
 
@@ -35,79 +34,11 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 		maxYCoordinate = boardHeight/2;
 		minYCoordinate = -maxYCoordinate;
 	}
-
-	public void applyChanges(SlogoUpdate changes){
-		setChanged();
-		notifyObservers();
-	}
-
+	
 	public void addBoardStateListener(Observer o){
 		this.addObserver(o);
 		setChanged();
 		this.notifyObservers();
-	}
-
-	//Restrict movement to the bounds of the board.
-	private Coordinates calculateValidUpdatedCoordinates(Coordinates current, Coordinates updated, double thetaInRadians){
-		double rawHorizontalDelta = updated.x - current.x;
-		double rawVerticalDelta = updated.y - current.y;
-		double horizontalLeg = updated.x > maxXCoordinate ? maxXCoordinate - current.x : updated.x < minXCoordinate ? minXCoordinate-current.x : rawHorizontalDelta;
-		double verticalLeg = updated.y > maxYCoordinate ? maxYCoordinate - current.y : updated.y < minYCoordinate ? minYCoordinate-current.y : rawVerticalDelta;
-		
-		Double hypotenuseWithHorizontalLeg = calculateHypotenuseWithHorizontalLeg(horizontalLeg, thetaInRadians);
-		Double hypotenuseWithVerticalLeg = calculateHypotenuseWithVerticalLeg(verticalLeg, thetaInRadians);
-		if (Math.abs(hypotenuseWithHorizontalLeg) <= Math.abs(hypotenuseWithVerticalLeg) || hypotenuseWithVerticalLeg.isNaN()){
-			verticalLeg = calculateVerticalLegWithHypotenuse(hypotenuseWithHorizontalLeg, thetaInRadians);
-		}
-		else{
-			horizontalLeg = calculateHorizontalLegWithHypotenuse(hypotenuseWithVerticalLeg, thetaInRadians);
-		}
-		double newX = current.x + horizontalLeg;
-		double newY = current.y + verticalLeg;
-		return new Coordinates(newX, newY);
-	}
-	
-	private Double calculateHypotenuseWithHorizontalLeg(double legLength, double theta){
-		return legLength / Math.cos(theta);
-	}
-	
-	private Double calculateHypotenuseWithVerticalLeg(double legLength, double theta){
-		return legLength / Math.sin(theta);
-	}
-	
-	private double calculateHorizontalLegWithHypotenuse(double hypotenuseLength, double theta){
-		return Math.cos(theta) * hypotenuseLength;
-	}
-	
-	private double calculateVerticalLegWithHypotenuse(double hypotenuseLength, double theta){
-		return Math.sin(theta) * hypotenuseLength;
-	}
-/*
- * interpreter.TurtleQueryDataSource interface methods
- */
-	@Override
-	public double getXCoordinate() {
-		return 0;
-	}
-
-	@Override
-	public double getYCoordinate() {
-		return 0;
-	}
-
-	@Override
-	public double getAngle() {
-		return 0;
-	}
-
-	@Override
-	public boolean getTurtleIsShowing() {
-		return true;
-	}
-
-	@Override
-	public boolean getTurtleIsDrawing() {
-		return true;
 	}
 	
 /*
