@@ -50,9 +50,10 @@ public class MainController implements NewSlogoInstanceCreator, SlogoCommandHand
 	}
 	
 	private void updateInterpreter(TabViewController viewController,BoardStateController modelController){
-		interpreter.setStateDataSource(modelController);
+		interpreter.setStateDataSource(modelController.getTurtleStatesController());
     	interpreter.setVarDataSource(modelController);
-    	interpreter.setTurtleStateUpdater(modelController);
+    	interpreter.setTurtleStateUpdater(modelController.getTurtleStatesController());
+    	interpreter.setBoardStateUpdater(modelController);
     	interpreter.setErrorPresenter(viewController);
 	}
 
