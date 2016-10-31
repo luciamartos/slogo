@@ -31,10 +31,15 @@ public class MainController implements NewSlogoInstanceCreator, SlogoCommandHand
 	public void addSlogoInstance(){
 		TabViewController viewController = makeTabViewController("Tab "+(vcMap.keySet().size()+1));
     	BoardStateController modelController = new BoardStateController();
+    	TurtleStatesController turtleStatesController = new TurtleStatesController();
     	vcMap.put(viewController, modelController);
     	
-    	viewController.setModelController(modelController);
+    	viewController.setBoardStateDataSource(modelController);
+    	viewController.setBoardActionsHandler(modelController);
+    	viewController.setTurtleStateDataSource(turtleStatesController);
+    	viewController.setTurtleActionsHandler(turtleStatesController);
     	viewController.setCommandHandler(this);
+    	viewController.updateVariables();
     	
     	modelController.addBoardStateListener(viewController);
 		

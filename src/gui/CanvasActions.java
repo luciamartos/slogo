@@ -1,7 +1,10 @@
 package gui;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
@@ -41,20 +44,22 @@ public class CanvasActions {
 	private GraphicsContext gc;
 	private Canvas canvas;
 	private Pane pane;
-	private Color myColor;
-	private String penType;
-	private double myThickness;
-	private ImageView turtleImgView;
-	private boolean penDown;
-	private boolean showTurtle;
-	private double heading;
-	private double xLoc;
-	private double yLoc;
 	private double imageWidth;
 	private double imageHeight;
+	// private Color myColor;
+	// private String penType;
+	// private double myThickness;
+	// private ImageView turtleImgView;
+	// private boolean penDown;
+	// private boolean showTurtle;
+	// private double heading;
+	// private double xLoc;
+	// private double yLoc;
+	// private double prevTurtleImgViewX;
+	// private double prevTurtleImgViewY;
+
 	private List<PathLine> myPathLines;
-	private double prevTurtleImgViewX;
-	private double prevTurtleImgViewY;
+	private Map<Integer, ImageView> map;
 
 	public CanvasActions(double canvasWidth, double canvasHeight, double imWidth, double imHeight) {
 		initializePane(canvasWidth, canvasHeight);
@@ -64,7 +69,7 @@ public class CanvasActions {
 		pane.getChildren().addAll(canvas);
 		gc = canvas.getGraphicsContext2D(); // TODO: make a more descriptive
 											// name
-		initializeTurtle();
+		map = new HashMap<Integer, ImageView>();
 	}
 
 	public void setBackgroundColorCanvas(Color color) {
@@ -92,40 +97,32 @@ public class CanvasActions {
 		return canvas;
 	}
 
-	private void initializeTurtle() {
-		turtleImgView = new ImageView(FileChooserPath.selectImage(IMAGE_PATH + "turtle.png", imageWidth, imageHeight));
-	}
+	// public void setHeading(double degrees) {
+	// heading = degrees;
+	// }
+	//
+	// public void setXandYLoc(double xLocation, double yLocation) {
+	// xLoc = xLocation;
+	// yLoc = yLocation;
+	// }
 
-	public void changeImage(Image image, double xLoc, double yLoc) {
-		setTurtleImage(image, xLoc, yLoc);
-	}
-
-	public void setHeading(double degrees) {
-		heading = degrees;
-	}
-
-	public void setXandYLoc(double xLocation, double yLocation) {
-		xLoc = xLocation;
-		yLoc = yLocation;
-	}
-
-	public void drawPath() {
-		if (penDown) {
-			gc.setStroke(myColor);
-			gc.setLineWidth(myThickness);
-			if (penType != null) { // MAKE SURE ITS INITIALISED TO NOT NULL SO I
-									// CAN REMOVE THIS
-				handleDifferentPenTypes();
-			}
-
-			for (int i = 0; i < myPathLines.size(); i++) {
-				gc.strokeLine(myPathLines.get(i).getX1(), myPathLines.get(i).getY1(), myPathLines.get(i).getX2(),
-						myPathLines.get(i).getY2());
+	public void drawPath(Iterator<PathLine> pathLine) {
+		while (pathLine.hasNext()) {
+			PathLine currPathLine = pathLine.next();
+			gc.setStroke(currPathLine.getPenColor());
+			gc.setLineWidth(currPathLine.getPenThickness());
+			gc.strokeLine(currPathLine.getX1(), currPathLine.getY1(), currPathLine.getX2(), currPathLine.getY2());
+			if (currPathLine.getPenType() != null) { // MAKE SURE ITS
+														// INITIALISED TO NOT
+														// NULL SO I
+				// CAN REMOVE THIS
+				handleDifferentPenTypes(currPathLine.getPenType());
 			}
 		}
+
 	}
 
-	private void handleDifferentPenTypes() {
+	private void handleDifferentPenTypes(String penType) {
 		if (penType.equals("dashed")) { // THESE ARENT WORKING EXACTLY HOW THEY
 										// SHOULD
 			gc.setLineDashes(6.0f);
@@ -138,87 +135,106 @@ public class CanvasActions {
 		}
 	}
 
-	public void animatedMovementToXY() {
-		turtleImgView.setTranslateX(xLoc);
-		turtleImgView.setTranslateY(yLoc);
-		pane.getChildren().add(turtleImgView);
-		
-		if(heading!=turtleImgView.getRotate())
-			makeAnimationRotateTurtle();
-		
-		else if(myPathLines.size()!=0 && (xLoc!=prevTurtleImgViewX || yLoc!=prevTurtleImgViewY)){
-			int i =myPathLines.size()-1;
-			makeAnimationMovementTurtle(myPathLines.get(i).getX1(), myPathLines.get(i).getY1(),
-						myPathLines.get(i).getX2(), myPathLines.get(i).getY2());
-		}	
+	public void animatedMovementToXY(int id, double nextXLoc, double nextYLoc, double heading, boolean isShowing) {
+		ImageView turtleImgView = map.get(id);
+		turtleImgView.setVisible(isShowing);
+
+		double currXLoc = turtleImgView.getX();
+		double currYLoc = turtleImgView.getY();
+
+		// turtleImgView.setTranslateX(xLoc);
+		// turtleImgView.setTranslateY(yLoc);
+		// pane.getChildren().add(turtleImgView);
+
+		if (heading != turtleImgView.getRotate())
+			makeAnimationRotateTurtle(turtleImgView, heading);
+
+		makeAnimationMovementTurtle(turtleImgView, currXLoc, currYLoc, nextXLoc, nextYLoc);
+
+		// else if (myPathLines.size() != 0) {
+		// // else if(myPathLines.size()!=0 && (xLoc!=prevTurtleImgViewX ||
+		// // yLoc!=prevTurtleImgViewY)){
+		// int i = myPathLines.size() - 1;
+		// makeAnimationMovementTurtle(turtleImgView,
+		// myPathLines.get(i).getX1(), myPathLines.get(i).getY1(),
+		// myPathLines.get(i).getX2(), myPathLines.get(i).getY2());
+		// }
 	}
 
-	private void makeAnimationRotateTurtle() {
+	private void makeAnimationRotateTurtle(ImageView turtleImgView, double heading) {
 		RotateTransition rt = new RotateTransition(Duration.seconds(3), turtleImgView);
-		rt.setByAngle(heading-turtleImgView.getRotate());
+		rt.setByAngle(heading - turtleImgView.getRotate());
 		rt.play();
-		return;	
+		return;
 	}
 
-	private void makeAnimationMovementTurtle(double x1, double y1, double x2, double y2) {
+	private void makeAnimationMovementTurtle(ImageView turtleImgView, double x1, double y1, double x2, double y2) {
 		Path path = new Path();
-		path.getElements().addAll(new MoveTo(x1, y1), new LineTo(x2,y2));
+		path.getElements().addAll(new MoveTo(x1, y1), new LineTo(x2, y2));
 		PathTransition pt = new PathTransition(Duration.millis(500), path, turtleImgView);
 		pt.delayProperty();
 		pt.play();
 		return;
 	}
 
-	public void addTurtleAtXY() {
-		turtleImgView.setRotate(heading);
-		turtleImgView.setTranslateX(xLoc);
-		turtleImgView.setTranslateY(yLoc);
-		if (showTurtle) {
-			pane.getChildren().add(turtleImgView);
-		}
-	}
+	// public void addTurtleAtXY() {
+	// turtleImgView.setRotate(heading);
+	// turtleImgView.setTranslateX(xLoc);
+	// turtleImgView.setTranslateY(yLoc);
+	// if (showTurtle) {
+	// pane.getChildren().add(turtleImgView);
+	// }
+	// }
 
-	public void removeTurtle() {
-		prevTurtleImgViewX = turtleImgView.getX();
-		prevTurtleImgViewY = turtleImgView.getY();
-		pane.getChildren().remove(turtleImgView);
-	}
+	// public void removeTurtle(int id) {
+	// ImageView turtleImgView = map.get(id);
+	// pane.getChildren().remove(turtleImgView);
+	// }
 
 	// METHOD NEVER BEING CALLED RN
-	public void moveTurtle() {
-		removeTurtle();
-		addTurtleAtXY();
-	}
+	// public void moveTurtle() {
+	// removeTurtle();
+	// addTurtleAtXY();
+	// }
 
-	public void setShowTurtle(boolean isShowing) {
-		showTurtle = isShowing;
-	}
-
-	public void setPenDown(boolean penPos) {
-		penDown = penPos;
-	}
+	// public void setShowTurtle(boolean isShowing) {
+	// showTurtle = isShowing;
+	// }
+	//
+	// public void setPenDown(boolean penPos) {
+	// penDown = penPos;
+	// }
 
 	// where is the method that takes in the string?
-	public void setTurtleImage(Image image, double xLoc, double yLoc) {
-		removeTurtle();
-		turtleImgView = new ImageView(image);
-		addTurtleAtXY();
+	public void setTurtleImage(int id, Image image) {
+		ImageView turtleImgView = map.get(id);
+		turtleImgView.setImage(image);
+		//
+		// pane.getChildren().remove(turtleImgView);
+		// turtleImgView = new ImageView(image);
+		// addTurtleAtXY();
 	}
 
-	public void setPenColor(Color color) {
-		myColor = color;
+	private void initializeTurtle(int id) {
+		ImageView turtleImgView = new ImageView(
+				FileChooserPath.selectImage(IMAGE_PATH + "turtle.png", imageWidth, imageHeight));
+		map.put(id, turtleImgView);
 	}
 
-	public void setPenThickness(double thickness) {
-		myThickness = thickness;
-	}
+	// public void setPenColor(Color color) {
+	// myColor = color;
+	// }
+	//
+	// public void setPenThickness(double thickness) {
+	// myThickness = thickness;
+	// }
+	//
+	// public void setPenType(String type) {
+	// penType = type;
+	// }
 
-	public void setPenType(String type) {
-		penType = type;
-	}
-
-	public void setPathLine(List<PathLine> pathLine) {
-		myPathLines = pathLine;
-	}
+	// public void setPathLine(List<PathLine> pathLine) {
+	// myPathLines = pathLine;
+	// }
 
 }

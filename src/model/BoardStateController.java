@@ -1,9 +1,11 @@
 package model;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import general.Properties;
+import gui.BoardActionsHandler;
 import gui.BoardStateDataSource;
 import interpreter.BoardStateUpdater;
 import interpreter.UserVariablesDataSource;
@@ -13,7 +15,7 @@ import javafx.scene.paint.Color;
  * @author Andrew Bihl
  */
 
-public class BoardStateController extends Observable implements BoardStateDataSource, BoardStateUpdater, UserVariablesDataSource {
+public class BoardStateController extends Observable implements BoardStateDataSource, BoardStateUpdater, UserVariablesDataSource, BoardActionsHandler{
 	private final String VIEW_PROPERTIES_FILE_PATH = "resources.properties.View";
 	private final String BOARD_WIDTH_KEY = "canvas_width";
 	private final String BOARD_HEIGHT_KEY = "canvas_height";
@@ -46,8 +48,8 @@ public class BoardStateController extends Observable implements BoardStateDataSo
  * gui.BoardStateDataSource 
  */
 	@Override
-	public List<PathLine> getLineCoordinates() {
-		return boardState.getLineCoordinates();
+	public Iterator<PathLine> getLineCoordinates() {
+		return boardState.getLineCoordinates().iterator();
 	}
 
 	@Override
@@ -112,5 +114,22 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	public TurtleStatesController getTurtleStatesController(){
 		return this.turtleController;
 	}
-	
+
+	@Override
+	public void undo() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setBackgroundColor(String hex) {
+		// TODO Auto-generated method stub
+		Integer red = Integer.parseInt(hex.substring(0, 2), 16);
+		Integer green = Integer.parseInt(hex.substring(2, 4), 16);
+		Integer blue = Integer.parseInt(hex.substring(4, 6), 16);
+		int colorIndex = this.boardState.addColorToMap(new RGBColor(red, green, blue));
+		this.boardState.setBackgroundColorIndex(colorIndex);
+	}
+
+
 }
