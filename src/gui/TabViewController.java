@@ -345,9 +345,11 @@ public class TabViewController implements Observer, ErrorPresenter {
 			// canvasActions.setPenThickness(modelController.getPenThickness());
 			// canvasActions.setXandYLoc(currId,turtleTranslator.convertXImageCordinate(turtleStateDataSource.getXCoordinate(currId)),
 			// turtleTranslator.convertYImageCordinate(turtleStateDataSource.getYCoordinate(currId)));
-//			canvasActions
-//					.setPathLine(turtleTranslator.convertLineCordinates(boardStateDataSource.getLineCoordinates()));
-			canvasActions.animatedMovementToXY(currId,turtleStateDataSource.getXCoordinate(currId),turtleStateDataSource.getYCoordinate(currId),turtleStateDataSource.getAngle(currId),turtleStateDataSource.getTurtleIsShowing(currId));
+			// canvasActions
+			// .setPathLine(turtleTranslator.convertLineCordinates(boardStateDataSource.getLineCoordinates()));
+			canvasActions.animatedMovementToXY(currId, turtleStateDataSource.getXCoordinate(currId),
+					turtleStateDataSource.getYCoordinate(currId), turtleStateDataSource.getAngle(currId),
+					turtleStateDataSource.getTurtleIsShowing(currId));
 
 		}
 
