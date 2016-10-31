@@ -10,14 +10,10 @@ import java.util.Observable;
  */
 
 public class BoardState{
-	private double xCoordinate;
-	private double yCoordinate;
-	private double angle;
-	private double distanceMoved;
-	private boolean drawing;
-	private boolean showing;
 	private ArrayList<PathLine> lineCoordinates;
 	private HashMap<String, String> userDefinedVariables;
+	private HashMap<Integer, RGBColor> colorMap;
+	private int backgroundColorIndex;
 	
 	
 	public BoardState(){
