@@ -32,7 +32,7 @@ public class MainController implements NewSlogoInstanceCreator, SlogoCommandHand
     	BoardStateController modelController = new BoardStateController();
     	vcMap.put(viewController, modelController);
     	
-    	viewController.setModelController(modelController);
+    	viewController.setBoardStateDataSource(modelController);
     	viewController.setCommandHandler(this);
     	
     	modelController.addBoardStateListener(viewController);

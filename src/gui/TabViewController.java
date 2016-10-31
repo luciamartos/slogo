@@ -73,12 +73,14 @@ public class TabViewController implements Observer, ErrorPresenter {
 	// private PenSettingsController penSettingsController;
 	// private TurtleSettingsController turtleSettingsController;
 	private ErrorConsole errorConsole;
-	private BoardStateDataSource modelController;
+	private BoardStateDataSource boardStateDataSource;
+	private TurtleStateDataSource turtleStateDataSource;
 	private SlogoCommandHandler commandHandler;
 	private TurtleDataTranslator turtleTranslator;
 	private ListView<String> pastCommandsListView;
 	private Tab tab;
 	private NewSlogoInstanceCreator instanceCreator;
+	private int currentlySelectedID;
 
 	TableView<Variable> defaultVariableTableView;
 	TableView<Variable> userDefinedVariableTableView;
@@ -322,15 +324,15 @@ public class TabViewController implements Observer, ErrorPresenter {
 
 	public void update(BoardStateDataSource obs, Object o) {
 		canvasActions.removeTurtle();
-		canvasActions.setShowTurtle(modelController.getTurtleIsShowing());
-		canvasActions.setHeading(turtleTranslator.convertAngle(modelController.getAngle()));
-		canvasActions.setPenDown(modelController.getTurtleIsDrawing());
+		canvasActions.setShowTurtle(boardStateDataSource.getTurtleIsShowing());
+		canvasActions.setHeading(turtleTranslator.convertAngle(boardStateDataSource.getAngle()));
+		canvasActions.setPenDown(boardStateDataSource.getTurtleIsDrawing());
 		// canvasActions.setPenColor(modelController.getPenColor());
 		// canvasActions.setBackgroundColorCanvas(modelController.getBackgroundColor());
 		// canvasActions.setPenThickness(modelController.getPenThickness());
-		canvasActions.setXandYLoc(turtleTranslator.convertXImageCordinate(modelController.getXCoordinate()),
-				turtleTranslator.convertYImageCordinate(modelController.getYCoordinate()));
-		canvasActions.setPathLine(turtleTranslator.convertLineCordinates(modelController.getLineCoordinates()));
+		canvasActions.setXandYLoc(turtleTranslator.convertXImageCordinate(boardStateDataSource.getXCoordinate()),
+				turtleTranslator.convertYImageCordinate(boardStateDataSource.getYCoordinate()));
+		canvasActions.setPathLine(turtleTranslator.convertLineCordinates(boardStateDataSource.getLineCoordinates()));
 		canvasActions.animatedMovementToXY();
 		// canvasActions.addTurtleAtXY();
 		canvasActions.drawPath();
@@ -342,7 +344,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 		//TODO FIND A WAY TO REMOVE DUPLICATED CODE, they are different types :S 
 		if (obs.getNewImage() != null)
 			canvasActions.changeImage(obs.getNewImage(),
-					modelController.getXCoordinate(), modelController.getYCoordinate());
+					boardStateDataSource.getXCoordinate(), boardStateDataSource.getYCoordinate());
 		if(obs.getNewCommandLineFromFile()!=null)
 			 runCommand(obs.getNewCommandLineFromFile());
 		if(obs.getNewBackgroundColor()!=null)
@@ -359,8 +361,8 @@ public class TabViewController implements Observer, ErrorPresenter {
 
 	public void update(TurtleSettingsController obs, Object o) {
 		if (obs.getNewImage() != null)
-			canvasActions.changeImage(obs.getNewImage(), modelController.getXCoordinate(),
-					modelController.getYCoordinate());
+			canvasActions.changeImage(obs.getNewImage(), boardStateDataSource.getXCoordinate(),
+					boardStateDataSource.getYCoordinate());
 	}
 
 	public void update(WorkspaceSettingsController obs, Object o) {
@@ -380,8 +382,14 @@ public class TabViewController implements Observer, ErrorPresenter {
 	}
 	
 
-	public void setModelController(BoardStateDataSource modelController) {
-		this.modelController = modelController;
+	public void setBoardStateDataSource(BoardStateDataSource boardStateDataSource) {
+		this.boardStateDataSource = boardStateDataSource;
+		updateVariables();
+	}
+	
+	public void setTurtleStateDataSource(TurtleStateDataSource turtleStateDataSource) {
+		this.turtleStateDataSource = turtleStateDataSource;
+		currentlySelectedID = turtleStateDataSource.getIterator.get(0);
 		updateVariables();
 	}
 
@@ -416,11 +424,11 @@ public class TabViewController implements Observer, ErrorPresenter {
 	private ObservableList<Variable> createDefaultVariablesList() {
 
 		ObservableList<Variable> data = FXCollections.observableArrayList();
-		data.add(new Variable("X Coordinate", Double.toString(modelController.getXCoordinate())));
-		data.add(new Variable("Y Coordinate", Double.toString(modelController.getYCoordinate())));
-		data.add(new Variable("Angle", Double.toString(modelController.getAngle())));
-		data.add(new Variable("Turtle is Showing", Boolean.toString(modelController.getTurtleIsShowing())));
-		data.add(new Variable("Pen is Down", Boolean.toString(modelController.getTurtleIsDrawing())));
+		data.add(new Variable("X Coordinate", Double.toString(boardStateDataSource.getXCoordinate())));
+		data.add(new Variable("Y Coordinate", Double.toString(boardStateDataSource.getYCoordinate())));
+		data.add(new Variable("Angle", Double.toString(boardStateDataSource.getAngle())));
+		data.add(new Variable("Turtle is Showing", Boolean.toString(boardStateDataSource.getTurtleIsShowing())));
+		data.add(new Variable("Pen is Down", Boolean.toString(boardStateDataSource.getTurtleIsDrawing())));
 		
 		return data;
 	}
@@ -428,7 +436,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 	private ObservableList<Variable> createUserDefinedVariablesList() {
 
 		ObservableList<Variable> data = FXCollections.observableArrayList();
-		Map<String, String> map = modelController.getUserDefinedVariables();
+		Map<String, String> map = boardStateDataSource.getUserDefinedVariables();
 
 		for (String s : map.keySet()) {
 			if (s.charAt(0) == ':')
@@ -438,7 +446,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 	}
 
 	private ObservableList<Variable> createUserDefinedCommandsList() {
-		Map<String, String> map = modelController.getUserDefinedVariables();
+		Map<String, String> map = boardStateDataSource.getUserDefinedVariables();
 
 		ObservableList<Variable> data = FXCollections.observableArrayList();
 		for (String s : map.keySet()) {
