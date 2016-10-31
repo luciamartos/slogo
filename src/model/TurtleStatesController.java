@@ -34,7 +34,7 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 		turtles.put(turtles.size(), turtle);
 	}
 	
-	void addNewTurtle(int id){
+	public void addNewTurtle(int id){
 		TurtleState turtle = new TurtleState();
 		turtles.put(id, turtle);
 	}
@@ -209,5 +209,17 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 				lambda.accept(turtle);
 			}
 		}
+	}
+
+	@Override
+	public int getPenColor(int turtleID) {
+		TurtleState turtle = this.turtles.get(turtleID);
+		return turtle.getPenColorIndex();
+	}
+
+	@Override
+	public int getPenSize(int turtleID) {
+		TurtleState turtle = this.turtles.get(turtleID);
+		return turtle.getPenSize();
 	}
 }
