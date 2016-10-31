@@ -9,36 +9,21 @@ import java.util.Scanner;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 
-public class CommandFileUploader {
+public class CommandFileUploader extends FileChooser {
 
-	private ComboBox<String> fileSelect;
-	private String selectedFilename;
 	private String myCommandLine;
-	private ReadCommandFileInterface myInterface;
-	private String MY_PATH = "data/examples/loops/";
-
-	public CommandFileUploader(ReadCommandFileInterface myInterface) {
-		this.myInterface = myInterface;
-		fileSelect = new ComboBox<>();
-		fileSelect.setPrefWidth(120);
-		fileSelect.setVisibleRowCount(3);
-		fileSelect.setValue("Command file");
-		File dataDirectory = new File(MY_PATH);
-		File[] dataFiles = dataDirectory.listFiles();
-		for (File file : dataFiles) {
-			fileSelect.getItems().add(file.getName());
-		}
-		selectedFilename = null;
-		fileSelect.valueProperty().addListener((observable, oldValue, newValue) -> {
-			selectedFilename = newValue;
-			myCommandLine = "";
-			readFile();
-			System.out.println(myCommandLine);
-        });
+	//private String MY_PATH = "data/examples/simple/";	
+	public CommandFileUploader(ReadCommandFileInterface myInterface, String initVal, String filePath) {
+		super(myInterface, initVal, filePath);
+	}
+	
+	protected void executeActionsFromFile() {
+		myCommandLine = "";
+		readFile();
 	}
 
-	private void readFile() {
-		File file = new File(MY_PATH +selectedFilename);
+	protected void readFile() {
+		File file = new File(myPath +selectedFilename);
 		try {
 			Scanner sc = new Scanner(file);
 			while (sc.hasNextLine()) {
@@ -49,9 +34,5 @@ public class CommandFileUploader {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public Node getCommandFileUploaderButton() {
-		return fileSelect;
 	}
 }

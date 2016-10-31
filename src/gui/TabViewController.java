@@ -322,8 +322,22 @@ public class TabViewController implements Observer, ErrorPresenter {
 	}
 
 	public void update(GeneralSettingsController obs, Object o) {
+		//TODO FIND A WAY TO REMOVE DUPLICATED CODE, they are different types :S 
+//		if (obs.getNewImage() != null)
+//			canvasActions.changeImage(obs.getNewImage(),
+//					modelController.getXCoordinate(), modelController.getYCoordinate());
 		if(obs.getNewCommandLineFromFile()!=null)
 			 runCommand(obs.getNewCommandLineFromFile());
+		if(obs.getNewBackgroundColor()!=null)
+			canvasActions.setBackgroundColorCanvas(obs.getNewBackgroundColor());
+		if (obs.getNewLanguage() != null)
+			commandHandler.setLanguage(this,obs.getNewLanguage());
+		if (obs.getNewPenColor() != null)
+			canvasActions.setPenColor(obs.getNewPenColor());
+		if (obs.getNewPenType() != null)
+			canvasActions.setPenType(obs.getNewPenType());
+		if (obs.getNewPenThickness() != 0)
+			canvasActions.setPenThickness(obs.getNewPenThickness());
 	}
 
 	public void update(TurtleSettingsController obs, Object o) {
