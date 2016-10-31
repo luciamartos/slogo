@@ -1,14 +1,14 @@
-package interpreter;
-import java.util.List;
+package gui;
 
-/**
- * @author Andrew Bihl
- */
+import javafx.scene.paint.Color;
+
 public interface TurtleStateDataSource {
 	public double getXCoordinate(int turtleID);
 	public double getYCoordinate(int turtleID);
 	public double getAngle(int turtleID);
 	public boolean getTurtleIsShowing(int turtleID);
 	public boolean getTurtleIsDrawing(int turtleID);
-	public List<Integer> getActiveTurtleIDs();
+	public Color getPenColor(int turtleID);
+	public double getPenThickness(int turtleID);
+	public int getShape(int turtleID);
 }
