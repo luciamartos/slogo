@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 
 public abstract class FileChooser {
+
 	protected ComboBox<String> fileSelect;
 	protected String selectedFilename;
 	protected ReadCommandFileInterface myInterface;
@@ -32,10 +33,10 @@ public abstract class FileChooser {
 			selectedFilename = null;
 			fileSelect.valueProperty().addListener((observable, oldValue, newValue) -> {
 				selectedFilename = newValue;
+
 				executeActionsFromFile();
 	        });
 		}
-
 		protected abstract void executeActionsFromFile();
 		
 		public Node getFileUploaderButton() {

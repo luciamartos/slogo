@@ -60,7 +60,9 @@ public class RegexMain {
             "[",
             "]",
             "(",
-            ")"
+            ")",
+            "Repeat",
+            "If"
         };
         ProgramParser lang = new ProgramParser();
         // these are more specific, so add them first to ensure they are checked first

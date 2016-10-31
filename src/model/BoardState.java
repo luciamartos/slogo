@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * @author Andrew Bihl
+ * @author Andrew Bihl, Eric Song
  */
 
 public class BoardState{

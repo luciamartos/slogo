@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Queue;
 import java.util.ResourceBundle;
@@ -22,7 +21,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private final String NONINPUT_TITLE = "NonInputCommand";
 	private final String UNARY_TITLE = "UnaryCommand";
 	private final String BINARY_TITLE = "BinaryCommand";
-	private final double erroneousReturnValue = Double.NaN;
+	private final double erroneousReturnValue = Double.NEGATIVE_INFINITY;
 	private String[] languages = {"English", "Syntax"};  //default language is English
 	
 	private ProgramParser lang;
@@ -34,13 +33,12 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private ErrorPresenter errorPresenter;
 	private ResourceBundle rb;
 	private Queue<String[]> listQueue;
-	private int currSearchIndex;
+//	private int currSearchIndex;
 	
 	private int repCount;
 	
 	public MainInterpreter(){
 		rb = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+PROPERTIES_TITLE);
-		listQueue = new LinkedList<String[]>();
 	}
 	
 	/**
@@ -61,8 +59,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			InvocationTargetException{
 		model = new SlogoUpdate(stateDatasource);
 		String[] split = input.split("\\s+");
-		lang = new ProgramParser();
-		lang = addLanguagePatterns(lang);	
+		lang = addLanguagePatterns();	
 		listOfSubInterpreters = createListOfInterpreters();
 		interpretCommand(split, 0);   //first search(non-recursive) begins at index 0;
 	}
@@ -74,7 +71,14 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		String keyword = parsed[searchStartIndex].toLowerCase();
 
 		//scan for list first before anything else
-		searchForList(input, parsed);
+		listQueue = searchForList(input, parsed);
+//		while(!listQueue.isEmpty()){
+//			String[] temp = listQueue.poll();
+//			for(String elem: temp){
+//				System.out.print(elem + " ");
+//			}
+//			System.out.println();
+//		}
 		
 		double returnValue = erroneousReturnValue; //initialized as an erroneous number
 		double[] param = createParams(input, keyword, searchStartIndex);
@@ -82,36 +86,31 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		for(SubInterpreter elem: listOfSubInterpreters){
 			if(elem.canHandle(keyword)){	
 				returnValue = elem.handle(input, keyword, param, searchStartIndex);
-//				currSearchIndex = elem.getCurrSearchIndex();
 				if(elem.getModel() != null){
-					model = elem.getModel();    //what if on non-actionables, mode is just NULL?
+					model = elem.getModel();    //TODO: what if on non-actionables, model is just NULL?
 				}
 				break;
 			}
 		}
 		
+		System.out.println("key: " + keyword);
+		//control keywords are handled differently from other keywords
 		if(isControl(keyword)){
 			returnValue = interpretControl(input, parsed, keyword, searchStartIndex);
 		}
-		
-		//if current keyword is a variable
+		//retrieves variable
 		if(keyword.equalsIgnoreCase(rb.getString("VariableLabel"))){
-			String newKeyword = input[searchStartIndex].toLowerCase();
-			if(varDataSource.getUserDefinedVariable(newKeyword) != null){
-				returnValue = Double.parseDouble(varDataSource.getUserDefinedVariable(newKeyword));
-			}
-			else returnValue = 0;  //By definition, unassigned variables have a value of 0.
+			returnValue = handleVariable(input, searchStartIndex);
 		}	
 			
 		return getValueOfCommand(input, searchStartIndex, parsed, returnValue);
 	}
 
+
 	private double getValueOfCommand(String[] input, int searchStartIndex, String[] parsed, double returnValue) throws ClassNotFoundException, NoSuchMethodException,
 			InstantiationException, IllegalAccessException, InvocationTargetException {
-		
 		if(returnValue != erroneousReturnValue){
 			int remainingActionableIndex = hasRemainingActionable(parsed, searchStartIndex);
-			System.out.println("remainder index: " + remainingActionableIndex);
 			if(remainingActionableIndex < 0){
 				stateUpdater.applyChanges(model);
 				System.out.println("Return Value: "+returnValue);
@@ -120,9 +119,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			else{
 				stateUpdater.applyChanges(model);
 				System.out.println("Return Value: "+returnValue);
-				//TODO: Use currsearchindex or just index?
-//				currSearchIndex = remainingActionableIndex;
-				System.out.println("xxx: " + remainingActionableIndex);
 				return interpretCommand(input, remainingActionableIndex);
 			}
 		}
@@ -130,11 +126,27 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			String errorMessage = "Invalid argument detected: '"+input[searchStartIndex]+"' is not a valid command!";
 			System.out.println(errorMessage);
 			errorPresenter.presentError(errorMessage);
-			throw new IllegalArgumentException();
+			System.out.println("Return Value: "+returnValue);
+			return returnValue;
+//			throw new IllegalArgumentException();
 		}
 	}
+	
+	private double handleVariable(String[] input, int searchStartIndex) {
+		double returnValue;
+		String newKeyword = input[searchStartIndex].toLowerCase();
+		if(newKeyword.equalsIgnoreCase(rb.getString("RepCountLabel"))){
+			returnValue = repCount;
+		}
+		if(varDataSource.getUserDefinedVariable(newKeyword) != null){
+			returnValue = Double.parseDouble(varDataSource.getUserDefinedVariable(newKeyword));
+		}
+		else returnValue = 0;  //By definition, unassigned variables have a value of 0.
+		return returnValue;
+	}
 
-	private void searchForList(String[] input, String[] parsed) {
+	private Queue<String[]> searchForList(String[] input, String[] parsed) {
+		Queue<String[]> res = new LinkedList<String[]>();
 		for(int i=0;i<parsed.length;i++){
 			String keyword = parsed[i];
 			if(keyword.equalsIgnoreCase(rb.getString("ListStartLabel"))){
@@ -144,50 +156,88 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 					temp++;
 				}
 				int listEndIndex = temp;  //temp is currently at index of ']'.
-				listQueue.add(Arrays.copyOfRange(input, listStartIndex, listEndIndex));
+				res.add(Arrays.copyOfRange(input, listStartIndex, listEndIndex));
 			}
 		}	
+		return res;
 	}
 	
 	private double interpretControl(String[] input, String[] parsed, String keyword, int searchStartIndex) throws ClassNotFoundException, 
 	NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, 
 	IllegalArgumentException, InvocationTargetException{
-		double[] param;
+		
 		if(keyword.equalsIgnoreCase(rb.getString("makevar"))){
-			param = parseParam(input, searchStartIndex+2, 1);
-			currSearchIndex = searchStartIndex+2;
-			if(parsed[searchStartIndex+1].equalsIgnoreCase(rb.getString("VariableLabel"))){
-				varDataSource.addUserDefinedVariable(input[searchStartIndex+1], Double.toString(param[0]));
-				System.out.println(param[0]);
-				return param[0];
-			}
-			else{
-				String errorMessage = "Illegal Variable detected: '" + input[searchStartIndex+1] + "' is not a variable!";
-				System.out.println(errorMessage);
-				errorPresenter.presentError(errorMessage);
-				throw new IllegalArgumentException();
-			}
+			return handleMakeVariable(input, parsed, searchStartIndex);
 		}
 		else if(keyword.equalsIgnoreCase(rb.getString("repeat"))){
-			repCount = 0;
-			param = parseParam(input, searchStartIndex+1, 1);
-			double res = 0;
-			String[] temp = listQueue.peek();
-			for(String elem: temp){
-				System.out.println("ttt elem: "+elem);
-			}
-			for(int i=0;i<param[0];i++){
-				res = interpretCommand(temp, 0);
-				System.out.println("repcount: " + repCount);
-				repCount++;
-			}
-			listQueue.remove();
-			currSearchIndex = searchStartIndex+2;
-			return res;
+			return handleRepeat(input, searchStartIndex);
+		}
+		else if(keyword.equalsIgnoreCase(rb.getString("if"))){
+			return handleIf(input, searchStartIndex);
+		}
+		else if(keyword.equalsIgnoreCase(rb.getString("ifelse"))){
+			return handleElseIf(input, searchStartIndex);
 		}
 		
 		//TODO: Implement other controls other than set and repeat
 		else return 0;
+	}
+	
+	private double handleElseIf(String[] input, int searchStartIndex) throws ClassNotFoundException,
+	NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+		double[] param = parseParam(input, searchStartIndex+1, 1);
+		double res = 0;
+		String[] temp = listQueue.poll();
+		if(param[0] != 0){
+			res = interpretCommand(temp, 0);
+		}
+		else{
+			temp = listQueue.poll();
+			res = interpretCommand(temp, 0);
+		}
+		return res;
+	}
+	
+	private double handleIf(String[] input, int searchStartIndex) throws ClassNotFoundException,
+	NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+		double[] param = parseParam(input, searchStartIndex+1, 1);
+		double res = 0;
+		String[] temp = listQueue.poll();
+		if(param[0] != 0){
+			res = interpretCommand(temp, 0);
+		}
+		return res;
+	}
+
+	private double handleRepeat(String[] input, int searchStartIndex) throws ClassNotFoundException,
+			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+		double[] param = parseParam(input, searchStartIndex+1, 1);
+		repCount = 0;
+		double res = 0;
+		String[] temp = listQueue.poll();
+		for(int i=0;i<param[0];i++){
+			res = interpretCommand(temp, 0);
+			repCount++;
+		}
+//			currSearchIndex = searchStartIndex+2;
+		return res;
+	}
+
+	private double handleMakeVariable(String[] input, String[] parsed, int searchStartIndex) throws ClassNotFoundException,
+			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+		double[] param = parseParam(input, searchStartIndex+2, 1);
+//			currSearchIndex = searchStartIndex+2;
+		if(parsed[searchStartIndex+1].equalsIgnoreCase(rb.getString("VariableLabel"))){
+			varDataSource.addUserDefinedVariable(input[searchStartIndex+1], Double.toString(param[0]));
+			System.out.println(param[0]);
+			return param[0];
+		}
+		else{
+			String errorMessage = "Illegal Variable detected: '" + input[searchStartIndex+1] + "' is not a variable!";
+			System.out.println(errorMessage);
+			errorPresenter.presentError(errorMessage);
+			throw new IllegalArgumentException();
+		}
 	}
 	
 	private double[] createParams(String[] input, String keyword, int searchStartIndex) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
@@ -196,8 +246,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			param = null;
 		}
 		else if(determineNumberOfInputs(keyword, UNARY_TITLE)){
-			param = parseParam(input, searchStartIndex+1, 1);
-			
+			param = parseParam(input, searchStartIndex+1, 1);			
 		}
 		else if(determineNumberOfInputs(keyword, BINARY_TITLE)){
 			param = parseParam(input, searchStartIndex+1, 2);
@@ -232,6 +281,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		list.add(new MathInterpreter());
 		list.add(new TurtleQueryInterpreter(model));
 		list.add(new BooleanInterpreter());		
+		list.add(new DisplayInterpreter());
 		return list;
 	}
 	
@@ -245,7 +295,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		return false;
 	}
 	
-	
 	private String[] createParsedArray(String[] in, ProgramParser lang){
 		String[] out = new String[in.length];
 		for(int i=0;i<in.length;i++){
@@ -254,7 +303,8 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		return out;
 	}
 	
-	private ProgramParser addLanguagePatterns(ProgramParser lang){
+	private ProgramParser addLanguagePatterns(){
+		ProgramParser lang = new ProgramParser();
 		for(String language:languages){
 			lang.addPatterns(DEFAULT_RESOURCE_LANGUAGE+language);
 		}
@@ -270,8 +320,8 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		}
 	}
 	
-	boolean isControl(String input){
-	return input.equalsIgnoreCase(rb.getString("makevar")) || input.equalsIgnoreCase(rb.getString("repeat")) ||
+	private boolean isControl(String input){
+		return input.equalsIgnoreCase(rb.getString("makevar")) || input.equalsIgnoreCase(rb.getString("repeat")) ||
 			input.equalsIgnoreCase(rb.getString("dotimes")) || input.equalsIgnoreCase(rb.getString("for")) ||
 			input.equalsIgnoreCase(rb.getString("if")) || input.equalsIgnoreCase(rb.getString("ifelse"))|| 
 			input.equalsIgnoreCase(rb.getString("to")) ;
@@ -282,14 +332,14 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	 */
 	private int hasRemainingActionable(String[] parsed, int index){
 		int resIndex = -1;
-		System.out.println("input index: " + index + ", Parsed length: " + parsed.length);
+//		System.out.println("input index: " + index + ", Parsed length: " + parsed.length);
 		
 		//TODO: Is this the best way to tell TurtleCommand or not? Is instantiating new TurtleCommandInterpreter OK?
 		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model, stateUpdater);
 		if(index == parsed.length) return resIndex;
 		for(int i=index+1;i<parsed.length;i++){
 			
-			//TODO: Right now, if at any point the command includes '[', return "There are no further actionables"
+			//TODO: Right now, if at any point the command includes '[', method returns "There are no further actionables"
 			if(parsed[i].equalsIgnoreCase(rb.getString("ListStartLabel"))){
 				return resIndex;
 			}

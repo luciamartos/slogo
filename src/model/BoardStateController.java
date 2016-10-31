@@ -10,7 +10,7 @@ import interpreter.UserVariablesDataSource;
 import javafx.scene.paint.Color;
 
 /**
- * @author Andrew Bihl
+ * @author Andrew Bihl, Eric Song
  */
 
 public class BoardStateController extends Observable implements BoardStateDataSource, BoardStateUpdater, UserVariablesDataSource {
@@ -35,11 +35,86 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 		minYCoordinate = -maxYCoordinate;
 	}
 	
+<<<<<<< HEAD
+	public void applyChanges(SlogoUpdate changes){
+		setChanged();
+		notifyObservers();
+	}
+	
+=======
+>>>>>>> 9787258bc1dc1f68b2bca689b6a17b8ae98e3097
 	public void addBoardStateListener(Observer o){
 		this.addObserver(o);
 		setChanged();
 		this.notifyObservers();
 	}
+<<<<<<< HEAD
+
+	//Restrict movement to the bounds of the board.
+	private Coordinates calculateValidUpdatedCoordinates(Coordinates current, Coordinates updated, double thetaInRadians){
+		double rawHorizontalDelta = updated.x - current.x;
+		double rawVerticalDelta = updated.y - current.y;
+		double horizontalLeg = updated.x > maxXCoordinate ? maxXCoordinate - current.x : updated.x < minXCoordinate ? minXCoordinate-current.x : rawHorizontalDelta;
+		double verticalLeg = updated.y > maxYCoordinate ? maxYCoordinate - current.y : updated.y < minYCoordinate ? minYCoordinate-current.y : rawVerticalDelta;
+		
+		Double hypotenuseWithHorizontalLeg = calculateHypotenuseWithHorizontalLeg(horizontalLeg, thetaInRadians);
+		Double hypotenuseWithVerticalLeg = calculateHypotenuseWithVerticalLeg(verticalLeg, thetaInRadians);
+		if (Math.abs(hypotenuseWithHorizontalLeg) <= Math.abs(hypotenuseWithVerticalLeg) || hypotenuseWithVerticalLeg.isNaN()){
+			verticalLeg = calculateVerticalLegWithHypotenuse(hypotenuseWithHorizontalLeg, thetaInRadians);
+		}
+		else{
+			horizontalLeg = calculateHorizontalLegWithHypotenuse(hypotenuseWithVerticalLeg, thetaInRadians);
+		}
+		double newX = current.x + horizontalLeg;
+		double newY = current.y + verticalLeg;
+		return new Coordinates(newX, newY);
+	}
+	
+	private Double calculateHypotenuseWithHorizontalLeg(double legLength, double theta){
+		return legLength / Math.cos(theta);
+	}
+	
+	private Double calculateHypotenuseWithVerticalLeg(double legLength, double theta){
+		return legLength / Math.sin(theta);
+	}
+	
+	private double calculateHorizontalLegWithHypotenuse(double hypotenuseLength, double theta){
+		return Math.cos(theta) * hypotenuseLength;
+	}
+	
+	private double calculateVerticalLegWithHypotenuse(double hypotenuseLength, double theta){
+		return Math.sin(theta) * hypotenuseLength;
+	}
+/*
+ * interpreter.TurtleQueryDataSource interface methods
+ */
+	@Override
+	public double getXCoordinate() {
+		return 0;
+	}
+
+	@Override
+	public double getYCoordinate() {
+		return 0;
+	}
+
+	@Override
+	public double getAngle() {
+		return 0;
+	}
+
+	@Override
+	public boolean getTurtleIsShowing() {
+		return true;
+	}
+
+	@Override
+	public boolean getTurtleIsDrawing() {
+		return true;
+	}
+
+=======
+>>>>>>> 9787258bc1dc1f68b2bca689b6a17b8ae98e3097
 	
 /*
  * gui.BoardStateDataSource 
@@ -71,6 +146,30 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	public void resetBoard() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Color getPenColor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Color getBackgroundColor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double getPenThickness() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String getImage() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	double getMaxXCoordinate(){
