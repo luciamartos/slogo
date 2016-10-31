@@ -201,7 +201,8 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 	
 	public Image getNewImage() {
-		return new Image(newImageURL);
+		Image image = FileChooserPath.selectImage(newImageURL, 50, 50);
+		return image;
 	}
 
 	@Override
