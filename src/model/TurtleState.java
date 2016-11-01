@@ -17,6 +17,7 @@ public class TurtleState extends Observable {
 	private int penSize;
 	private int penType;
 	private boolean active;
+	private int id;
 
 	TurtleState(){
 		setToDefaultValues();

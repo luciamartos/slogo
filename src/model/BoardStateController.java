@@ -73,8 +73,8 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 
 	@Override
 	public void resetBoard() {
-		// TODO Auto-generated method stub
-		
+		this.boardState = new BoardState();
+		this.turtleController = new TurtleStatesController(this);
 	}
 	
 	double getMaxXCoordinate(){
