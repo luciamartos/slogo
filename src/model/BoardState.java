@@ -21,8 +21,10 @@ public class BoardState{
 		this.colors = new HashMap<Integer, RGBColor>();
 		RGBColor white = new RGBColor(255,255,255);
 		RGBColor black = new RGBColor(0,0,0);
-		this.colors.put(1, black);
+		RGBColor red = new RGBColor(255, 0, 0);
 		this.colors.put(0, white);
+		this.colors.put(1, black);
+		this.colors.put(2,red);
 		this.backgroundColorIndex = 0;
 	}
 
