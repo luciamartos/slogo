@@ -62,6 +62,7 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	@Override
 	public void addUserDefinedVariable(String varName, String userInput) {
 		boardState.addUserDefinedVariable(varName, userInput);
+		this.setChanged();
 		this.notifyObservers();
 	}
 
@@ -94,6 +95,8 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	
 	void addLine(PathLine line){
 		boardState.addLineCoordinates(line);
+		this.setChanged();
+		this.notifyObservers();
 	}
 
 	@Override
@@ -112,12 +115,14 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	@Override
 	public void undo() {
 		// TODO Auto-generated method stub
+		this.setChanged();
 		this.notifyObservers();
 	}
 
 	@Override
 	public void setBackgroundColor(int colorIndex) {
 		this.boardState.setBackgroundColorIndex(colorIndex);
+		this.setChanged();
 		this.notifyObservers();
 	}
 
@@ -125,6 +130,7 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	public void addColorToPalette(int index, int red, int green, int blue) {
 		RGBColor color = new RGBColor(red, green, blue);
 		this.boardState.addColorToMap(color, index);
+		this.setChanged();
 		this.notifyObservers();
 	}
 
