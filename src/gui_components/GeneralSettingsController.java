@@ -233,4 +233,10 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 		return newPenThickness;
 	}
 
+	@Override
+	public int getTurtleID() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

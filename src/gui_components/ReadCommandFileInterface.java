@@ -18,4 +18,6 @@ public interface ReadCommandFileInterface {
 	public void getImageURLFromFile(String imageURL);
 
 	public void getPenThicknessFromFile(int string);
+
+	public int getTurtleID();
 }
