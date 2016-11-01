@@ -9,7 +9,6 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
 
-import XMLparser.XMLReader;
 import general.Properties;
 import javafx.animation.Animation;
 import javafx.animation.PathTransition;
@@ -39,6 +38,7 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 import model.PathLine;
 import model.RGBColor;
+import model.XMLReader;
 
 public class CanvasActions {
 	private static final RGBColor COLOR_CANVAS = new RGBColor(255, 255, 255);
@@ -88,10 +88,11 @@ public class CanvasActions {
 		return canvas;
 	}
 
-	public void drawPath(Color color, int penThickness, double x1, double y1, double x2, double y2, String penType) {
+ 	public void drawPath(Color color, int penThickness, double x1, double y1, double x2, double y2, String penType) {
 		gc.setStroke(color);
 		gc.setLineWidth(penThickness);
 		gc.strokeLine(x1, y1, x2, y2);
+		gc.setFill(color);
 		handleDifferentPenTypes(penType);
 	}
 
@@ -119,7 +120,7 @@ public class CanvasActions {
 	}
 
 	private void makeAnimationRotateTurtle(ImageView turtleImgView, double heading) {
-		RotateTransition rt = new RotateTransition(Duration.seconds(3), turtleImgView);
+		RotateTransition rt = new RotateTransition(Duration.millis(300), turtleImgView);
 		rt.setByAngle(heading - turtleImgView.getRotate());
 		rt.play();
 		return;

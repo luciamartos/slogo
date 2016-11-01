@@ -366,8 +366,9 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		while (pathLine.hasNext()) {
 			count++;
 			PathLine currPathLine = pathLine.next();
-			canvasActions.drawPath(
-					Color.rgb(currPathLine.getPenColor().getRed(), currPathLine.getPenColor().getGreen(),
+			System.out.println(currPathLine.getPenColor().getRed()+" " + currPathLine.getPenColor().getGreen() + " " +
+					currPathLine.getPenColor().getBlue());
+			canvasActions.drawPath(Color.rgb(currPathLine.getPenColor().getRed(), currPathLine.getPenColor().getGreen(),
 							currPathLine.getPenColor().getBlue()),
 					currPathLine.getPenThickness(), turtleTranslator.convertXCordinate(currPathLine.getX1()), turtleTranslator.convertYCordinate(currPathLine.getY1()), turtleTranslator.convertXCordinate(currPathLine.getX2()),
 					turtleTranslator.convertYCordinate(currPathLine.getY2()),penTypeMap.get(currPathLine.getPenType()));
@@ -379,29 +380,27 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 	}
 
 	public void update(GeneralSettingsController obs, Object o) {
-		// TODO FIND A WAY TO REMOVE DUPLICATED CODE, they are different types
-		// :S
-		colorMap = boardStateDataSource.getColorMap();
-		if (obs.getNewImage() != null) {
-			Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
-			while (turtleIds.hasNext()) {
-				int currId = turtleIds.next();
-				canvasActions.setTurtleImage(currId, obs.getNewImage());
-			}
-		}
+//		colorMap = boardStateDataSource.getColorMap();
+//		if (obs.getNewImage() != null) {
+//			Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
+//			while (turtleIds.hasNext()) {
+//				int currId = turtleIds.next();
+//				canvasActions.setTurtleImage(currId, obs.getNewImage());
+//			}
+//		}
 
 		if (obs.getNewCommandLineFromFile() != null)
 			runCommand(obs.getNewCommandLineFromFile());
-		if (obs.getNewBackgroundColor() != -1)
-			canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getNewBackgroundColor()));
-		if (obs.getNewLanguage() != null)
-			commandHandler.setLanguage(this, obs.getNewLanguage());
-		if (obs.getNewPenColor() != -1)
-			turtleActionsHandler.setPenColor(obs.getNewPenColor());
-		if (obs.getNewPenType() != -1)
-			turtleActionsHandler.setPenType(obs.getNewPenType());
-		if (obs.getNewPenThickness() != -1)
-			turtleActionsHandler.setPenThickness(obs.getNewPenThickness());
+//		if (obs.getNewBackgroundColor() != -1)
+//			canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getNewBackgroundColor()));
+//		if (obs.getNewLanguage() != null)
+//			commandHandler.setLanguage(this, obs.getNewLanguage());
+//		if (obs.getNewPenColor() != -1)
+//			turtleActionsHandler.setPenColor(obs.getNewPenColor());
+//		if (obs.getNewPenType() != -1)
+//			turtleActionsHandler.setPenType(obs.getNewPenType());
+//		if (obs.getNewPenThickness() != -1)
+//			turtleActionsHandler.setPenThickness(obs.getNewPenThickness());
 	}
 
 	public void update(TurtleSettingsController obs, Object o) {
@@ -540,7 +539,6 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		this.commandHandler = commandHandler;
 	}
 
-	// WHY CANT WE JUST PASS VIEWPROPERTIES TO INTERPRETER?
 	public double getImageWidth() {
 		return viewProperties.getDoubleProperty("image_width");
 	}

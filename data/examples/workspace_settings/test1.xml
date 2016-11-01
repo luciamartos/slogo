@@ -3,16 +3,24 @@
 	<workspace>
 		<backgroundcolor>2</backgroundcolor>
 		<language>english</language>
-		<turtlecount>1</turtlecount>
+		<turtlecount>2</turtlecount>
 	</workspace>
-	<turtle id="properties">
-		<turtleID>1</turtleID>
-		<imageURL>resources/images/pig.png</imageURL>
+	<turtle>
+		<imageIndex>1</imageIndex>
 		<pencolor>1</pencolor>
 		<penthickness>3</penthickness>
 		<pendown>1</pendown>
 		<linestyle>1</linestyle>
 		<xLoc>150</xLoc>
 		<yLoc>150</yLoc>
+	</turtle>
+	<turtle>
+		<imageIndex>2</imageIndex>
+		<pencolor>2</pencolor>
+		<penthickness>3</penthickness>
+		<pendown>0</pendown>
+		<linestyle>1</linestyle>
+		<xLoc>200</xLoc>
+		<yLoc>200</yLoc>
 	</turtle>
 </scene>
