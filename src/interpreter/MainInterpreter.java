@@ -68,6 +68,11 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		 */
 //		listOfActiveTurtles = new ArrayList<Integer>();
 //		listOfActiveTurtles.add(6);
+//		listOfActiveTurtles.add(5);
+//		listOfActiveTurtles.add(4);
+//		listOfActiveTurtles.add(3);
+//		listOfActiveTurtles.add(2);
+//		
 //		turtleStateUpdater.setActiveTurtles(listOfActiveTurtles);		
 		/**
 		 * **************************************************************
@@ -94,6 +99,14 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		String keyword = parsed[searchStartIndex].toLowerCase();
 
 		listQueue = searchForList(input, parsed); //scan for list first before anything else
+		
+//		while(!listQueue.isEmpty()){
+//			String[] temp = listQueue.poll();
+//			for(String elem: temp){
+//				System.out.print(" ppp: " + elem);
+//			}
+//			System.out.println();
+//		}
 		
 		double returnValue = erroneousReturnValue; //initialized as an erroneous number
 		double[] param = createParams(input, keyword, searchStartIndex);
@@ -143,7 +156,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			IllegalAccessException, InvocationTargetException {
 		//control keywords are handled differently from other keywords
 		if(isControl(keyword)) returnValue = interpretControl(input, parsed, keyword, searchStartIndex);
-		if(isAskCommand(keyword)) returnValue = handleAsk();
+		if(isAskCommand(keyword)) returnValue = handleAsk(keyword);
 		
 		//retrieves variable
 		Set<String> userDefinedVariables = varDataSource.getUserDefinedVariables().keySet();
@@ -158,20 +171,42 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		return returnValue;
 	}
 
-	private double handleAsk() throws ClassNotFoundException, NoSuchMethodException,
+	private double handleAsk(String keyword) throws ClassNotFoundException, NoSuchMethodException,
 			InstantiationException, IllegalAccessException, InvocationTargetException {
 		double res=erroneousReturnValue; // 0 is set for initialization purposes
-		String[] turtles = listQueue.poll();
-		List<Integer> turtlesToAsk = new ArrayList<Integer>();
-		for(String turtle: turtles){
-			turtlesToAsk.add(Integer.parseInt(turtle));
+		Queue<String[]> newListQueue = new LinkedList<String[]>();
+		while(!listQueue.isEmpty()){
+			newListQueue.add(listQueue.poll());
 		}
-		String[] commands = listQueue.poll();
-		String newCommandAsString = createStringCommandFromArray(commands);
+		List<Integer> turtlesToAsk = new ArrayList<Integer>();
+		if(keyword.equalsIgnoreCase(rb.getString("ask"))) turtlesToAsk = createTurtlesForAsk(turtlesToAsk, newListQueue);
+		else turtlesToAsk = createTurtlesForAskWith(turtlesToAsk, newListQueue);
+		String[] commands = newListQueue.poll();
+		String newCommandAsString = createStringCommandFromArray(commands);	
 		for(int turtleID: turtlesToAsk){
 			res = parseInputForActiveTurtles(newCommandAsString, turtleID);
 		}
 		return res;
+	}
+
+	private List<Integer> createTurtlesForAskWith(List<Integer> turtlesToAsk, Queue<String[]> newListQueue) throws ClassNotFoundException,
+			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+		String[] command = newListQueue.poll();
+		double valueOfCommand = interpretCommand(command, 0);
+		
+		//TODO: currently just adds value of command as index of turtle
+		if(valueOfCommand!=0){
+			turtlesToAsk.add((int)valueOfCommand);
+		}
+		return turtlesToAsk;
+	}
+
+	private List<Integer> createTurtlesForAsk(List<Integer> turtlesToAsk, Queue<String[]> newListQueue) {
+		String[] turtles = newListQueue.poll();
+		for(String turtle: turtles){
+			turtlesToAsk.add(Integer.parseInt(turtle));
+		}
+		return turtlesToAsk;
 	}
 	
 	private double handleVariable(String[] input, int searchStartIndex) {
@@ -391,7 +426,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		String[] split = input.split("\\s+");
 		for(String elem: split){
 			if(elem.equalsIgnoreCase(rb.getString("ask"))){
-				System.out.println("xxxx");
 				return true;
 			}
 		}
