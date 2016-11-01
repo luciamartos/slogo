@@ -1,6 +1,6 @@
 package gui_components;
 
-import XMLparser.XMLReader;
+import model.XMLReader;
 
 public class EnvironmentFileUploader extends FileChooser {
 	private String MY_PATH = "data/examples/workspace_settings/";
