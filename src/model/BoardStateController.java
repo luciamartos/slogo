@@ -73,8 +73,10 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 
 	@Override
 	public void resetBoard() {
-		this.boardState = new BoardState();
-		this.turtleController = new TurtleStatesController(this);
+		this.boardState.setToDefaultValues();
+		this.turtleController.setDefaultTurtles();
+		setChanged();
+		notifyObservers();
 	}
 	
 	double getMaxXCoordinate(){

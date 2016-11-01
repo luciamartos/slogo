@@ -16,6 +16,10 @@ public class BoardState{
 	
 	
 	BoardState(){
+		setToDefaultValues();
+	}
+	
+	void setToDefaultValues(){
 		this.lineCoordinates= new ArrayList<PathLine>();
 		this.userDefinedVariables = new HashMap<String, String>();
 		this.colors = new HashMap<Integer, RGBColor>();
