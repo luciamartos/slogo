@@ -95,10 +95,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		
 		for(SubInterpreter elem: listOfSubInterpreters){
 			if(elem.canHandle(keyword)){	
+				if(elem.needList()) elem.setList(listQueue);
 				returnValue = elem.handle(input, keyword, param, searchStartIndex);
-				if(elem.getModel() != null){
-					model = elem.getModel();    //TODO: what if on non-actionables, model is just NULL?
-				}
+				if(elem.getModel() != null) model = elem.getModel();    //TODO: what if on non-actionables, model is just NULL?
 				break;
 			}
 		}
