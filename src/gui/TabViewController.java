@@ -344,7 +344,6 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 					turtleTranslator.convertYImageCordinate(turtleStateDataSource.getYCoordinate(currId)),
 					turtleTranslator.convertAngle(turtleStateDataSource.getAngle(currId)),
 					turtleStateDataSource.getTurtleIsShowing(currId));
-
 		}
 	}
 
@@ -369,7 +368,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 
 	public void update(BoardStateDataSource obs, Object o) {
 		colorMap = boardStateDataSource.getColorMap();
-		// canvasActions.drawPath(obs.getLineCoordinates());
+		canvasActions.drawPath(obs.getPaths());
 		canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getBackgroundColorIndex()));
 	}
 
@@ -412,8 +411,8 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 	public void update(WorkspaceSettingsController obs, Object o) {
 		colorMap = boardStateDataSource.getColorMap();
 		if (obs.getNewBackgroundColor() != null)
-			canvasActions.setBackgroundColorCanvas(new RGBColor(obs.getNewBackgroundColor().getRed(),
-					obs.getNewBackgroundColor().getGreen(), obs.getNewBackgroundColor().getBlue()));
+			canvasActions.setBackgroundColorCanvas(new RGBColor(obs.getNewBackgroundColor().getRed()*255,
+					obs.getNewBackgroundColor().getGreen()*255, obs.getNewBackgroundColor().getBlue()*255));
 		if (obs.getNewLanguage() != null)
 			commandHandler.setLanguage(this, obs.getNewLanguage());
 	}
