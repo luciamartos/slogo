@@ -68,12 +68,12 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		}
 	}
 	
-	public void parseInputForActiveTurtles(String input, int turtleID) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	public double parseInputForActiveTurtles(String input, int turtleID) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		model = new SlogoUpdate(stateDataSource, turtleID);
 		String[] split = input.split("\\s+");
 		lang = addLanguagePatterns();	
 		listOfSubInterpreters = createListOfInterpreters();
-		interpretCommand(split, 0);   //first search(non-recursive) begins at index 0;
+		return interpretCommand(split, 0);   //first search(non-recursive) begins at index 0;
 	}
 	
 	private double interpretCommand(String[] input, int searchStartIndex) throws ClassNotFoundException, NoSuchMethodException, 
@@ -139,26 +139,32 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		}
 		
 		if(isAskCommand(keyword)){
-			String[] turtles = listQueue.poll();
-			List<Integer> turtlesToAsk = new ArrayList<Integer>();
-			for(String turtle: turtles){
-//				System.out.print(Integer.parseInt(turtle) + " ");
-				turtlesToAsk.add(Integer.parseInt(turtle));
-			}
-//			System.out.println();
-			String[] commands = listQueue.poll();
-			StringBuilder newCommand = new StringBuilder();
-			for(String elem: commands){
-				newCommand.append(elem);
-				newCommand.append(" ");
-			}
-//			System.out.println(newCommand.toString());
-			for(int turtleID: turtlesToAsk){
-				parseInputForActiveTurtles(newCommand.toString(), turtleID);
-			}
-			
+			returnValue = handleAsk();
 		}
 		return returnValue;
+	}
+
+	private double handleAsk() throws ClassNotFoundException, NoSuchMethodException,
+			InstantiationException, IllegalAccessException, InvocationTargetException {
+		double res=erroneousReturnValue; // 0 is set for initialization purposes
+		String[] turtles = listQueue.poll();
+		List<Integer> turtlesToAsk = new ArrayList<Integer>();
+		for(String turtle: turtles){
+//				System.out.print(Integer.parseInt(turtle) + " ");
+			turtlesToAsk.add(Integer.parseInt(turtle));
+		}
+//			System.out.println();
+		String[] commands = listQueue.poll();
+		StringBuilder newCommand = new StringBuilder();
+		for(String elem: commands){
+			newCommand.append(elem);
+			newCommand.append(" ");
+		}
+//			System.out.println(newCommand.toString());
+		for(int turtleID: turtlesToAsk){
+			res = parseInputForActiveTurtles(newCommand.toString(), turtleID);
+		}
+		return res;
 	}
 	
 	private double handleVariable(String[] input, int searchStartIndex) {
@@ -310,7 +316,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		list.add(new MathInterpreter());
 		list.add(new TurtleQueryInterpreter(model));
 		list.add(new BooleanInterpreter());		
-		list.add(new DisplayInterpreter());
+		list.add(new DisplayInterpreter(model));
 		list.add(new MultipleTurtleInterpreter(model, stateDataSource, turtleStateUpdater, listQueue));
 		return list;
 	}

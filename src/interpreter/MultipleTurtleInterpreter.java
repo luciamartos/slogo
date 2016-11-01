@@ -8,9 +8,9 @@ import java.util.Queue;
 
 public class MultipleTurtleInterpreter extends SubInterpreter{
 	
-	SlogoUpdate model;
-	TurtleStateDataSource stateDataSource;
-	TurtleStateUpdater turtleStateUpdater;
+	private SlogoUpdate model;
+	private TurtleStateDataSource stateDataSource;
+	private TurtleStateUpdater turtleStateUpdater;
 	
 	MultipleTurtleInterpreter(SlogoUpdate model, TurtleStateDataSource stateDataSource, 
 			TurtleStateUpdater turtleStateUpdater, Queue<String[]> listQueue){

@@ -18,7 +18,7 @@ public class TestMain extends Application{
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		BoardStateController controller = new BoardStateController();
-		TurtleStatesController turtleController = new TurtleStatesController();
+		TurtleStatesController turtleController = new TurtleStatesController(controller);
 		MainInterpreter main = new MainInterpreter();
 //		TabViewController vc = new TabViewController(primaryStage);
 		
