@@ -97,7 +97,7 @@ public class CanvasActions {
 			gc.setLineWidth(currPathLine.getPenThickness());
 			gc.strokeLine(currPathLine.getX1(), currPathLine.getY1(), currPathLine.getX2(), currPathLine.getY2());
 
-			handleDifferentPenTypes(currPathLine.getPenType());
+			//handleDifferentPenTypes(currPathLine.getPenType());
 		}
 
 	}
