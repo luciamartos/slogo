@@ -1,6 +1,7 @@
 package interpreter;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class DisplayInterpreter extends SubInterpreter{
 	
@@ -14,22 +15,35 @@ public class DisplayInterpreter extends SubInterpreter{
 
 	@Override
 	boolean canHandle(String keyword) {
-		// TODO Auto-generated method stub
-		return false;
+		return isNonInputDisplayCommand(keyword) || isUnaryDisplayCommand(keyword) || 
+				isMultipleInputDisplayCommand(keyword);
 	}
 
 	@Override
 	double handle(String[] input, String keyword, double[] param, int searchStartIndex)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException,
 			SecurityException, InstantiationException {
-		// TODO Auto-generated method stub
-		return 0;
+		if(isNonInputDisplayCommand(keyword)){
+			Class[] args = createDoubleArgs(0);
+			Method method = this.getClass().getDeclaredMethod(keyword, args);
+			return (double) method.invoke(this);
+		}
+		else if(isUnaryDisplayCommand(keyword)){
+			Class[] args = createDoubleArgs(1);
+			Method method = this.getClass().getDeclaredMethod(keyword, args);
+			return (double) method.invoke(this, param[0]);
+		}
+		else if(isMultipleInputDisplayCommand(keyword)){
+			Class[] args = createDoubleArgs(3);
+			Method method = this.getClass().getDeclaredMethod(keyword, args);
+			return (double) method.invoke(this, param[0], param[1], param[2]);
+		}
+		else throw new IllegalArgumentException();
 	}
 
 	@Override
 	SlogoUpdate getModel() {
-		// TODO Auto-generated method stub
-		return null;
+		return model;
 	}
 	
 	@Override
@@ -37,7 +51,6 @@ public class DisplayInterpreter extends SubInterpreter{
 		return false;
 	}
 	
-	//TODO: Fill out meaningful code for the methods below, once the interface is complete
 	double setbackground(double index){
 		boardStateUpdater.setBackgroundColor((int)index);
 		return index;
@@ -69,6 +82,19 @@ public class DisplayInterpreter extends SubInterpreter{
 	
 	double shape(){
 		return model.getShape();
+	}
+	
+	boolean isNonInputDisplayCommand(String input){
+		return input.equalsIgnoreCase(rb.getString("pc")) ||input.equalsIgnoreCase(rb.getString("sh")) ;
+	}
+	
+	boolean isUnaryDisplayCommand(String input){
+		return input.equalsIgnoreCase(rb.getString("setbg")) ||input.equalsIgnoreCase(rb.getString("setpc")) || 
+				input.equalsIgnoreCase(rb.getString("setps")) || input.equalsIgnoreCase(rb.getString("setsh"));
+	}
+	
+	boolean isMultipleInputDisplayCommand(String input){
+		return input.equalsIgnoreCase(rb.getString("setpalette"));
 	}
 
 }
