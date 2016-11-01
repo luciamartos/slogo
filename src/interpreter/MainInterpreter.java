@@ -60,8 +60,17 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
 			InvocationTargetException{
 		List<Integer> listOfActiveTurtles = stateDataSource.getActiveTurtleIDs();
+		
+		/**
+		 * **************************************************************
+		 * These two lines must be removed; they are only here for test purposes!!!
+		 */
 		listOfActiveTurtles = new ArrayList<Integer>();
 		listOfActiveTurtles.add(0);
+		/**
+		 * **************************************************************
+		 */
+		
 		for(int turtleID: listOfActiveTurtles){
 			parseInputForActiveTurtles(input, turtleID);
 		}
@@ -136,12 +145,15 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		
 		//TODO: is the use of else-if OK? Does it not overlap with variables?
 		Set<String> userDefinedVariables = varDataSource.getUserDefinedVariables().keySet();
+		String newKeyword = input[searchStartIndex];
 		if(keyword.equalsIgnoreCase(rb.getString("VariableLabel"))) returnValue = handleVariable(input, searchStartIndex);
-		else if(userDefinedVariables.contains(keyword)){
-			String newCommand = varDataSource.getUserDefinedVariable(keyword);
+		else if(userDefinedVariables.contains(newKeyword)){
+			String newCommand = varDataSource.getUserDefinedVariable(newKeyword);
 			
-			//TODO: This won't return a double value as of now, just runs the whole parseInput
 			parseInput(newCommand);
+			//TODO: In order to set a return value, command is run on a random turtle "index 0" 
+			//		-> same return printed multiple times
+			returnValue = parseInputForActiveTurtles(newCommand, 0);
 		}
 		
 		return returnValue;
@@ -225,7 +237,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		String[] newCommand = listQueue.poll();
 		String newCommandAsString = createStringCommandFromArray(newCommand);
 		varDataSource.addUserDefinedVariable(varName, newCommandAsString);
-		System.out.println(varName + " " + newCommandAsString);
 		return 1;
 	}
 	
