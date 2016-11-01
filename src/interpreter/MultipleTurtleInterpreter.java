@@ -2,6 +2,7 @@ package interpreter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Queue;
 
 public class MultipleTurtleInterpreter extends SubInterpreter{
 	
@@ -9,7 +10,8 @@ public class MultipleTurtleInterpreter extends SubInterpreter{
 	TurtleStateDataSource stateDataSource;
 	TurtleStateUpdater turtleStateUpdater;
 	
-	MultipleTurtleInterpreter(SlogoUpdate model, TurtleStateDataSource stateDataSource, TurtleStateUpdater turtleStateUpdater){
+	MultipleTurtleInterpreter(SlogoUpdate model, TurtleStateDataSource stateDataSource, 
+			TurtleStateUpdater turtleStateUpdater, Queue<String[]> listQueue){
 		this.model = model;
 		this.stateDataSource = stateDataSource;
 		this.turtleStateUpdater = turtleStateUpdater;
