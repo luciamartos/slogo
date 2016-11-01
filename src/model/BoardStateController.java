@@ -131,5 +131,8 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 		this.boardState.addColorToMap(color, index);
 	}
 
-
+	@Override
+	public Map<Integer, RGBColor> getColorMap() {
+		return boardState.getColorMap();
+	}
 }
