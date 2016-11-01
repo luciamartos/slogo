@@ -212,20 +212,8 @@ public class CanvasActions {
 		
 	}
 
-	// public void setPenColor(Color color) {
-	// myColor = color;
-	// }
-	//
-	// public void setPenThickness(double thickness) {
-	// myThickness = thickness;
-	// }
-	//
-	// public void setPenType(String type) {
-	// penType = type;
-	// }
-
-	// public void setPathLine(List<PathLine> pathLine) {
-	// myPathLines = pathLine;
-	// }
+	public boolean turtleExists(int currId){
+		return map.get(currId)!=null;
+	}
 
 }

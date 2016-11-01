@@ -317,8 +317,8 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 					return;
 				}
 			}
-			 update = getClass().getMethod("update", obs.getClass(), Object.class);
-			 update.invoke(this, obs, o);
+			update = getClass().getMethod("update", obs.getClass(), Object.class);
+			update.invoke(this, obs, o);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -335,21 +335,10 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
 		while (turtleIds.hasNext()) {
 			int currId = turtleIds.next();
+			
+			if(!canvasActions.turtleExists(currId))
+				initializeTurtle(currId);
 
-			// TODO: make sure all ids are in map first before
-			// calling all the canvasactions methods
-
-			// canvasActions.removeTurtle();
-			// canvasActions.setShowTurtle(currId,turtleStateDataSource.getTurtleIsShowing(currId));
-			// canvasActions.setHeading(currId,turtleTranslator.convertAngle(turtleStateDataSource.getAngle(currId)));
-			// canvasActions.setPenDown(currId,turtleStateDataSource.getTurtleIsDrawing(currId));
-			// canvasActions.setPenColor(modelController.getPenColor());
-			// canvasActions.setBackgroundColorCanvas(modelController.getBackgroundColor());
-			// canvasActions.setPenThickness(modelController.getPenThickness());
-			// canvasActions.setXandYLoc(currId,turtleTranslator.convertXImageCordinate(turtleStateDataSource.getXCoordinate(currId)),
-			// turtleTranslator.convertYImageCordinate(turtleStateDataSource.getYCoordinate(currId)));
-			// canvasActions
-			// .setPathLine(turtleTranslator.convertLineCordinates(boardStateDataSource.getLineCoordinates()));
 			canvasActions.animatedMovementToXY(currId,
 					turtleTranslator.convertXImageCordinate(turtleStateDataSource.getXCoordinate(currId)),
 					turtleTranslator.convertYImageCordinate(turtleStateDataSource.getYCoordinate(currId)),
@@ -357,10 +346,26 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 					turtleStateDataSource.getTurtleIsShowing(currId));
 
 		}
+	}
 
-		// canvasActions.addTurtleAtXY();
+
+	private void initializeTurtle(int currId) {
+
+		canvasActions.initializeTurtle(currId,
+				turtleTranslator.convertXImageCordinate(turtleStateDataSource.getXCoordinate(currId)),
+				turtleTranslator.convertYImageCordinate(turtleStateDataSource.getYCoordinate(currId)),
+				turtleTranslator.convertAngle(turtleStateDataSource.getAngle(currId)),
+				turtleStateDataSource.getTurtleIsShowing(currId));
 
 	}
+	
+	
+	
+	
+	
+	
+	
+	
 
 	public void update(BoardStateDataSource obs, Object o) {
 		colorMap = boardStateDataSource.getColorMap();
@@ -441,21 +446,13 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 
 	public void setTurtleStateDataSource(TurtleStateDataSource turtleStateDataSource) {
 		this.turtleStateDataSource = turtleStateDataSource;
-		initializeTurtles(turtleStateDataSource.getTurtleIDs());
-
-		currentlySelectedID = turtleStateDataSource.getTurtleIDs().next();
-	}
-
-	private void initializeTurtles(Iterator<Integer> turtleIds) {
+		Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
 		while (turtleIds.hasNext()) {
 			int currId = turtleIds.next();
-			canvasActions.initializeTurtle(currId,
-					turtleTranslator.convertXImageCordinate(turtleStateDataSource.getXCoordinate(currId)),
-					turtleTranslator.convertYImageCordinate(turtleStateDataSource.getYCoordinate(currId)),
-					turtleTranslator.convertAngle(turtleStateDataSource.getAngle(currId)),
-					turtleStateDataSource.getTurtleIsShowing(currId));
-			
+			initializeTurtle(currId);
 		}
+
+		currentlySelectedID = turtleStateDataSource.getTurtleIDs().next();
 	}
 
 	public void setBoardActionsHandler(BoardActionsHandler boardActionsHandler) {
