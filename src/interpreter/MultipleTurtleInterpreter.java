@@ -2,13 +2,15 @@ package interpreter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 
 public class MultipleTurtleInterpreter extends SubInterpreter{
 	
-	SlogoUpdate model;
-	TurtleStateDataSource stateDataSource;
-	TurtleStateUpdater turtleStateUpdater;
+	private SlogoUpdate model;
+	private TurtleStateDataSource stateDataSource;
+	private TurtleStateUpdater turtleStateUpdater;
 	
 	MultipleTurtleInterpreter(SlogoUpdate model, TurtleStateDataSource stateDataSource, 
 			TurtleStateUpdater turtleStateUpdater, Queue<String[]> listQueue){
@@ -40,6 +42,12 @@ public class MultipleTurtleInterpreter extends SubInterpreter{
 		return null;
 	}
 	
+	@Override
+	boolean needList() {
+		return true;
+	}
+
+	
 	double id(){
 		return model.getTurtleID();
 	}
@@ -49,13 +57,20 @@ public class MultipleTurtleInterpreter extends SubInterpreter{
 	}
 	
 	double tell(){
-		return 0;
+		int turtleIndex=0;
+		String[] turtles = listQueue.poll();
+		List<Integer> listOfTurtles = new ArrayList<Integer>();
+		for(String turtle: turtles){
+			turtleIndex = Integer.parseInt(turtle);
+			listOfTurtles.add(turtleIndex);
+		}
+		turtleStateUpdater.setActiveTurtles(listOfTurtles);
+		return (double)turtleIndex;
 	}
 	
 	boolean isMultipleTurtleCommand(String input){
 		return input.equalsIgnoreCase(rb.getString("id")) || input.equalsIgnoreCase(rb.getString("turtles")) ||
-				input.equalsIgnoreCase(rb.getString("tell")) || input.equalsIgnoreCase(rb.getString("ask")) || 
-				input.equalsIgnoreCase(rb.getString("askwith")); 
+				input.equalsIgnoreCase(rb.getString("tell")); 
 	}
 
 

@@ -307,9 +307,14 @@ public class TabViewController implements Observer, ErrorPresenter {
 					update.invoke(this, obs, o);
 					return;
 				}
+				else if (c.equals(TurtleStateDataSource.class)) {
+					update = getClass().getMethod("update", TurtleStateDataSource.class, Object.class);
+					update.invoke(this, obs, o);
+					return;
+				}
 			}
-			update = getClass().getMethod("update", obs.getClass(), Object.class);
-			update.invoke(this, obs, o);
+//			update = getClass().getMethod("update", obs.getClass(), Object.class);
+//			update.invoke(this, obs, o);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -355,7 +360,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 	public void update(BoardStateDataSource obs, Object o) {
 		colorMap = boardStateDataSource.getColorMap();
 		// canvasActions.drawPath(obs.getLineCoordinates());
-		canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getBackgroundColor()));
+		canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getBackgroundColorIndex()));
 	}
 
 	public void update(GeneralSettingsController obs, Object o) {

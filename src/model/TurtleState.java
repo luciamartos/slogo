@@ -30,8 +30,9 @@ public class TurtleState extends Observable {
 		setShowing(true);
 		setPenColorIndex(0);
 		setShapeIndex(0);
+		setPenType(0);
 		setPenSize(DEFAULT_PEN_SIZE);
-		
+		setActive(true);
 	}
 	
 	void setPenType(int type){

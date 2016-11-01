@@ -12,14 +12,12 @@ public class SlogoUpdate {
 	private double xCoordinate;
 	private double yCoordinate;
 	private double angle;
-	private HashSet<Integer> turtles;
 	private int penColor;
 	private int penSize;
 	private int shape;
 	private int turtleID;
 	
 	public SlogoUpdate(TurtleStateDataSource source, int turtleID){
-		turtles = new HashSet<Integer>();
 		angle = source.getAngle(turtleID);
 		turtleShouldDraw = source.getTurtleIsDrawing(turtleID);
 		turtleShouldShow = source.getTurtleIsShowing(turtleID);
@@ -125,10 +123,6 @@ public class SlogoUpdate {
 	
 	public void putPenUp(){
 		turtleShouldDraw = false;
-	}
-	
-	public Collection<Integer> getTurtles(){
-		return this.turtles;
 	}
 	
 	public void setShape(int index){

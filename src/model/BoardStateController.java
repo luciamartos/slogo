@@ -8,7 +8,6 @@ import gui.BoardActionsHandler;
 import gui.BoardStateDataSource;
 import interpreter.BoardStateUpdater;
 import interpreter.UserVariablesDataSource;
-import javafx.scene.paint.Color;
 
 /**
  * @author Andrew Bihl
@@ -34,10 +33,11 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 		minXCoordinate = -maxXCoordinate;
 		maxYCoordinate = boardHeight/2;
 		minYCoordinate = -maxYCoordinate;
-		this.turtleController = new TurtleStatesController();
+		this.turtleController = new TurtleStatesController(this);
 	}
 	
 	public void addBoardStateListener(Observer o){
+		//TODO: Decide whether it is necessary to override this stuff.
 		this.addObserver(o);
 		setChanged();
 		this.notifyObservers();
@@ -62,6 +62,7 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	@Override
 	public void addUserDefinedVariable(String varName, String userInput) {
 		boardState.addUserDefinedVariable(varName, userInput);
+		this.notifyObservers();
 	}
 
 	@Override
@@ -96,14 +97,8 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	}
 
 	@Override
-	public Color getBackgroundColor() {
-		RGBColor rgb = boardState.getBackgroundColor();
-		return Color.color(rgb.getRed(), rgb.getGreen(), rgb.getBlue());
-	}
-
-	@Override
-	public void setBackgroundColorIndex(int i) {
-		boardState.setBackgroundColorIndex(i);
+	public int getBackgroundColorIndex() {
+		return this.boardState.getBackgroundColorIndex();
 	}
 	
 	RGBColor getColorForIndex(int i){
@@ -117,18 +112,20 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	@Override
 	public void undo() {
 		// TODO Auto-generated method stub
-		
+		this.notifyObservers();
 	}
 
 	@Override
 	public void setBackgroundColor(int colorIndex) {
 		this.boardState.setBackgroundColorIndex(colorIndex);
+		this.notifyObservers();
 	}
 
 	@Override
 	public void addColorToPalette(int index, int red, int green, int blue) {
 		RGBColor color = new RGBColor(red, green, blue);
 		this.boardState.addColorToMap(color, index);
+		this.notifyObservers();
 	}
 
 	@Override

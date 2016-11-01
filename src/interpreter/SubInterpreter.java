@@ -2,6 +2,7 @@ package interpreter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Queue;
 import java.util.ResourceBundle;
 
 public abstract class SubInterpreter {
@@ -11,10 +12,17 @@ public abstract class SubInterpreter {
 	protected ResourceBundle rb = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+PROPERTIES_TITLE);
 	
 	protected int currSearchIndex;
+	protected Queue<String[]> listQueue;
 	
 	abstract boolean canHandle(String keyword);
 	abstract double handle(String[] input, String keyword, double[] param, int searchStartIndex) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException;
 	abstract SlogoUpdate getModel();
+	abstract boolean needList();
+	
+	
+	void setList(Queue<String[]> queue){
+		this.listQueue = queue;
+	}
 	
 	
 	protected Class[] createDoubleArgs(int num){

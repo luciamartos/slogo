@@ -37,6 +37,12 @@ public class MathInterpreter extends SubInterpreter{
 		return null;
 	}
 	
+	@Override
+	boolean needList() {
+		return false;
+	}
+
+	
 	boolean isNonInputMathExpression(String input){
 		return input.equalsIgnoreCase(rb.getString("pi"));
 	}

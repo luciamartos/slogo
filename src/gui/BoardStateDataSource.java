@@ -10,7 +10,7 @@ import model.RGBColor;
  * @author Andrew Bihl
  */
 public interface BoardStateDataSource {
-	public Color getBackgroundColor();
+	public int getBackgroundColorIndex();
 	public Iterator<PathLine> getPaths();
 	public Map<String, String> getUserDefinedVariables();
 	public Map<Integer, RGBColor> getColorMap();
