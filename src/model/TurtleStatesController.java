@@ -29,37 +29,28 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 		addNewTurtle(0);
 	}
 	
-	void addNewTurtle(){
-		TurtleState turtle = new TurtleState();
-		turtles.put(turtles.size(), turtle);
-	}
-	
-	public void addNewTurtle(int id){
+	private TurtleState addNewTurtle(int id){
 		TurtleState turtle = new TurtleState();
 		turtles.put(id, turtle);
+		return turtle;
 	}
 
 	@Override
 	public void applyChanges(SlogoUpdate update) {
-		if (update.getTurtles().size() > 0){
-			for (Integer turtleID : update.getTurtles()){
-				TurtleState turtle = turtles.get(turtleID);
-				this.applyChangesToTurtle(turtle, update);
-			}
+		TurtleState turtle = this.turtles.get(update.getTurtleID());
+		if (turtle == null){
+			turtle = this.addNewTurtle(update.getTurtleID());
 		}
-		else{
-			for (TurtleState turtle : this.turtles.values()){
-				if (turtle.isActive()){
-					this.applyChangesToTurtle(turtle, update);
-				}
-			}
-		}
+		this.applyChangesToTurtle(turtle, update);
 	}
 	
 	private void applyChangesToTurtle(TurtleState turtle, SlogoUpdate changes){
 		turtle.setAngle(changes.getAngle());
 		turtle.setDrawing(changes.getTurtleShouldDraw());
 		turtle.setShowing(changes.getTurtleShouldShow());
+		turtle.setPenSize(changes.getPenSize());
+		turtle.setPenColorIndex(changes.getPenColor());
+		turtle.setShapeIndex(changes.getShape());
 		Coordinates oldCoordinates = new Coordinates(turtle.getXCoordinate(), turtle.getYCoordinate());
 		Coordinates newCoordinates = new Coordinates(changes.getXCoordinate(), changes.getYCoordinate());
 		newCoordinates = calculateValidUpdatedCoordinates(oldCoordinates, newCoordinates, Math.toRadians(changes.getAngle()));
@@ -170,7 +161,7 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 		Consumer<TurtleState> changePenColor = (TurtleState turtle) -> {
 			turtle.setPenColorIndex(color);
 		};
-		this.applyChangesToActiveTurtles(changePenColor);
+		this.applyChangeToActiveTurtles(changePenColor);
 	}
 
 	@Override
@@ -178,7 +169,7 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 		Consumer<TurtleState> changePenThickness = (TurtleState turtle) -> {
 			turtle.setPenSize(thickness);
 		};
-		this.applyChangesToActiveTurtles(changePenThickness);
+		this.applyChangeToActiveTurtles(changePenThickness);
 	}
 
 	@Override
@@ -186,7 +177,7 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 		Consumer<TurtleState> changePenType = (TurtleState turtle) -> {
 			turtle.setPenType(type);
 		};
-		this.applyChangesToActiveTurtles(changePenType);
+		this.applyChangeToActiveTurtles(changePenType);
 	}
 
 	@Override
@@ -194,7 +185,7 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 		Consumer<TurtleState> changeShape = (TurtleState turtle) -> {
 			turtle.setShapeIndex(shape);
 		};
-		this.applyChangesToActiveTurtles(changeShape);
+		this.applyChangeToActiveTurtles(changeShape);
 	}
 
 	@Override
@@ -203,7 +194,7 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 		turtle.setActive(!turtle.isActive());
 	}
 	
-	private void applyChangesToActiveTurtles(Consumer<TurtleState> lambda){
+	private void applyChangeToActiveTurtles(Consumer<TurtleState> lambda){
 		for (TurtleState turtle : this.turtles.values()){
 			if (turtle.isActive()){
 				lambda.accept(turtle);
@@ -228,7 +219,7 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 		Consumer<TurtleState> setInactive = (TurtleState turtle) -> {
 			turtle.setActive(false);
 		};
-		this.applyChangesToActiveTurtles(setInactive);
+		this.applyChangeToActiveTurtles(setInactive);
 		for (Integer i : activeTurtles){
 			TurtleState turtle = this.turtles.get(i);
 			turtle.setActive(true);

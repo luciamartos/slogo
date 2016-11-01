@@ -7,6 +7,5 @@ import java.util.List;
  */
 public interface TurtleStateUpdater {
 	public void applyChanges(SlogoUpdate update);
-	public void addNewTurtle(int index);
 	public void setActiveTurtles(List<Integer> activeTurtles);
 }
