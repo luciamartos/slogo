@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Queue;
 import java.util.ResourceBundle;
-
+import java.util.Set;
 
 import gui.SlogoCommandInterpreter;
 import regularExpression.ProgramParser;
@@ -36,8 +36,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private ErrorPresenter errorPresenter;
 	private ResourceBundle rb;
 	private Queue<String[]> listQueue;
-//	private int currSearchIndex;
-	
 	private int repCount;
 	
 	public MainInterpreter(){
@@ -131,17 +129,21 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			double returnValue) throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
 			IllegalAccessException, InvocationTargetException {
 		//control keywords are handled differently from other keywords
-		if(isControl(keyword)){
-			returnValue = interpretControl(input, parsed, keyword, searchStartIndex);
-		}
+		if(isControl(keyword)) returnValue = interpretControl(input, parsed, keyword, searchStartIndex);
+		if(isAskCommand(keyword)) returnValue = handleAsk();
+		
 		//retrieves variable
-		if(keyword.equalsIgnoreCase(rb.getString("VariableLabel"))){
-			returnValue = handleVariable(input, searchStartIndex);
+		
+		//TODO: is the use of else-if OK? Does it not overlap with variables?
+		Set<String> userDefinedVariables = varDataSource.getUserDefinedVariables().keySet();
+		if(keyword.equalsIgnoreCase(rb.getString("VariableLabel"))) returnValue = handleVariable(input, searchStartIndex);
+		else if(userDefinedVariables.contains(keyword)){
+			String newCommand = varDataSource.getUserDefinedVariable(keyword);
+			
+			//TODO: This won't return a double value as of now, just runs the whole parseInput
+			parseInput(newCommand);
 		}
 		
-		if(isAskCommand(keyword)){
-			returnValue = handleAsk();
-		}
 		return returnValue;
 	}
 
@@ -151,19 +153,12 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		String[] turtles = listQueue.poll();
 		List<Integer> turtlesToAsk = new ArrayList<Integer>();
 		for(String turtle: turtles){
-//				System.out.print(Integer.parseInt(turtle) + " ");
 			turtlesToAsk.add(Integer.parseInt(turtle));
 		}
-//			System.out.println();
 		String[] commands = listQueue.poll();
-		StringBuilder newCommand = new StringBuilder();
-		for(String elem: commands){
-			newCommand.append(elem);
-			newCommand.append(" ");
-		}
-//			System.out.println(newCommand.toString());
+		String newCommandAsString = createStringCommandFromArray(commands);
 		for(int turtleID: turtlesToAsk){
-			res = parseInputForActiveTurtles(newCommand.toString(), turtleID);
+			res = parseInputForActiveTurtles(newCommandAsString, turtleID);
 		}
 		return res;
 	}
@@ -214,9 +209,24 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		else if(keyword.equalsIgnoreCase(rb.getString("ifelse"))){
 			return handleElseIf(input, searchStartIndex);
 		}
+		else if(keyword.equalsIgnoreCase(rb.getString("to"))){
+			return handleTo();
+		}
 		
-		//TODO: Implement dotimes, for, and to
+		//TODO: Implement dotimes, for
 		else return 0;
+	}
+
+	private double handleTo() {
+		if(listQueue.size()!=2) return 0;
+		String[] varNameInArray = listQueue.poll();
+		String varName = "";
+		for(String elem: varNameInArray) varName += elem;
+		String[] newCommand = listQueue.poll();
+		String newCommandAsString = createStringCommandFromArray(newCommand);
+		varDataSource.addUserDefinedVariable(varName, newCommandAsString);
+		System.out.println(varName + " " + newCommandAsString);
+		return 1;
 	}
 	
 	private double handleElseIf(String[] input, int searchStartIndex) throws ClassNotFoundException,
@@ -255,14 +265,12 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			res = interpretCommand(temp, 0);
 			repCount++;
 		}
-//			currSearchIndex = searchStartIndex+2;
 		return res;
 	}
 
 	private double handleMakeVariable(String[] input, String[] parsed, int searchStartIndex) throws ClassNotFoundException,
 			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		double[] param = parseParam(input, searchStartIndex+2, 1);
-//			currSearchIndex = searchStartIndex+2;
 		if(parsed[searchStartIndex+1].equalsIgnoreCase(rb.getString("VariableLabel"))){
 			varDataSource.addUserDefinedVariable(input[searchStartIndex+1], Double.toString(param[0]));
 			System.out.println(param[0]);
@@ -274,6 +282,16 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			errorPresenter.presentError(errorMessage);
 			throw new IllegalArgumentException();
 		}
+	}
+	
+	private String createStringCommandFromArray(String[] commands) {
+		StringBuilder newCommand = new StringBuilder();
+		for(String elem: commands){
+			newCommand.append(elem);
+			newCommand.append(" ");
+		}
+		String newCommandAsString = newCommand.toString();
+		return newCommandAsString;
 	}
 	
 	private double[] createParams(String[] input, String keyword, int searchStartIndex) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
@@ -429,9 +447,5 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	public void setErrorPresenter(ErrorPresenter p){
 		this.errorPresenter = p;
-	}
-	
-	public int getRepCount(){
-		return repCount;
 	}
 }

@@ -11,7 +11,6 @@ public abstract class SubInterpreter {
 	private final String PROPERTIES_TITLE = "Interpreter";
 	protected ResourceBundle rb = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+PROPERTIES_TITLE);
 	
-	protected int currSearchIndex;
 	protected Queue<String[]> listQueue;
 	
 	abstract boolean canHandle(String keyword);
@@ -23,7 +22,6 @@ public abstract class SubInterpreter {
 	void setList(Queue<String[]> queue){
 		this.listQueue = queue;
 	}
-	
 	
 	protected Class[] createDoubleArgs(int num){
 		Class[] args = new Class[num];
@@ -40,10 +38,6 @@ public abstract class SubInterpreter {
 		} catch (NumberFormatException e) {
 			return false;
 		}
-	}
-	
-	public int getCurrSearchIndex(){
-		return currSearchIndex;
 	}
 	
 }
