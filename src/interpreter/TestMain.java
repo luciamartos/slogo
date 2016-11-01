@@ -7,8 +7,8 @@ import model.TurtleStatesController;
 
 public class TestMain extends Application{
 	
-	String input = "ifelse less? 1000 100 [ fd 100 ] [ fd 50 ]";
-//	String input2 = ""
+	String input2 = "ifelse less? 1000 100 [ fd 100 ] [ fd 50 ]";
+	String input = "ask [ 1 2 3 ] [ fd 50 ] ";
 	String language = "Chinese";
 	
 	public static void main(String[] args){

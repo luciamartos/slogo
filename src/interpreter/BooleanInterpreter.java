@@ -2,6 +2,7 @@ package interpreter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Queue;
 
 public class BooleanInterpreter extends SubInterpreter{
 	
@@ -29,6 +30,12 @@ public class BooleanInterpreter extends SubInterpreter{
 	SlogoUpdate getModel() {
 		return null;
 	}
+	
+	@Override
+	boolean needList() {
+		return false;
+	}
+
 	
 	boolean isUnaryBooleanExpression(String input){
 		return input.equalsIgnoreCase(rb.getString("not"));
@@ -66,6 +73,6 @@ public class BooleanInterpreter extends SubInterpreter{
 	
 	double not(double a){
 		return (a==0) ? 1 : 0;
-	}	
+	}
 		
 }

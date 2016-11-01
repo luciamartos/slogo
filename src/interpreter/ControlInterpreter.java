@@ -53,6 +53,12 @@ public class ControlInterpreter extends SubInterpreter{
 	SlogoUpdate getModel() {
 		return null;
 	}
+	
+	@Override
+	boolean needList() {
+		return false;
+	}
+
 
 	boolean isControl(String input){
 	return input.equalsIgnoreCase(rb.getString("makevar")) || input.equalsIgnoreCase(rb.getString("repeat")) ||

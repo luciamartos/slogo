@@ -20,4 +20,10 @@ public class GeneralInterpreter extends SubInterpreter{
 		return null;
 	}
 	
+	@Override
+	boolean needList() {
+		return false;
+	}
+
+	
 }

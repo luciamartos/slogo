@@ -24,6 +24,12 @@ public class DisplayInterpreter extends SubInterpreter{
 		return null;
 	}
 	
+	@Override
+	boolean needList() {
+		return false;
+	}
+
+	
 	
 	//TODO: Fill out meaningful code for the methods below, once the interface is complete
 	double setbackground(double index){

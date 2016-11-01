@@ -38,6 +38,12 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 		else throw new IllegalArgumentException();
 	}
 	
+	@Override
+	boolean needList() {
+		return false;
+	}
+
+	
 	boolean isNonInputTurtleCommand(String input){
 		return input.equalsIgnoreCase(rb.getString("pd")) || input.equalsIgnoreCase(rb.getString("pu")) ||
 				input.equalsIgnoreCase(rb.getString("st")) || input.equalsIgnoreCase(rb.getString("ht")) ||
@@ -128,5 +134,4 @@ public class TurtleCommandInterpreter extends SubInterpreter{
 	SlogoUpdate getModel(){
 		return model;
 	}
-
 }

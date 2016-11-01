@@ -31,6 +31,12 @@ public class TurtleQueryInterpreter extends SubInterpreter{
 		return null;
 	}
 	
+	@Override
+	boolean needList() {
+		return false;
+	}
+
+	
 	boolean isTurtleQuery(String input){
 		return input.equalsIgnoreCase(rb.getString("xcor")) || input.equalsIgnoreCase(rb.getString("ycor")) ||
 				input.equalsIgnoreCase(rb.getString("heading")) || input.equalsIgnoreCase(rb.getString("ispendown")) ||
