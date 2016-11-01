@@ -166,11 +166,7 @@ public class CanvasActions {
 		
 	}
 
-<<<<<<< HEAD
-=======
 	public boolean turtleExists(int currId){
 		return map.get(currId)!=null;
 	}
-
->>>>>>> cfa4ca50756ddc03fad17df547d860057d05f47e
 }
