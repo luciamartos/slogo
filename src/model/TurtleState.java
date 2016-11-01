@@ -4,6 +4,7 @@ import java.util.Observable;
 
 public class TurtleState extends Observable {
 	private final int DEFAULT_PEN_SIZE = 5;
+	private final int DEFAULT_PEN_COLOR = 1;
 	
 	private double xCoordinate;
 	private double yCoordinate;
@@ -28,7 +29,7 @@ public class TurtleState extends Observable {
 		setDistanceMoved(0.0);
 		setDrawing(true);
 		setShowing(true);
-		setPenColorIndex(0);
+		setPenColorIndex(DEFAULT_PEN_COLOR);
 		setShapeIndex(0);
 		setPenType(0);
 		setPenSize(DEFAULT_PEN_SIZE);
@@ -130,5 +131,9 @@ public class TurtleState extends Observable {
 	
 	int getPenColorIndex(){
 		return this.penColorIndex;
+	}
+	
+	int getPenType(){
+		return this.penType;
 	}
 }

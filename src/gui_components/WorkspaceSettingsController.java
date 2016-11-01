@@ -30,6 +30,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
@@ -75,7 +76,11 @@ public class WorkspaceSettingsController extends Observable {
 			@Override
 			public void handle(ActionEvent t) {
 				setChanged();
-				newBackgroundColor = backgroundColorPicker.getValue();
+				//newBackgroundColor = backgroundColorPicker.get\
+				Circle circle = new Circle();
+				circle.setFill(backgroundColorPicker.getValue());
+				newBackgroundColor = (Color) circle.getFill();
+				//System.out.println(newBackgroundColor.getBlue() + " " + newBackgroundColor.getRed() + " " + newBackgroundColor.getGreen());
 				notifyObservers();
 			}
 		});
