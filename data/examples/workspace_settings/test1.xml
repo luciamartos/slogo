@@ -1,13 +1,18 @@
 <?xml version="1.0"?>
-<workspace>
-	<type id="properties">
-		<imageURL>resources/images/pig.png</imageURL>
-		<backgroundcolor>pink</backgroundcolor>
+<scene>
+	<workspace>
+		<backgroundcolor>2</backgroundcolor>
 		<language>english</language>
 		<turtlecount>1</turtlecount>
-		<pencolor>white</pencolor>
+	</workspace>
+	<turtle id="properties">
+		<turtleID>1</turtleID>
+		<imageURL>resources/images/pig.png</imageURL>
+		<pencolor>1</pencolor>
 		<penthickness>3</penthickness>
-		<pendown>yes</pendown>
-		<linestyle>solid</linestyle>
-	</type>
-</workspace>
+		<pendown>1</pendown>
+		<linestyle>1</linestyle>
+		<xLoc>150</xLoc>
+		<yLoc>150</yLoc>
+	</turtle>
+</scene>
