@@ -27,7 +27,7 @@ public class XMLWriter {
 
 	private static final String MY_PATH = "data/examples/";
 
-	public static void main(String fileName, BoardStateDataSource boardStateDataSource, TurtleStateDataSource turtleStateDataSource) {
+	public XMLWriter(String fileName, BoardStateDataSource boardStateDataSource, TurtleStateDataSource turtleStateDataSource) {
 
 		/*
 		public double getXCoordinate();
@@ -55,13 +55,13 @@ public class XMLWriter {
 		Element workspace = doc.createElement("workspace");
 		rootElement.appendChild(workspace);
 
+//		Color colorBackground = boardStateDataSource.getBackgroundColorIndex(); 
+//		String colorBackgroundString = String.format( "#%02X%02X%02X",
+//	            (int)( colorBackground.getRed() * 255 ),
+//	            (int)( colorBackground.getGreen() * 255 ),
+//	            (int)( colorBackground.getBlue() * 255 ) );
 		Element backgroundcolor = doc.createElement("backgroundcolor");
-		Color colorBackground = boardStateDataSource.getBackgroundColor(); 
-		String colorBackgroundString = String.format( "#%02X%02X%02X",
-	            (int)( colorBackground.getRed() * 255 ),
-	            (int)( colorBackground.getGreen() * 255 ),
-	            (int)( colorBackground.getBlue() * 255 ) );
-		backgroundcolor.appendChild(doc.createTextNode(colorBackgroundString));
+		backgroundcolor.appendChild(doc.createTextNode(Integer.toString(boardStateDataSource.getBackgroundColorIndex())));
 		workspace.appendChild(backgroundcolor);
 
 		Element language = doc.createElement("language");

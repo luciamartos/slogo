@@ -31,16 +31,18 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	private int newTurtleCount;
 	private int newPenColor;
 	private boolean newPenDown;
-	private String newLineStyle;
+	private int newLineStyle;
 	private int newPenThickness;
+	private SaveWorkspaceInterface myInterface;
 	
 	private Image newImage;
 	private String newCommandString;
 	private NewSlogoInstanceCreator instanceCreator;
 
-	public GeneralSettingsController(Properties viewProperties, NewSlogoInstanceCreator instanceCreator) {
+	public GeneralSettingsController(Properties viewProperties, NewSlogoInstanceCreator instanceCreator, SaveWorkspaceInterface myInterface) {
 		this.instanceCreator = instanceCreator;
 		this.viewProperties = viewProperties;
+		this.myInterface = myInterface;
 
 		newPenThickness = -1;
 		newBackgroundColor = -1;
@@ -53,22 +55,21 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 		VBox vBoxRight = new VBox(viewProperties.getDoubleProperty("padding"));
 		vBoxRight.getChildren().add(initializeAddTabButton());
 		vBoxRight.getChildren().add(initializeGetHelpButton());
-		vBoxRight.getChildren().add(initializeLoadWorskpaceButton());
+		vBoxRight.getChildren().add(initializeSaveWorskpaceButton());
 
 		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
 		hBox.getChildren().addAll(vBoxLeft, vBoxRight);
 	}
 
-	private Node initializeLoadWorskpaceButton() {
-		Button loadWorkspace = createButton("Load workspace", viewProperties.getDoubleProperty("load_worskpace_button_width"));
-		loadWorkspace.setOnAction(new EventHandler<ActionEvent>() {
+	private Node initializeSaveWorskpaceButton() {
+		Button saveWorkspace = createButton("Load workspace", viewProperties.getDoubleProperty("load_worskpace_button_width"));
+		saveWorkspace.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				
-				XMLWriter myWriter = new XMLWriter("luciaTest", boardStateDataSource, turtleStateDataSource);
+				myInterface.saveWorkspace();
 			}
 		});
-		return loadWorkspace;
+		return saveWorkspace;
 	}
 
 	private Node initializeAddTabButton() {
@@ -141,13 +142,13 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	@Override
-	public void getLineTypeFromFile(String lineStyle) {
+	public void getLineTypeFromFile(int lineStyle) {
 		setChanged();
 		newLineStyle = lineStyle;
 		notifyObservers();
 	}
 
-	public String getNewPenType() {
+	public int getNewPenType() {
 		return newLineStyle;
 	}
 

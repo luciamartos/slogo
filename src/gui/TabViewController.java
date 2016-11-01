@@ -23,6 +23,7 @@ import gui_components.ErrorConsole;
 import gui_components.GeneralSettingsController;
 import gui_components.InputPanel;
 import gui_components.PenSettingsController;
+import gui_components.SaveWorkspaceInterface;
 import gui_components.SettingsController;
 import gui_components.TitleBox;
 import gui_components.TurtleSettingsController;
@@ -52,7 +53,7 @@ import tableviews.VariableTableView;
  * 
  * @author LuciaMartos, Eric Song
  */
-public class TabViewController implements Observer, ErrorPresenter {
+public class TabViewController implements Observer, ErrorPresenter, SaveWorkspaceInterface {
 	private Properties viewProperties;
 
 	private static final double HIDE_SHOW_BUTTON_WIDTH = 140;
@@ -79,7 +80,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 	private NewSlogoInstanceCreator instanceCreator;
 	private int currentlySelectedID;
 	private Map<Integer, RGBColor> colorMap;
-	private List<String> penTypeList;
+	private Map<Integer, String> penTypeMap;
 
 	TableView<Variable> defaultVariableTableView;
 	TableView<Variable> userDefinedVariableTableView;
@@ -90,7 +91,11 @@ public class TabViewController implements Observer, ErrorPresenter {
 			NewSlogoInstanceCreator instanceCreator) {
 		this.instanceCreator = instanceCreator;
 		this.viewProperties = viewProperties;
-		penTypeList = new ArrayList<String>(Arrays.asList(viewProperties.getStringProperty("pen_type").split(" ")));
+		String[] types = viewProperties.getStringProperty("pen_type").split(" ");
+		penTypeMap = new HashMap<Integer,String>();
+		for(int i = 1; i<=types.length;i++){
+			penTypeMap.put(i, types[i-1]);
+		}
 		setupTab(tabTitle);
 		tabPane.getTabs().add(tab);
 		turtleTranslator = new TurtleDataTranslator(viewProperties.getDoubleProperty("canvas_width"),
@@ -195,7 +200,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 	}
 
 	private Node initializeSettingsController() {
-		settingsController = new SettingsController(viewProperties, instanceCreator);
+		settingsController = new SettingsController(viewProperties, instanceCreator, this);
 		settingsController.addObserver(this);
 		settingsController.getPenSettingsController().addObserver(this);
 		settingsController.getWorkspaceSettingsController().addObserver(this);
@@ -356,7 +361,6 @@ public class TabViewController implements Observer, ErrorPresenter {
 
 	}
 
-	// TODO:
 	public void update(BoardStateDataSource obs, Object o) {
 		colorMap = boardStateDataSource.getColorMap();
 		// canvasActions.drawPath(obs.getLineCoordinates());
@@ -383,7 +387,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 			commandHandler.setLanguage(this, obs.getNewLanguage());
 		if (obs.getNewPenColor() != -1)
 			turtleActionsHandler.setPenColor(obs.getNewPenColor());
-		if (obs.getNewPenType() != null)
+		if (obs.getNewPenType() != -1)
 			turtleActionsHandler.setPenType(obs.getNewPenType());
 		if (obs.getNewPenThickness() != -1)
 			turtleActionsHandler.setPenThickness(obs.getNewPenThickness());
@@ -417,8 +421,15 @@ public class TabViewController implements Observer, ErrorPresenter {
 				}
 			}
 		}
-		if (obs.getNewPenType() != null && penTypeList.contains(obs.getNewPenType())) 
-				turtleActionsHandler.setPenType(obs.getNewPenType());
+		
+		if (obs.getNewPenType() != null && penTypeMap.containsKey(obs.getNewPenType())) {
+			for(Integer myElem : penTypeMap.keySet()){
+				if(penTypeMap.get(myElem).equals(obs.getNewPenType())){
+					turtleActionsHandler.setPenType(myElem);
+					break;
+				}
+			}
+		}
 		if (obs.getNewPenThickness() != 0)
 			turtleActionsHandler.setPenThickness(obs.getNewPenThickness());
 	}
@@ -519,5 +530,11 @@ public class TabViewController implements Observer, ErrorPresenter {
 
 	public double getImageHeight() {
 		return viewProperties.getDoubleProperty("image_height");
+	}
+
+	@Override
+	public void saveWorkspace() {
+		XMLWriter myWriter = new XMLWriter("luciaTest", boardStateDataSource, turtleStateDataSource);
+	
 	}
 }

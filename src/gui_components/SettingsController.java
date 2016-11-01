@@ -36,10 +36,12 @@ public class SettingsController extends Observable {
 	private Properties viewProperties;
 	private HBox hBox;
 	private NewSlogoInstanceCreator instanceCreator;
+	private SaveWorkspaceInterface myInterface;
 
-	public SettingsController(Properties viewProperties, NewSlogoInstanceCreator instanceCreator) {
+	public SettingsController(Properties viewProperties, NewSlogoInstanceCreator instanceCreator, SaveWorkspaceInterface myInterface) {
 		this.instanceCreator = instanceCreator;
 		this.viewProperties = viewProperties;
+		this.myInterface = myInterface;
 		initializeSettingsControllers();
 		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
 		hBox.getChildren().add(penSettingsController.getNode());
@@ -52,7 +54,7 @@ public class SettingsController extends Observable {
 		 penSettingsController = new PenSettingsController(viewProperties);
 		 turtleSettingsController = new TurtleSettingsController(viewProperties);
 		 workspaceSettingsController = new WorkspaceSettingsController(viewProperties);
-		 generalSettingsController = new GeneralSettingsController(viewProperties,instanceCreator);
+		 generalSettingsController = new GeneralSettingsController(viewProperties,instanceCreator, myInterface);
 	}
 	
 	public PenSettingsController getPenSettingsController(){

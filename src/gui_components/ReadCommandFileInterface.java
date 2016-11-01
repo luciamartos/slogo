@@ -3,7 +3,7 @@ package gui_components;
 public interface ReadCommandFileInterface {
 	public void getCommandLineFromFile(String myCommand);
 
-	public void getLineTypeFromFile(String string);
+	public void getLineTypeFromFile(int type);
 
 	public void getPenDownFromFile(String penDown);
 
