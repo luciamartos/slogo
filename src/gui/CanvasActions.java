@@ -48,17 +48,6 @@ public class CanvasActions {
 	private Pane pane;
 	private double imageWidth;
 	private double imageHeight;
-	// private Color myColor;
-	// private String penType;
-	// private double myThickness;
-	// private ImageView turtleImgView;
-	// private boolean penDown;
-	// private boolean showTurtle;
-	// private double heading;
-	// private double xLoc;
-	// private double yLoc;
-	// private double prevTurtleImgViewX;
-	// private double prevTurtleImgViewY;
 
 	private List<PathLine> myPathLines;
 	private Map<Integer, ImageView> map;
@@ -100,15 +89,6 @@ public class CanvasActions {
 		return canvas;
 	}
 
-	// public void setHeading(double degrees) {
-	// heading = degrees;
-	// }
-	//
-	// public void setXandYLoc(double xLocation, double yLocation) {
-	// xLoc = xLocation;
-	// yLoc = yLocation;
-	// }
-
 	public void drawPath(Iterator<PathLine> pathLine) {
 		while (pathLine.hasNext()) {
 			PathLine currPathLine = pathLine.next();
@@ -142,6 +122,8 @@ public class CanvasActions {
 			makeAnimationRotateTurtle(turtleImgView, heading);
 
 		makeAnimationMovementTurtle(id, turtleImgView, nextXLoc, nextYLoc);
+		
+		
 
 	}
 
@@ -161,34 +143,6 @@ public class CanvasActions {
 		map.put(id,	turtleImgView);
 		return;
 	}
-
-	// public void addTurtleAtXY() {
-	// turtleImgView.setRotate(heading);
-	// turtleImgView.setTranslateX(xLoc);
-	// turtleImgView.setTranslateY(yLoc);
-	// if (showTurtle) {
-	// pane.getChildren().add(turtleImgView);
-	// }
-	// }
-
-	// public void removeTurtle(int id) {
-	// ImageView turtleImgView = map.get(id);
-	// pane.getChildren().remove(turtleImgView);
-	// }
-
-	// METHOD NEVER BEING CALLED RN
-	// public void moveTurtle() {
-	// removeTurtle();
-	// addTurtleAtXY();
-	// }
-
-	// public void setShowTurtle(boolean isShowing) {
-	// showTurtle = isShowing;
-	// }
-	//
-	// public void setPenDown(boolean penPos) {
-	// penDown = penPos;
-	// }
 
 	// where is the method that takes in the string?
 	public void setTurtleImage(int id, Image image) {
@@ -211,21 +165,5 @@ public class CanvasActions {
 		pane.getChildren().add(turtleImgView);
 		
 	}
-
-	// public void setPenColor(Color color) {
-	// myColor = color;
-	// }
-	//
-	// public void setPenThickness(double thickness) {
-	// myThickness = thickness;
-	// }
-	//
-	// public void setPenType(String type) {
-	// penType = type;
-	// }
-
-	// public void setPathLine(List<PathLine> pathLine) {
-	// myPathLines = pathLine;
-	// }
 
 }
