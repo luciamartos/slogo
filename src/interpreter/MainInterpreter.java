@@ -37,6 +37,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private ResourceBundle rb;
 	private Queue<String[]> listQueue;
 	private int repCount;
+	private double singleRetVal;
 	
 	public MainInterpreter(){
 		rb = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+PROPERTIES_TITLE);
@@ -63,7 +64,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		
 		/**
 		 * **************************************************************
-		 * These two lines must be removed; they are only here for test purposes!!!
+		 * These lines must be removed on develop/master branch; they are only here for test purposes in "ray" branch!!!
 		 */
 //		listOfActiveTurtles = new ArrayList<Integer>();
 //		listOfActiveTurtles.add(6);
@@ -71,9 +72,10 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		/**
 		 * **************************************************************
 		 */
-		
+		boolean commandContainsAsk = containsAsk(input);
 		for(int turtleID: listOfActiveTurtles){
 			parseInputForActiveTurtles(input, turtleID);
+			if(commandContainsAsk) break;
 		}
 	}
 	
@@ -91,8 +93,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		String[] parsed = createParsedArray(input, lang);
 		String keyword = parsed[searchStartIndex].toLowerCase();
 
-		//scan for list first before anything else
-		listQueue = searchForList(input, parsed);
+		listQueue = searchForList(input, parsed); //scan for list first before anything else
 		
 		double returnValue = erroneousReturnValue; //initialized as an erroneous number
 		double[] param = createParams(input, keyword, searchStartIndex);
@@ -116,11 +117,13 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			if(remainingActionableIndex < 0){
 				turtleStateUpdater.applyChanges(model);
 				System.out.println("Return Value: "+returnValue);
+				singleRetVal = returnValue;
 				return returnValue;
 			}
 			else{
 				turtleStateUpdater.applyChanges(model);
 				System.out.println("Return Value: "+returnValue);
+				singleRetVal = returnValue;
 				return interpretCommand(input, remainingActionableIndex);
 			}
 		}
@@ -143,18 +146,13 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		if(isAskCommand(keyword)) returnValue = handleAsk();
 		
 		//retrieves variable
-		
-		//TODO: is the use of else-if OK? Does it not overlap with variables?
 		Set<String> userDefinedVariables = varDataSource.getUserDefinedVariables().keySet();
 		String newKeyword = input[searchStartIndex];
 		if(keyword.equalsIgnoreCase(rb.getString("VariableLabel"))) returnValue = handleVariable(input, searchStartIndex);
 		else if(userDefinedVariables.contains(newKeyword)){
-			String newCommand = varDataSource.getUserDefinedVariable(newKeyword);
-			
+			String newCommand = varDataSource.getUserDefinedVariable(newKeyword);		
 			parseInput(newCommand);
-			//TODO: In order to set a return value, command is run on a random turtle "index 0" 
-			//		-> same command is run multiple times
-			returnValue = parseInputForActiveTurtles(newCommand, 0);
+			returnValue = singleRetVal;
 		}
 		
 		return returnValue;
@@ -387,6 +385,17 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		} catch (NumberFormatException e) {
 			return false;
 		}
+	}
+	
+	private boolean containsAsk(String input){
+		String[] split = input.split("\\s+");
+		for(String elem: split){
+			if(elem.equalsIgnoreCase(rb.getString("ask"))){
+				System.out.println("xxxx");
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private boolean isControl(String input){
