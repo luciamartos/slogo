@@ -64,13 +64,13 @@ public class MultipleTurtleInterpreter extends SubInterpreter{
 			turtleIndex = Integer.parseInt(turtle);
 			listOfTurtles.add(turtleIndex);
 		}
+		turtleStateUpdater.setActiveTurtles(listOfTurtles);
 		return (double)turtleIndex;
 	}
 	
 	boolean isMultipleTurtleCommand(String input){
 		return input.equalsIgnoreCase(rb.getString("id")) || input.equalsIgnoreCase(rb.getString("turtles")) ||
-				input.equalsIgnoreCase(rb.getString("tell")) || input.equalsIgnoreCase(rb.getString("ask")) || 
-				input.equalsIgnoreCase(rb.getString("askwith")); 
+				input.equalsIgnoreCase(rb.getString("tell")); 
 	}
 
 
