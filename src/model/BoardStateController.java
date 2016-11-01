@@ -47,7 +47,7 @@ public class BoardStateController extends Observable implements BoardStateDataSo
  * gui.BoardStateDataSource 
  */
 	@Override
-	public Iterator<PathLine> getLineCoordinates() {
+	public Iterator<PathLine> getPaths() {
 		return boardState.getLineCoordinates().iterator();
 	}
 

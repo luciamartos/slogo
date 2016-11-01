@@ -10,13 +10,15 @@ public class PathLine {
 	private RGBColor penColor;
 	private double penThickness;
 	private String penType;
+	private int turtleID;
 	
-	public PathLine(double x1, double y1, double x2, double y2){
+	public PathLine(double x1, double y1, double x2, double y2, int turtleID){
 		this.x1 = x1;
 		this.y1 = y1;
 		this.x2 = x2;
 		this.y2 = y2;
 		this.length = Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2-y1), 2));
+		this.turtleID = turtleID;
 	}
 	
 	//TODO: implement these methods
@@ -50,6 +52,10 @@ public class PathLine {
 	
 	public double getY2(){
 		return this.y2;
+	}
+	
+	public int getTurtleID(){
+		return this.turtleID;
 	}
 	
 }

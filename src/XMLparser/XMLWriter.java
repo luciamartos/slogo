@@ -1,6 +1,7 @@
 package XMLparser;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import gui.BoardStateDataSource;
+import gui.TurtleStateDataSource;
 import javafx.scene.paint.Color;
 import model.PathLine;
 
@@ -25,7 +27,7 @@ public class XMLWriter {
 
 	private static final String MY_PATH = "data/examples/";
 
-	public XMLWriter(String fileName, BoardStateDataSource boardStateDataSource) {
+	public XMLWriter(String fileName, BoardStateDataSource boardStateDataSource, TurtleStateDataSource turtleStateDataSource) {
 
 		/*
 		public double getXCoordinate();
@@ -53,18 +55,6 @@ public class XMLWriter {
 		Element staff = doc.createElement("type");
 		rootElement.appendChild(staff);
 
-		// set attribute to staff element
-		Attr attr = doc.createAttribute("id");
-		attr.setValue("1");
-		staff.setAttributeNode(attr);
-
-		// shorten way
-		// staff.setAttribute("id", "1");
-
-		Element imageURL = doc.createElement("imageURL");
-		imageURL.appendChild(doc.createTextNode(boardStateDataSource.getImage()));
-		staff.appendChild(imageURL);
-
 		Element backgroundcolor = doc.createElement("backgroundcolor");
 		Color colorBackground = boardStateDataSource.getBackgroundColor(); 
 		String colorBackgroundString = String.format( "#%02X%02X%02X",
@@ -82,6 +72,27 @@ public class XMLWriter {
 		turtlecount.appendChild(doc.createTextNode("NEED TO IMPLEMENT"));
 		staff.appendChild(turtlecount);
 		
+		
+		// set attribute to staff element
+		Attr attr = doc.createAttribute("id");
+		attr.setValue("1");
+		staff.setAttributeNode(attr);
+
+		// shorten way
+		// staff.setAttribute("id", "1");
+		Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
+		while(turtleIds.hasNext()){
+			
+			
+			
+			
+		}
+		Element imageURL = doc.createElement("imageURL");
+		imageURL.appendChild(doc.createTextNode(turtleStateDataSource.getShape(turtleID)));
+		staff.appendChild(imageURL);
+
+		
+		
 		Element pencolor = doc.createElement("pencolor");
 		Color colorPen = boardStateDataSource.getBackgroundColor(); 
 		String penColor = String.format( "#%02X%02X%02X",
@@ -92,7 +103,7 @@ public class XMLWriter {
 		staff.appendChild(pencolor);
 		
 		Element penthickness = doc.createElement("penthickness");
-		penthickness.appendChild(doc.createTextNode("100000"));
+		penthickness.appendChild(doc.createTextNode(turtleStateDataSource.get)));
 		staff.appendChild(penthickness);
 		
 		Element pendown = doc.createElement("pendown");

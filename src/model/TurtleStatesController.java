@@ -65,7 +65,7 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 		newCoordinates = calculateValidUpdatedCoordinates(oldCoordinates, newCoordinates, Math.toRadians(changes.getAngle()));
 		turtle.setXCoordinate(newCoordinates.x);
 		turtle.setYCoordinate(newCoordinates.y);
-		PathLine line = new PathLine(oldCoordinates.x, oldCoordinates.y, turtle.getXCoordinate(), turtle.getYCoordinate());
+		PathLine line = new PathLine(oldCoordinates.x, oldCoordinates.y, turtle.getXCoordinate(), turtle.getYCoordinate(), changes.getTurtleID());
 		if (turtle.isDrawing()){
 			board.addLine(line);
 		}
@@ -221,5 +221,17 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 	public int getPenSize(int turtleID) {
 		TurtleState turtle = this.turtles.get(turtleID);
 		return turtle.getPenSize();
+	}
+
+	@Override
+	public void setActiveTurtles(List<Integer> activeTurtles) {
+		Consumer<TurtleState> setInactive = (TurtleState turtle) -> {
+			turtle.setActive(false);
+		};
+		this.applyChangesToActiveTurtles(setInactive);
+		for (Integer i : activeTurtles){
+			TurtleState turtle = this.turtles.get(i);
+			turtle.setActive(true);
+		}
 	}
 }
