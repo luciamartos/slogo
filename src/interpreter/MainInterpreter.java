@@ -65,8 +65,8 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		 * **************************************************************
 		 * These two lines must be removed; they are only here for test purposes!!!
 		 */
-		listOfActiveTurtles = new ArrayList<Integer>();
-		listOfActiveTurtles.add(0);
+//		listOfActiveTurtles = new ArrayList<Integer>();
+//		listOfActiveTurtles.add(0);
 		/**
 		 * **************************************************************
 		 */
