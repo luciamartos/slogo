@@ -9,6 +9,7 @@ public class TestMain extends Application{
 	
 	String input2 = "ifelse less? 1000 100 [ fd 100 ] [ fd 50 ]";
 	String input = "to [ banana ] [ fd 50 ] ";
+	String inputtwo = "banana";
 	String language = "Chinese";
 	
 	public static void main(String[] args){
@@ -31,5 +32,6 @@ public class TestMain extends Application{
 		
 //		main.setLanguage(language);
 		main.parseInput(input);   
+		main.parseInput(inputtwo);   
 	}
 }
