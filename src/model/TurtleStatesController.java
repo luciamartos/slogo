@@ -62,6 +62,10 @@ public class TurtleStatesController extends Observable implements interpreter.Tu
 		turtle.setYCoordinate(newCoordinates.y);
 		PathLine line = new PathLine(oldCoordinates.x, oldCoordinates.y, turtle.getXCoordinate(), turtle.getYCoordinate(), changes.getTurtleID());
 		if (turtle.isDrawing()){
+			RGBColor penColor = board.getColorForIndex(turtle.getPenColorIndex());
+			line.setPenColor(penColor);
+			line.setPenThickness(turtle.getPenSize());
+			line.setPenType(turtle.getPenType());
 			board.addLine(line);
 		}
 		turtle.setDistanceMoved(turtle.getDistanceMoved() + line.getLength());

@@ -8,8 +8,8 @@ public class PathLine {
 	private double x1, y1, x2, y2;
 	private double length;
 	private RGBColor penColor;
-	private double penThickness;
-	private String penType;
+	private int penThickness;
+	private int penType;
 	private int turtleID;
 	
 	public PathLine(double x1, double y1, double x2, double y2, int turtleID){
@@ -26,12 +26,24 @@ public class PathLine {
 		return this.penColor;
 	}
 	
-	public double getPenThickness(){
+	public int getPenThickness(){
 		return this.penThickness;
 	}
 	
-	public String getPenType(){
+	public int getPenType(){
 		return this.penType;
+	}
+	
+	void setPenType(int key){
+		this.penType = key;
+	}
+	
+	void setPenThickness(int pixels){
+		this.penThickness = pixels;
+	}
+	
+	void setPenColor(RGBColor color){
+		this.penColor = color;
 	}
 	
 	public double getLength(){
