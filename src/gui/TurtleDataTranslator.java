@@ -44,7 +44,7 @@ public class TurtleDataTranslator {
 	public List<PathLine> convertLineCordinates(List<PathLine> myPath){
 		List<PathLine> myRes = new ArrayList<PathLine>();
 		for(int i = 0; i < myPath.size(); i++){
-			myRes.add(new PathLine(convertXCordinate(myPath.get(i).getX1()), convertYCordinate(myPath.get(i).getY1()), convertXCordinate(myPath.get(i).getX2()), convertYCordinate(myPath.get(i).getY2())));
+			myRes.add(new PathLine(convertXCordinate(myPath.get(i).getX1()), convertYCordinate(myPath.get(i).getY1()), convertXCordinate(myPath.get(i).getX2()), convertYCordinate(myPath.get(i).getY2()), myPath.get(i).getTurtleID()));
 		}
 		return myRes;
 	}

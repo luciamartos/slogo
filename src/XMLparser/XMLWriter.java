@@ -27,7 +27,7 @@ public class XMLWriter {
 
 	private static final String MY_PATH = "data/examples/";
 
-	public XMLWriter(String fileName, BoardStateDataSource boardStateDataSource, TurtleStateDataSource turtleStateDataSource) {
+	public static void main(String fileName, BoardStateDataSource boardStateDataSource, TurtleStateDataSource turtleStateDataSource) {
 
 		/*
 		public double getXCoordinate();
@@ -48,12 +48,12 @@ public class XMLWriter {
 
 		// root elements
 		Document doc = docBuilder.newDocument();
-		Element rootElement = doc.createElement("workspace");
+		Element rootElement = doc.createElement("scene");
 		doc.appendChild(rootElement);
 
-		// staff elements
-		Element staff = doc.createElement("type");
-		rootElement.appendChild(staff);
+		// workspace elements
+		Element workspace = doc.createElement("workspace");
+		rootElement.appendChild(workspace);
 
 		Element backgroundcolor = doc.createElement("backgroundcolor");
 		Color colorBackground = boardStateDataSource.getBackgroundColor(); 
@@ -62,57 +62,50 @@ public class XMLWriter {
 	            (int)( colorBackground.getGreen() * 255 ),
 	            (int)( colorBackground.getBlue() * 255 ) );
 		backgroundcolor.appendChild(doc.createTextNode(colorBackgroundString));
-		staff.appendChild(backgroundcolor);
+		workspace.appendChild(backgroundcolor);
 
 		Element language = doc.createElement("language");
 		language.appendChild(doc.createTextNode("NEED TO DO THIS"));
-		staff.appendChild(language);
+		workspace.appendChild(language);
 
 		Element turtlecount = doc.createElement("turtlecount");
 		turtlecount.appendChild(doc.createTextNode("NEED TO IMPLEMENT"));
-		staff.appendChild(turtlecount);
+		workspace.appendChild(turtlecount);
 		
-		
-		// set attribute to staff element
-		Attr attr = doc.createAttribute("id");
-		attr.setValue("1");
-		staff.setAttributeNode(attr);
-
+		// turtle elements
+		Element turtle = doc.createElement("turtle");
+		rootElement.appendChild(turtle);
+	
 		// shorten way
 		// staff.setAttribute("id", "1");
 		Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
+		int i=1;
 		while(turtleIds.hasNext()){
 			
+			Integer turtleID = turtleIds.next();
 			
+			// set attribute to staff element
+			Attr attr = doc.createAttribute("id");
+			attr.setValue(Integer.toString(i));
+			turtle.setAttributeNode(attr);
 			
+			Element imageURL = doc.createElement("imageURL");
+			imageURL.appendChild(doc.createTextNode(Integer.toString(turtleStateDataSource.getShape(turtleID))));
+			turtle.appendChild(imageURL);
 			
+			Element heading = doc.createElement("heading");
+			heading.appendChild(doc.createTextNode(Double.toString(turtleStateDataSource.getAngle(turtleID))));
+			turtle.appendChild(heading);
+			
+			Element pendown = doc.createElement("pendown");
+			pendown.appendChild(doc.createTextNode(turtleStateDataSource.getTurtleIsDrawing(turtleID)?"1":"0"));
+			turtle.appendChild(pendown);
+			
+			Element turtleshowing = doc.createElement("turtleshowing");
+			turtleshowing.appendChild(doc.createTextNode(turtleStateDataSource.getTurtleIsDrawing(turtleID)?"1":"0"));
+			turtle.appendChild(turtleshowing);
 		}
-		Element imageURL = doc.createElement("imageURL");
-		imageURL.appendChild(doc.createTextNode(turtleStateDataSource.getShape(turtleID)));
-		staff.appendChild(imageURL);
-
 		
-		
-		Element pencolor = doc.createElement("pencolor");
-		Color colorPen = boardStateDataSource.getBackgroundColor(); 
-		String penColor = String.format( "#%02X%02X%02X",
-	            (int)( colorPen.getRed() * 255 ),
-	            (int)( colorPen.getGreen() * 255 ),
-	            (int)( colorPen.getBlue() * 255 ) );
-		pencolor.appendChild(doc.createTextNode(penColor));
-		staff.appendChild(pencolor);
-		
-		Element penthickness = doc.createElement("penthickness");
-		penthickness.appendChild(doc.createTextNode(turtleStateDataSource.get)));
-		staff.appendChild(penthickness);
-		
-		Element pendown = doc.createElement("pendown");
-		pendown.appendChild(doc.createTextNode("100000"));
-		staff.appendChild(pendown);
-		
-		Element linestyle = doc.createElement("linestyle");
-		linestyle.appendChild(doc.createTextNode("100000"));
-		staff.appendChild(linestyle);
 
 		// write the content into xml file
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();

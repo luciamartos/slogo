@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import XMLparser.XMLWriter;
 import general.MainController;
 import general.NewSlogoInstanceCreator;
 import general.Properties;
@@ -87,7 +88,6 @@ public class TabViewController implements Observer, ErrorPresenter {
 
 	public TabViewController(TabPane tabPane, Properties viewProperties, String tabTitle,
 			NewSlogoInstanceCreator instanceCreator) {
-
 		this.instanceCreator = instanceCreator;
 		this.viewProperties = viewProperties;
 		penTypeList = new ArrayList<String>(Arrays.asList(viewProperties.getStringProperty("pen_type").split(" ")));

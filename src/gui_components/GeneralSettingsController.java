@@ -3,7 +3,7 @@ package gui_components;
 import java.util.Observable;
 
 import XMLparser.XMLReader;
-
+import XMLparser.XMLWriter;
 import general.NewSlogoInstanceCreator;
 
 import general.Properties;
@@ -53,9 +53,22 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 		VBox vBoxRight = new VBox(viewProperties.getDoubleProperty("padding"));
 		vBoxRight.getChildren().add(initializeAddTabButton());
 		vBoxRight.getChildren().add(initializeGetHelpButton());
+		vBoxRight.getChildren().add(initializeLoadWorskpaceButton());
 
 		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
 		hBox.getChildren().addAll(vBoxLeft, vBoxRight);
+	}
+
+	private Node initializeLoadWorskpaceButton() {
+		Button loadWorkspace = createButton("Load workspace", viewProperties.getDoubleProperty("load_worskpace_button_width"));
+		loadWorkspace.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				
+				XMLWriter myWriter = new XMLWriter("luciaTest", boardStateDataSource, turtleStateDataSource);
+			}
+		});
+		return loadWorkspace;
 	}
 
 	private Node initializeAddTabButton() {
