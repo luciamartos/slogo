@@ -233,6 +233,10 @@ public class TurtleStatesController extends Observable implements interpreter.Tu
 		this.applyChangeToActiveTurtles(setInactive);
 		for (Integer i : activeTurtles){
 			TurtleState turtle = this.turtles.get(i);
+			if (turtle == null){
+				turtle = new TurtleState();
+				this.turtles.put(i, turtle);
+			}
 			turtle.setActive(true);
 		}
 	}
