@@ -49,7 +49,6 @@ public class CanvasActions {
 	private double imageWidth;
 	private double imageHeight;
 
-	private List<PathLine> myPathLines;
 	private Map<Integer, ImageView> map;
 
 	public CanvasActions(double canvasWidth, double canvasHeight, double imWidth, double imHeight) {
@@ -89,17 +88,11 @@ public class CanvasActions {
 		return canvas;
 	}
 
-	public void drawPath(Iterator<PathLine> pathLine) {
-		while (pathLine.hasNext()) {
-			PathLine currPathLine = pathLine.next();
-			gc.setStroke(Color.rgb(currPathLine.getPenColor().getRed(), currPathLine.getPenColor().getGreen(),
-					currPathLine.getPenColor().getBlue()));
-			gc.setLineWidth(currPathLine.getPenThickness());
-			gc.strokeLine(currPathLine.getX1(), currPathLine.getY1(), currPathLine.getX2(), currPathLine.getY2());
-
-			handleDifferentPenTypes(currPathLine.getPenType());
-		}
-
+	public void drawPath(Color color, int penThickness, double x1, double y1, double x2, double y2, String penType) {
+		gc.setStroke(color);
+		gc.setLineWidth(penThickness);
+		gc.strokeLine(x1, y1, x2, y2);
+		handleDifferentPenTypes(penType);
 	}
 
 	private void handleDifferentPenTypes(String penType) {
@@ -122,8 +115,6 @@ public class CanvasActions {
 			makeAnimationRotateTurtle(turtleImgView, heading);
 
 		makeAnimationMovementTurtle(id, turtleImgView, nextXLoc, nextYLoc);
-		
-		
 
 	}
 
@@ -134,13 +125,13 @@ public class CanvasActions {
 		return;
 	}
 
-	private void makeAnimationMovementTurtle(int id ,ImageView turtleImgView, double x2, double y2) {
-        TranslateTransition pt = new TranslateTransition(Duration.millis(100), turtleImgView);
-        pt.setByX(x2-turtleImgView.getTranslateX());
-        pt.setByY(y2-turtleImgView.getTranslateY());
+	private void makeAnimationMovementTurtle(int id, ImageView turtleImgView, double x2, double y2) {
+		TranslateTransition pt = new TranslateTransition(Duration.millis(100), turtleImgView);
+		pt.setByX(x2 - turtleImgView.getTranslateX());
+		pt.setByY(y2 - turtleImgView.getTranslateY());
 		pt.delayProperty();
 		pt.play();
-		map.put(id,	turtleImgView);
+		map.put(id, turtleImgView);
 		return;
 	}
 
@@ -163,10 +154,10 @@ public class CanvasActions {
 		turtleImgView.setVisible(isShowing);
 		map.put(id, turtleImgView);
 		pane.getChildren().add(turtleImgView);
-		
+
 	}
 
-	public boolean turtleExists(int currId){
-		return map.get(currId)!=null;
+	public boolean turtleExists(int currId) {
+		return map.get(currId) != null;
 	}
 }

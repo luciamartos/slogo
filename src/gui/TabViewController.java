@@ -46,6 +46,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import model.PathLine;
 import model.RGBColor;
 import tableviews.VariableTableView;
 
@@ -335,8 +337,8 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
 		while (turtleIds.hasNext()) {
 			int currId = turtleIds.next();
-			
-			if(!canvasActions.turtleExists(currId))
+
+			if (!canvasActions.turtleExists(currId))
 				initializeTurtle(currId);
 
 			canvasActions.animatedMovementToXY(currId,
@@ -347,7 +349,6 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		}
 	}
 
-
 	private void initializeTurtle(int currId) {
 
 		canvasActions.initializeTurtle(currId,
@@ -357,18 +358,23 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 				turtleStateDataSource.getTurtleIsShowing(currId));
 
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 
 	public void update(BoardStateDataSource obs, Object o) {
 		colorMap = boardStateDataSource.getColorMap();
-		canvasActions.drawPath(obs.getPaths());
+		Iterator<PathLine> pathLine = obs.getPaths();
+		int count = 0;
+		while (pathLine.hasNext()) {
+			count++;
+			PathLine currPathLine = pathLine.next();
+			canvasActions.drawPath(
+					Color.rgb(currPathLine.getPenColor().getRed(), currPathLine.getPenColor().getGreen(),
+							currPathLine.getPenColor().getBlue()),
+					currPathLine.getPenThickness(), currPathLine.getX1(), currPathLine.getY1(), currPathLine.getX2(),
+					currPathLine.getY2(),penTypeMap.get(currPathLine.getPenType()));
+
+		}
+		System.out.println(count);
+
 		canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getBackgroundColorIndex()));
 	}
 
@@ -411,8 +417,8 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 	public void update(WorkspaceSettingsController obs, Object o) {
 		colorMap = boardStateDataSource.getColorMap();
 		if (obs.getNewBackgroundColor() != null)
-			canvasActions.setBackgroundColorCanvas(new RGBColor(obs.getNewBackgroundColor().getRed()*255,
-					obs.getNewBackgroundColor().getGreen()*255, obs.getNewBackgroundColor().getBlue()*255));
+			canvasActions.setBackgroundColorCanvas(new RGBColor(obs.getNewBackgroundColor().getRed() * 255,
+					obs.getNewBackgroundColor().getGreen() * 255, obs.getNewBackgroundColor().getBlue() * 255));
 		if (obs.getNewLanguage() != null)
 			commandHandler.setLanguage(this, obs.getNewLanguage());
 	}
