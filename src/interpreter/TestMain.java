@@ -8,8 +8,8 @@ import model.TurtleStatesController;
 public class TestMain extends Application{
 	
 	String input2 = "ifelse less? 1000 100 [ fd 100 ] [ fd 50 ]";
-	String input = "id";
-	String inputtwo = "banana";
+	String input = "set :aaa 10";
+	String inputtwo = "sum :aaa 5";
 	String language = "Chinese";
 	
 	public static void main(String[] args){
@@ -32,6 +32,6 @@ public class TestMain extends Application{
 		
 //		main.setLanguage(language);
 		main.parseInput(input);   
-//		main.parseInput(inputtwo);   
+		main.parseInput(inputtwo);   
 	}
 }
