@@ -22,6 +22,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private final String NONINPUT_TITLE = "NonInputCommand";
 	private final String UNARY_TITLE = "UnaryCommand";
 	private final String BINARY_TITLE = "BinaryCommand";
+	private final String MULTIPLE_INPUT_TITLE = "MultipleInputCommand";
 	private final double erroneousReturnValue = Double.NEGATIVE_INFINITY;
 	private String[] languages = {"English", "Syntax"};  //default language is English
 	
@@ -285,6 +286,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		}
 		else if(determineNumberOfInputs(keyword, BINARY_TITLE)){
 			param = parseParam(input, searchStartIndex+1, 2);
+		}
+		else if(determineNumberOfInputs(keyword, MULTIPLE_INPUT_TITLE)){
+			param = parseParam(input, searchStartIndex+1, 3);
 		}
 //		else throw new IllegalArgumentException();
 		else param = null;
