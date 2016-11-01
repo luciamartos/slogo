@@ -137,18 +137,17 @@ public class CanvasActions {
 	public void animatedMovementToXY(int id, double nextXLoc, double nextYLoc, double heading, boolean isShowing) {
 		ImageView turtleImgView = map.get(id);
 		turtleImgView.setVisible(isShowing);
-
-		double currXLoc = turtleImgView.getX();
-		double currYLoc = turtleImgView.getY();
-
 		// turtleImgView.setTranslateX(xLoc);
 		// turtleImgView.setTranslateY(yLoc);
 		// pane.getChildren().add(turtleImgView);
 
-		if (heading != turtleImgView.getRotate())
-			makeAnimationRotateTurtle(turtleImgView, heading);
+//		if (heading != turtleImgView.getRotate())
+//			makeAnimationRotateTurtle(turtleImgView, heading);
+//
+		makeAnimationMovementTurtle(id, turtleImgView, nextXLoc, nextYLoc);
+		
+		
 
-		makeAnimationMovementTurtle(turtleImgView, currXLoc, currYLoc, nextXLoc, nextYLoc);
 
 		// else if (myPathLines.size() != 0) {
 		// // else if(myPathLines.size()!=0 && (xLoc!=prevTurtleImgViewX ||
@@ -167,12 +166,18 @@ public class CanvasActions {
 		return;
 	}
 
-	private void makeAnimationMovementTurtle(ImageView turtleImgView, double x1, double y1, double x2, double y2) {
+	private void makeAnimationMovementTurtle(int id ,ImageView turtleImgView, double x2, double y2) {
+		System.out.println(turtleImgView.getTranslateX()+" "+ turtleImgView.getTranslateY());
 		Path path = new Path();
-		path.getElements().addAll(new MoveTo(x1, y1), new LineTo(x2, y2));
-		PathTransition pt = new PathTransition(Duration.millis(500), path, turtleImgView);
+		path.getElements().addAll(new MoveTo(turtleImgView.getTranslateX(), turtleImgView.getTranslateY()), new LineTo(x2, y2));
+		PathTransition pt = new PathTransition(Duration.millis(10), path, turtleImgView);
 		pt.delayProperty();
 		pt.play();
+		
+//		turtleImgView.setTranslateX(x2);
+//		turtleImgView.setTranslateY(y2);
+		map.put(id,	turtleImgView);
+		
 		return;
 	}
 
@@ -214,10 +219,16 @@ public class CanvasActions {
 		// addTurtleAtXY();
 	}
 
-	private void initializeTurtle(int id) {
+	public void initializeTurtle(int id, double xLoc, double yLoc, double heading, boolean isShowing) {
 		ImageView turtleImgView = new ImageView(
 				FileChooserPath.selectImage(IMAGE_PATH + "turtle.png", imageWidth, imageHeight));
+		turtleImgView.setTranslateX(xLoc);
+		turtleImgView.setTranslateY(yLoc);
+		turtleImgView.setRotate(heading);
+		turtleImgView.setVisible(isShowing);
 		map.put(id, turtleImgView);
+		pane.getChildren().add(turtleImgView);
+		
 	}
 
 	// public void setPenColor(Color color) {
