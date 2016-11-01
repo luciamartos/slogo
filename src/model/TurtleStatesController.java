@@ -222,4 +222,16 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 		TurtleState turtle = this.turtles.get(turtleID);
 		return turtle.getPenSize();
 	}
+
+	@Override
+	public void setActiveTurtles(List<Integer> activeTurtles) {
+		Consumer<TurtleState> setInactive = (TurtleState turtle) -> {
+			turtle.setActive(false);
+		};
+		this.applyChangesToActiveTurtles(setInactive);
+		for (Integer i : activeTurtles){
+			TurtleState turtle = this.turtles.get(i);
+			turtle.setActive(true);
+		}
+	}
 }
