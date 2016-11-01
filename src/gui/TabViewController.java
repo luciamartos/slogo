@@ -317,9 +317,8 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 					return;
 				}
 			}
-			// update = getClass().getMethod("update", obs.getClass(),
-			// Object.class);
-			// update.invoke(this, obs, o);
+			 update = getClass().getMethod("update", obs.getClass(), Object.class);
+			 update.invoke(this, obs, o);
 
 		} catch (Exception e) {
 			e.printStackTrace();
