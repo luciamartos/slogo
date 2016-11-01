@@ -26,6 +26,7 @@ public class SlogoUpdate {
 		penColor = source.getPenColor(turtleID);
 		penSize = source.getPenSize(turtleID);
 		shape = source.getShape(turtleID);
+		this.turtleID = turtleID;
 	}
 	
 	public Boolean getTurtleShouldDraw(){

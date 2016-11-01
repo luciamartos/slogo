@@ -60,18 +60,27 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
 			InvocationTargetException{
 		List<Integer> listOfActiveTurtles = stateDataSource.getActiveTurtleIDs();
+//		for(int elem: listOfActiveTurtles){
+//			System.out.println("yyy: " + elem);
+//		}
 		
 		/**
 		 * **************************************************************
 		 * These two lines must be removed; they are only here for test purposes!!!
 		 */
 //		listOfActiveTurtles = new ArrayList<Integer>();
-//		listOfActiveTurtles.add(0);
+//		
+//		listOfActiveTurtles.add(1);
+//		turtleStateUpdater.setActiveTurtles(listOfActiveTurtles);
+//		for(int elem: listOfActiveTurtles){
+//			System.out.println("xxx: " + elem);
+//		}
 		/**
 		 * **************************************************************
 		 */
 		
 		for(int turtleID: listOfActiveTurtles){
+//			System.out.println("qqqID: " + turtleID);
 			parseInputForActiveTurtles(input, turtleID);
 		}
 	}
@@ -81,6 +90,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		String[] split = input.split("\\s+");
 		lang = addLanguagePatterns();	
 		listOfSubInterpreters = createListOfInterpreters();
+//		System.out.println("wwww: "+model.getTurtleID() + " " + turtleID);
 		return interpretCommand(split, 0);   //first search(non-recursive) begins at index 0;
 	}
 	
