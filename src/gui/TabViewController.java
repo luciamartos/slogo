@@ -369,8 +369,8 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 			canvasActions.drawPath(
 					Color.rgb(currPathLine.getPenColor().getRed(), currPathLine.getPenColor().getGreen(),
 							currPathLine.getPenColor().getBlue()),
-					currPathLine.getPenThickness(), currPathLine.getX1(), currPathLine.getY1(), currPathLine.getX2(),
-					currPathLine.getY2(),penTypeMap.get(currPathLine.getPenType()));
+					currPathLine.getPenThickness(), turtleTranslator.convertXCordinate(currPathLine.getX1()), turtleTranslator.convertYCordinate(currPathLine.getY1()), turtleTranslator.convertXCordinate(currPathLine.getX2()),
+					turtleTranslator.convertYCordinate(currPathLine.getY2()),penTypeMap.get(currPathLine.getPenType()));
 
 		}
 		System.out.println(count);
