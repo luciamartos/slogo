@@ -61,6 +61,7 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	@Override
 	public void addUserDefinedVariable(String varName, String userInput) {
 		boardState.addUserDefinedVariable(varName, userInput);
+		this.notifyObservers();
 	}
 
 	@Override
@@ -98,11 +99,6 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	public int getBackgroundColorIndex() {
 		return this.boardState.getBackgroundColorIndex();
 	}
-
-	@Override
-	public void setBackgroundColorIndex(int i) {
-		boardState.setBackgroundColorIndex(i);
-	}
 	
 	RGBColor getColorForIndex(int i){
 		return this.boardState.getColorForIndex(i);
@@ -115,18 +111,20 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	@Override
 	public void undo() {
 		// TODO Auto-generated method stub
-		
+		this.notifyObservers();
 	}
 
 	@Override
 	public void setBackgroundColor(int colorIndex) {
 		this.boardState.setBackgroundColorIndex(colorIndex);
+		this.notifyObservers();
 	}
 
 	@Override
 	public void addColorToPalette(int index, int red, int green, int blue) {
 		RGBColor color = new RGBColor(red, green, blue);
 		this.boardState.addColorToMap(color, index);
+		this.notifyObservers();
 	}
 
 	@Override
