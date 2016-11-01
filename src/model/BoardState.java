@@ -53,4 +53,8 @@ public class BoardState{
 	RGBColor getColorForIndex(int i){
 		return colors.get(i);
 	}
+	
+	HashMap<Integer, RGBColor> getColorMap(){
+		return this.colors;
+	}
 }

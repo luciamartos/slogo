@@ -65,7 +65,7 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 		newCoordinates = calculateValidUpdatedCoordinates(oldCoordinates, newCoordinates, Math.toRadians(changes.getAngle()));
 		turtle.setXCoordinate(newCoordinates.x);
 		turtle.setYCoordinate(newCoordinates.y);
-		PathLine line = new PathLine(oldCoordinates.x, oldCoordinates.y, turtle.getXCoordinate(), turtle.getYCoordinate());
+		PathLine line = new PathLine(oldCoordinates.x, oldCoordinates.y, turtle.getXCoordinate(), turtle.getYCoordinate(), changes.getTurtleID());
 		if (turtle.isDrawing()){
 			board.addLine(line);
 		}

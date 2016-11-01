@@ -29,7 +29,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private SlogoUpdate model;
 	private Collection<SubInterpreter> listOfSubInterpreters;
 	private BoardStateUpdater boardStateUpdater;
-	private TurtleStateDataSource stateDatasource;
+	private TurtleStateDataSource stateDataSource;
 	private TurtleStateUpdater turtleStateUpdater;
 	private UserVariablesDataSource varDataSource;
 	private ErrorPresenter errorPresenter;
@@ -49,7 +49,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
  	public void parseInput(String input, TurtleStateDataSource stateDataSource, TurtleStateUpdater turtleStateUpdater, BoardStateUpdater boardStateUpdater, UserVariablesDataSource varDataSource, ErrorPresenter errorPresenter) throws ClassNotFoundException, NoSuchMethodException, 
  	SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
  	InvocationTargetException{
- 		this.stateDatasource = stateDataSource;
+ 		this.stateDataSource = stateDataSource;
  		this.turtleStateUpdater = turtleStateUpdater;
  		this.boardStateUpdater = boardStateUpdater;
  		this.varDataSource = varDataSource;
@@ -60,14 +60,14 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	public void parseInput(String input) throws ClassNotFoundException, NoSuchMethodException, 
 			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
 			InvocationTargetException{
-		List<Integer> listOfActiveTurtles = stateDatasource.getActiveTurtleIDs();
+		List<Integer> listOfActiveTurtles = stateDataSource.getActiveTurtleIDs();
 		for(int turtleID: listOfActiveTurtles){
 			parseInputForActiveTurtles(input, turtleID);
 		}
 	}
 	
 	public void parseInputForActiveTurtles(String input, int turtleID) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
-		model = new SlogoUpdate(stateDatasource, turtleID);
+		model = new SlogoUpdate(stateDataSource, turtleID);
 		String[] split = input.split("\\s+");
 		lang = addLanguagePatterns();	
 		listOfSubInterpreters = createListOfInterpreters();
@@ -292,6 +292,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		list.add(new TurtleQueryInterpreter(model));
 		list.add(new BooleanInterpreter());		
 		list.add(new DisplayInterpreter());
+		list.add(new MultipleTurtleInterpreter(model, stateDataSource, turtleStateUpdater, listQueue));
 		return list;
 	}
 	
@@ -382,7 +383,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	}
 	
 	public void setStateDataSource(TurtleStateDataSource stateDataSource){
-		this.stateDatasource = stateDataSource;
+		this.stateDataSource = stateDataSource;
 	}
 	
 	public void setTurtleStateUpdater(TurtleStateUpdater turtleStateUpdater){
