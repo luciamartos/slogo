@@ -42,7 +42,7 @@ public class MainController implements NewSlogoInstanceCreator, SlogoCommandHand
     	viewController.updateVariables();
     	
     	modelController.addBoardStateListener(viewController);
-		
+    	turtleStatesController.addObserver(viewController);
 	}
 	
 	public TabViewController makeTabViewController(String title){

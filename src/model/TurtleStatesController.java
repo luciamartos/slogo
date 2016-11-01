@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Observable;
 import java.util.function.Consumer;
 
 import gui.TurtleActionsHandler;
@@ -11,7 +12,7 @@ import interpreter.SlogoUpdate;
 import interpreter.TurtleStateDataSource;
 import interpreter.TurtleStateUpdater;
 
-public class TurtleStatesController implements interpreter.TurtleStateDataSource, gui.TurtleStateDataSource, TurtleStateUpdater, TurtleActionsHandler {
+public class TurtleStatesController extends Observable implements interpreter.TurtleStateDataSource, gui.TurtleStateDataSource, TurtleStateUpdater, TurtleActionsHandler {
 	private BoardStateController board;
 	private HashMap<Integer, TurtleState> turtles;
 	
@@ -43,6 +44,8 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 			turtle = this.addNewTurtle(update.getTurtleID());
 		}
 		this.applyChangesToTurtle(turtle, update);
+		this.setChanged();
+		this.notifyObservers();
 	}
 	
 	private void applyChangesToTurtle(TurtleState turtle, SlogoUpdate changes){
@@ -193,6 +196,8 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 	public void toggleTurtle(int id) {
 		TurtleState turtle = this.turtles.get(id);
 		turtle.setActive(!turtle.isActive());
+		this.setChanged();
+		this.notifyObservers();
 	}
 	
 	private void applyChangeToActiveTurtles(Consumer<TurtleState> lambda){
@@ -201,6 +206,8 @@ public class TurtleStatesController implements interpreter.TurtleStateDataSource
 				lambda.accept(turtle);
 			}
 		}
+		this.setChanged();
+		this.notifyObservers();
 	}
 
 	@Override

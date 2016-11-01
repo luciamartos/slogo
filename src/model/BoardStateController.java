@@ -37,6 +37,7 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	}
 	
 	public void addBoardStateListener(Observer o){
+		//TODO: Decide whether it is necessary to override this stuff.
 		this.addObserver(o);
 		setChanged();
 		this.notifyObservers();
