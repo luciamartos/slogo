@@ -316,7 +316,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		list.add(new MathInterpreter());
 		list.add(new TurtleQueryInterpreter(model));
 		list.add(new BooleanInterpreter());		
-		list.add(new DisplayInterpreter(model));
+		list.add(new DisplayInterpreter(model, boardStateUpdater));
 		list.add(new MultipleTurtleInterpreter(model, stateDataSource, turtleStateUpdater, listQueue));
 		return list;
 	}

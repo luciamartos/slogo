@@ -58,16 +58,17 @@ public class DisplayInterpreter extends SubInterpreter{
 		return index;
 	}
 	
-	double setpalette(double index, double rgb){
+	double setpalette(double index, double red, double green, double blue){
+		boardStateUpdater.addColorToPalette((int)index, (int)red, (int)green, (int)blue);
 		return index;
 	}
 	
 	double pencolor(){
-		return 0;
+		return model.getPenColor();
 	}
 	
 	double shape(){
-		return 0;
+		return model.getShape();
 	}
 
 }
