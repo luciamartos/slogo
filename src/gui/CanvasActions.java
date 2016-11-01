@@ -88,7 +88,7 @@ public class CanvasActions {
 		return canvas;
 	}
 
-	public void drawPath(Color color, int penThickness, double x1, double y1, double x2, double y2, String penType) {
+ 	public void drawPath(Color color, int penThickness, double x1, double y1, double x2, double y2, String penType) {
 		gc.setStroke(color);
 		gc.setLineWidth(penThickness);
 		gc.strokeLine(x1, y1, x2, y2);
