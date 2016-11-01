@@ -19,6 +19,8 @@ public class BoardState{
 		this.lineCoordinates= new ArrayList<PathLine>();
 		this.userDefinedVariables = new HashMap<String, String>();
 		this.colors = new HashMap<Integer, RGBColor>();
+		RGBColor white = new RGBColor(255,255,255);
+		this.colors.put(0, white);
 		this.backgroundColorIndex = 0;
 	}
 
@@ -38,8 +40,8 @@ public class BoardState{
 		return userDefinedVariables;
 	}
 	
-	RGBColor getBackgroundColor(){
-		return colors.get(this.backgroundColorIndex);
+	int getBackgroundColorIndex(){
+		return this.backgroundColorIndex;
 	}
 
 	void setBackgroundColorIndex(int index){

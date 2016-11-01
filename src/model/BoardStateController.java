@@ -8,7 +8,6 @@ import gui.BoardActionsHandler;
 import gui.BoardStateDataSource;
 import interpreter.BoardStateUpdater;
 import interpreter.UserVariablesDataSource;
-import javafx.scene.paint.Color;
 
 /**
  * @author Andrew Bihl
@@ -34,7 +33,7 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 		minXCoordinate = -maxXCoordinate;
 		maxYCoordinate = boardHeight/2;
 		minYCoordinate = -maxYCoordinate;
-		this.turtleController = new TurtleStatesController();
+		this.turtleController = new TurtleStatesController(this);
 	}
 	
 	public void addBoardStateListener(Observer o){
@@ -96,9 +95,8 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	}
 
 	@Override
-	public Color getBackgroundColor() {
-		RGBColor rgb = boardState.getBackgroundColor();
-		return Color.color(rgb.getRed(), rgb.getGreen(), rgb.getBlue());
+	public int getBackgroundColorIndex() {
+		return this.boardState.getBackgroundColorIndex();
 	}
 
 	@Override

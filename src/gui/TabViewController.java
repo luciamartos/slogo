@@ -355,7 +355,7 @@ public class TabViewController implements Observer, ErrorPresenter {
 	public void update(BoardStateDataSource obs, Object o) {
 		colorMap = boardStateDataSource.getColorMap();
 		// canvasActions.drawPath(obs.getLineCoordinates());
-		canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getBackgroundColor()));
+		canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getBackgroundColorIndex()));
 	}
 
 	public void update(GeneralSettingsController obs, Object o) {
