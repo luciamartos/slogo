@@ -76,11 +76,11 @@ public class DisplayInterpreter extends SubInterpreter{
 		return index;
 	}
 	
-	double pencolor(){
+	double getpencolor(){
 		return model.getPenColor();
 	}
 	
-	double shape(){
+	double getshape(){
 		return model.getShape();
 	}
 	
