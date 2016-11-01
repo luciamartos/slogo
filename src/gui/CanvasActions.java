@@ -15,6 +15,7 @@ import javafx.animation.Animation;
 import javafx.animation.PathTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.SequentialTransition;
+import javafx.animation.TranslateTransition;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
@@ -137,26 +138,11 @@ public class CanvasActions {
 	public void animatedMovementToXY(int id, double nextXLoc, double nextYLoc, double heading, boolean isShowing) {
 		ImageView turtleImgView = map.get(id);
 		turtleImgView.setVisible(isShowing);
-		// turtleImgView.setTranslateX(xLoc);
-		// turtleImgView.setTranslateY(yLoc);
-		// pane.getChildren().add(turtleImgView);
+		if (heading != turtleImgView.getRotate())
+			makeAnimationRotateTurtle(turtleImgView, heading);
 
-//		if (heading != turtleImgView.getRotate())
-//			makeAnimationRotateTurtle(turtleImgView, heading);
-//
 		makeAnimationMovementTurtle(id, turtleImgView, nextXLoc, nextYLoc);
-		
-		
 
-
-		// else if (myPathLines.size() != 0) {
-		// // else if(myPathLines.size()!=0 && (xLoc!=prevTurtleImgViewX ||
-		// // yLoc!=prevTurtleImgViewY)){
-		// int i = myPathLines.size() - 1;
-		// makeAnimationMovementTurtle(turtleImgView,
-		// myPathLines.get(i).getX1(), myPathLines.get(i).getY1(),
-		// myPathLines.get(i).getX2(), myPathLines.get(i).getY2());
-		// }
 	}
 
 	private void makeAnimationRotateTurtle(ImageView turtleImgView, double heading) {
@@ -167,17 +153,12 @@ public class CanvasActions {
 	}
 
 	private void makeAnimationMovementTurtle(int id ,ImageView turtleImgView, double x2, double y2) {
-		System.out.println(turtleImgView.getTranslateX()+" "+ turtleImgView.getTranslateY());
-		Path path = new Path();
-		path.getElements().addAll(new MoveTo(turtleImgView.getTranslateX(), turtleImgView.getTranslateY()), new LineTo(x2, y2));
-		PathTransition pt = new PathTransition(Duration.millis(10), path, turtleImgView);
+        TranslateTransition pt = new TranslateTransition(Duration.millis(100), turtleImgView);
+        pt.setByX(x2-turtleImgView.getTranslateX());
+        pt.setByY(y2-turtleImgView.getTranslateY());
 		pt.delayProperty();
 		pt.play();
-		
-//		turtleImgView.setTranslateX(x2);
-//		turtleImgView.setTranslateY(y2);
 		map.put(id,	turtleImgView);
-		
 		return;
 	}
 
