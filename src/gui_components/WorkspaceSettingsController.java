@@ -76,11 +76,7 @@ public class WorkspaceSettingsController extends Observable {
 			@Override
 			public void handle(ActionEvent t) {
 				setChanged();
-				//newBackgroundColor = backgroundColorPicker.get\
-				Circle circle = new Circle();
-				circle.setFill(backgroundColorPicker.getValue());
-				newBackgroundColor = (Color) circle.getFill();
-				//System.out.println(newBackgroundColor.getBlue() + " " + newBackgroundColor.getRed() + " " + newBackgroundColor.getGreen());
+				newBackgroundColor = backgroundColorPicker.getValue();
 				notifyObservers();
 			}
 		});

@@ -2,7 +2,6 @@ package gui_components;
 
 import java.util.Observable;
 
-import XMLparser.XMLReader;
 import XMLparser.XMLWriter;
 import general.NewSlogoInstanceCreator;
 
@@ -20,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import model.XMLReader;
 
 public class GeneralSettingsController extends Observable implements ReadCommandFileInterface {
 	private Properties viewProperties;
@@ -49,7 +49,7 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 		newPenColor = -1;
 		VBox vBoxLeft = new VBox(viewProperties.getDoubleProperty("padding"));
 		vBoxLeft.getChildren().add(initializeUndoButton());
-		vBoxLeft.getChildren().add(initalizeFileLoader());
+	//	vBoxLeft.getChildren().add(initalizeFileLoader());
 		vBoxLeft.getChildren().add(initalizeCommandFileLoader());
 
 		VBox vBoxRight = new VBox(viewProperties.getDoubleProperty("padding"));
@@ -141,102 +141,102 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 		return newCommandString;
 	}
 
-	@Override
-	public void getLineTypeFromFile(int lineStyle) {
-		setChanged();
-		newLineStyle = lineStyle;
-		notifyObservers();
-	}
-
-	public int getNewPenType() {
-		return newLineStyle;
-	}
-
-	@Override
-	public void getPenDownFromFile(String penDown) {
-		setChanged();
-		if(penDown.equals("no")) newPenDown = false;
-		else{
-			newPenDown =true;
-		}
-		notifyObservers();
-	}
-
-	public boolean getNewPenDown() {
-		return newPenDown;
-	}
-
-	@Override
-	public void getPenColorFromFile(int penColor) {
-		setChanged();
-		newPenColor =  penColor;
-		notifyObservers();
-	}
-
-	public int getNewPenColor() {
-		return newPenColor;
-	}
-
-	@Override
-	public void getTurtleCountFromFile(String turtleCount) {
-		setChanged();
-		newTurtleCount = Integer.parseInt(turtleCount);
-		notifyObservers();
-	}
-
-	public int getNewTurtleCount() {
-		return newTurtleCount;
-	}
-
-	@Override
-	public void getLanguageFromFile(String language) {
-		setChanged();
-		newLanguage = language;
-		notifyObservers();
-	}
-
-	public String getNewLanguage() {
-		return newLanguage;
-	}
-
-	@Override
-	public void getBackgroundColorFromFile(int backgroundColor) {
-		setChanged();
-		newBackgroundColor = backgroundColor;
-		notifyObservers();
-	}
-
-	public int getNewBackgroundColor() {
-		return newBackgroundColor;
-	}
-	
-	@Override
-	public void getImageURLFromFile(String imageURL) {
-		setChanged();
-		newImageURL = imageURL;
-		notifyObservers();
-	}
-	
-	public Image getNewImage() {
-		Image image = FileChooserPath.selectImage(newImageURL, 50, 50);
-		return image;
-	}
-
-	@Override
-	public void getPenThicknessFromFile(int penThickness) {
-		setChanged();
-		newPenThickness = penThickness;
-		notifyObservers();
-	}
-	
-	public int getNewPenThickness(){
-		return newPenThickness;
-	}
-
-	@Override
-	public int getTurtleID() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+//	@Override
+//	public void getLineTypeFromFile(int lineStyle) {
+//		setChanged();
+//		newLineStyle = lineStyle;
+//		notifyObservers();
+//	}
+//
+//	public int getNewPenType() {
+//		return newLineStyle;
+//	}
+//
+//	@Override
+//	public void getPenDownFromFile(String penDown) {
+//		setChanged();
+//		if(penDown.equals("no")) newPenDown = false;
+//		else{
+//			newPenDown =true;
+//		}
+//		notifyObservers();
+//	}
+//
+//	public boolean getNewPenDown() {
+//		return newPenDown;
+//	}
+//
+//	@Override
+//	public void getPenColorFromFile(int penColor) {
+//		setChanged();
+//		newPenColor =  penColor;
+//		notifyObservers();
+//	}
+//
+//	public int getNewPenColor() {
+//		return newPenColor;
+//	}
+//
+//	@Override
+//	public void getTurtleCountFromFile(String turtleCount) {
+//		setChanged();
+//		newTurtleCount = Integer.parseInt(turtleCount);
+//		notifyObservers();
+//	}
+//
+//	public int getNewTurtleCount() {
+//		return newTurtleCount;
+//	}
+//
+//	@Override
+//	public void getLanguageFromFile(String language) {
+//		setChanged();
+//		newLanguage = language;
+//		notifyObservers();
+//	}
+//
+//	public String getNewLanguage() {
+//		return newLanguage;
+//	}
+//
+//	@Override
+//	public void getBackgroundColorFromFile(int backgroundColor) {
+//		setChanged();
+//		newBackgroundColor = backgroundColor;
+//		notifyObservers();
+//	}
+//
+//	public int getNewBackgroundColor() {
+//		return newBackgroundColor;
+//	}
+//	
+//	@Override
+//	public void getImageURLFromFile(String imageURL) {
+//		setChanged();
+//		newImageURL = imageURL;
+//		notifyObservers();
+//	}
+//	
+//	public Image getNewImage() {
+//		Image image = FileChooserPath.selectImage(newImageURL, 50, 50);
+//		return image;
+//	}
+//
+//	@Override
+//	public void getPenThicknessFromFile(int penThickness) {
+//		setChanged();
+//		newPenThickness = penThickness;
+//		notifyObservers();
+//	}
+//	
+//	public int getNewPenThickness(){
+//		return newPenThickness;
+//	}
+//
+//	@Override
+//	public int getTurtleID() {
+//		// TODO Auto-generated method stub
+//		return 0;
+//	}
 
 }
