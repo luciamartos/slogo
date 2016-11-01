@@ -95,8 +95,8 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		this.viewProperties = viewProperties;
 		String[] types = viewProperties.getStringProperty("pen_type").split(" ");
 		penTypeMap = new HashMap<Integer, String>();
-		for (int i = 1; i <= types.length; i++) {
-			penTypeMap.put(i, types[i - 1]);
+		for (int i = 0; i < types.length; i++) {
+			penTypeMap.put(i, types[i]);
 		}
 		setupTab(tabTitle);
 		tabPane.getTabs().add(tab);
