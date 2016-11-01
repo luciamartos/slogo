@@ -69,7 +69,6 @@ public class TurtleStatesController extends Observable implements interpreter.Tu
 
 	//Restrict movement to the bounds of the board.
 	private Coordinates calculateValidUpdatedCoordinates(Coordinates current, Coordinates updated, double thetaInRadians){
-		System.out.println("Unconverted: x: "+updated.x+", y: "+updated.y);
 		double maxXCoordinate = board.getMaxXCoordinate();
 		double maxYCoordinate = board.getMaxYCoordinate();
 		double minXCoordinate = board.getMinXCoordinate();
@@ -92,7 +91,6 @@ public class TurtleStatesController extends Observable implements interpreter.Tu
 		//Truncate to nearest pixel
 		newX = (int)newX;
 		newY = (int)newY;
-		System.out.println("Converted x: "+newX+", y: "+newY);
 		return new Coordinates(newX, newY);
 	}
 	
