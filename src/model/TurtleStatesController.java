@@ -26,9 +26,15 @@ public class TurtleStatesController extends Observable implements interpreter.Tu
 	}
 	
 	public TurtleStatesController(BoardStateController board){
+		this.board = board;
+		setDefaultTurtles();
+	}
+	
+	void setDefaultTurtles(){
 		this.turtles = new HashMap<Integer, TurtleState>();
 		addNewTurtle(0);
-		this.board = board;
+		setChanged();
+		notifyObservers();
 	}
 	
 	private TurtleState addNewTurtle(int id){

@@ -65,11 +65,13 @@ public class SlogoUpdate {
 	
 	//TODO: Implement methods.
 	public void rotateClockwise(double degrees){
-		angle = convertAngle(angle - degrees);
+//		angle = convertAngle(angle - degrees);
+		angle = angle - degrees;
 	}
 	
 	public void rotateCounterClockwise(double degrees){
-		angle = convertAngle(angle + degrees);
+//		angle = convertAngle(angle + degrees);
+		angle = angle+degrees;
 	}
 	
 	public void moveForward(double pixels){

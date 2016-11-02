@@ -39,36 +39,34 @@ import javafx.stage.Stage;
 public class TurtleSettingsController extends Observable {
 
 	private static final String IMAGE_PATH = "resources/images/";
-	private static final double MIN_TURTLES = 0;
-	private static final double MAX_TURTLES = 10;
-	private static final double INIT_TURTLES = 1;
-	private int newTurtleNumber;
+	private static final double MIN_SPEED = 0;
+	private static final double MAX_SPEED = 1000;
+	private static final double INIT_SPEED = 10;
+	private int newAnimationSpeed;
 
 	private VBox vBox;
 
-	private Image newImage;
+	private String newImage;
 
 
 	public TurtleSettingsController(Properties viewProperties) {
 		vBox = new VBox(7);
-		Label lbl = new Label();
-		lbl.setText("Turtle settings");
-		vBox.getChildren().add(lbl);
+		vBox.getChildren().add(new Label("Turtle settings"));
 		vBox.getChildren().add(initializeTurtleImageSetting());
-		vBox.getChildren().add(initializeTurtleNumber());
+		vBox.getChildren().add(initializeAnimationSpeed());
 	}
 
 
 
-	private Node initializeTurtleNumber(){
+	private Node initializeAnimationSpeed(){
 		Slider turtleNumberSlider = new Slider();
-		turtleNumberSlider.setMin(MIN_TURTLES);
-		turtleNumberSlider.setMax(MAX_TURTLES);
-		turtleNumberSlider.setValue(INIT_TURTLES);
+		turtleNumberSlider.setMin(MIN_SPEED);
+		turtleNumberSlider.setMax(MAX_SPEED);
+		turtleNumberSlider.setValue(INIT_SPEED);
 		turtleNumberSlider.valueProperty().addListener(new ChangeListener<Number>(){
 			public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val){
 				setChanged();
-				newTurtleNumber = new_val.intValue();
+				newAnimationSpeed = new_val.intValue();
 				notifyObservers();
 			}
 		});
@@ -91,8 +89,7 @@ public class TurtleSettingsController extends Observable {
 			public void changed(ObservableValue ov, String t, String t1) {
 				if(t1!=null){
 				setChanged();
-				Image image = FileChooserPath.selectImage(IMAGE_PATH+t1+".png", 50, 50);
-				newImage = image;
+				newImage = t1;
 				notifyObservers();
 				}
 			}
@@ -105,7 +102,7 @@ public class TurtleSettingsController extends Observable {
 		return vBox;
 	}
 
-	public Image getNewImage() {
+	public String getNewImage() {
 		return newImage;
 	}
 
@@ -113,8 +110,8 @@ public class TurtleSettingsController extends Observable {
 //		return vBox;
 //	}
 	
-	public int getNewTurtleNumber(){
-		return newTurtleNumber;
+	public int getNewAnimationSpeed(){
+		return newAnimationSpeed;
 	}
 
 }

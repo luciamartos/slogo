@@ -46,16 +46,16 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	/**
 	 * Overload of parseInput() method that enables a global interpreter for multiple turtles
 	 */
- 	public void parseInput(String input, TurtleStateDataSource stateDataSource, TurtleStateUpdater turtleStateUpdater, BoardStateUpdater boardStateUpdater, UserVariablesDataSource varDataSource, ErrorPresenter errorPresenter) throws ClassNotFoundException, NoSuchMethodException, 
- 	SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
- 	InvocationTargetException{
- 		this.stateDataSource = stateDataSource;
- 		this.turtleStateUpdater = turtleStateUpdater;
- 		this.boardStateUpdater = boardStateUpdater;
- 		this.varDataSource = varDataSource;
- 		this.errorPresenter = errorPresenter;
- 		this.parseInput(input);
- 	}
+// 	public void parseInput(String input, TurtleStateDataSource stateDataSource, TurtleStateUpdater turtleStateUpdater, BoardStateUpdater boardStateUpdater, UserVariablesDataSource varDataSource, ErrorPresenter errorPresenter) throws ClassNotFoundException, NoSuchMethodException, 
+// 	SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
+// 	InvocationTargetException{
+// 		this.stateDataSource = stateDataSource;
+// 		this.turtleStateUpdater = turtleStateUpdater;
+// 		this.boardStateUpdater = boardStateUpdater;
+// 		this.varDataSource = varDataSource;
+// 		this.errorPresenter = errorPresenter;
+// 		this.parseInput(input);
+// 	}
 	
 	public void parseInput(String input) throws ClassNotFoundException, NoSuchMethodException, 
 			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
@@ -82,6 +82,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	public double parseInputForActiveTurtles(String input, int turtleID) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		model = new SlogoUpdate(stateDataSource, turtleID);
 		String[] split = input.split("\\s+");
+		if(split[0].equals("")){
+			split = Arrays.copyOfRange(split, 1, split.length);
+		}
 		lang = addLanguagePatterns();	
 		listOfSubInterpreters = createListOfInterpreters();
 		return interpretCommand(split, 0);   //first search(non-recursive) begins at index 0;
@@ -100,7 +103,10 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		
 		for(SubInterpreter elem: listOfSubInterpreters){
 			if(elem.canHandle(keyword)){	
-				if(elem.needList()) elem.setList(listQueue);
+				if(elem.needList()){
+					if(listQueue.isEmpty()) returnValue = presentEmptyListMessage();
+					elem.setList(listQueue);
+				}
 				returnValue = elem.handle(input, keyword, param, searchStartIndex);
 				if(elem.getModel() != null) model = elem.getModel(); 
 				break;
@@ -128,13 +134,17 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			}
 		}
 		else{
-			String errorMessage = "Invalid argument detected: '"+input[searchStartIndex]+"' is not a valid command!";
-			System.out.println(errorMessage);
-			errorPresenter.presentError(errorMessage);
-			System.out.println("Return Value: "+returnValue);
+			printErrorMessage(input, searchStartIndex, returnValue);
 			return returnValue;
 //			throw new IllegalArgumentException();
 		}
+	}
+
+	private void printErrorMessage(String[] input, int searchStartIndex, double returnValue) {
+		String errorMessage = "Invalid argument detected: '"+input[searchStartIndex]+"' is not a valid command!";
+		System.out.println(errorMessage);
+		errorPresenter.presentError(errorMessage);
+		System.out.println("Return Value: "+returnValue);
 	}
 	
 
@@ -143,7 +153,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			IllegalAccessException, InvocationTargetException {
 		//control keywords are handled differently from other keywords
 		if(isControl(keyword)) returnValue = interpretControl(input, parsed, keyword, searchStartIndex);
-		if(isAskCommand(keyword)) returnValue = handleAsk();
+		if(isAskCommand(keyword)) returnValue = handleAsk(keyword);
 		
 		//retrieves variable
 		Set<String> userDefinedVariables = varDataSource.getUserDefinedVariables().keySet();
@@ -158,20 +168,42 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		return returnValue;
 	}
 
-	private double handleAsk() throws ClassNotFoundException, NoSuchMethodException,
+	private double handleAsk(String keyword) throws ClassNotFoundException, NoSuchMethodException,
 			InstantiationException, IllegalAccessException, InvocationTargetException {
 		double res=erroneousReturnValue; // 0 is set for initialization purposes
-		String[] turtles = listQueue.poll();
-		List<Integer> turtlesToAsk = new ArrayList<Integer>();
-		for(String turtle: turtles){
-			turtlesToAsk.add(Integer.parseInt(turtle));
+		Queue<String[]> newListQueue = new LinkedList<String[]>();
+		while(!listQueue.isEmpty()){
+			newListQueue.add(listQueue.poll());
 		}
-		String[] commands = listQueue.poll();
-		String newCommandAsString = createStringCommandFromArray(commands);
+		List<Integer> turtlesToAsk = new ArrayList<Integer>();
+		if(keyword.equalsIgnoreCase(rb.getString("ask"))) turtlesToAsk = createTurtlesForAsk(turtlesToAsk, newListQueue);
+		else turtlesToAsk = createTurtlesForAskWith(turtlesToAsk, newListQueue);
+		String[] commands = newListQueue.poll();
+		String newCommandAsString = createStringCommandFromArray(commands);	
 		for(int turtleID: turtlesToAsk){
 			res = parseInputForActiveTurtles(newCommandAsString, turtleID);
 		}
 		return res;
+	}
+
+	private List<Integer> createTurtlesForAskWith(List<Integer> turtlesToAsk, Queue<String[]> newListQueue) throws ClassNotFoundException,
+			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+		String[] command = newListQueue.poll();
+		double valueOfCommand = interpretCommand(command, 0);
+		
+		//TODO: currently adds value of command as index of turtle
+		if(valueOfCommand!=0){
+			turtlesToAsk.add((int)valueOfCommand);
+		}
+		return turtlesToAsk;
+	}
+
+	private List<Integer> createTurtlesForAsk(List<Integer> turtlesToAsk, Queue<String[]> newListQueue) {
+		String[] turtles = newListQueue.poll();
+		for(String turtle: turtles){
+			turtlesToAsk.add(Integer.parseInt(turtle));
+		}
+		return turtlesToAsk;
 	}
 	
 	private double handleVariable(String[] input, int searchStartIndex) {
@@ -209,10 +241,16 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	IllegalArgumentException, InvocationTargetException{
 		
 		if(keyword.equalsIgnoreCase(rb.getString("makevar"))){
-			return handleMakeVariable(input, parsed, searchStartIndex);
+			return makevariable(input, parsed, searchStartIndex);
 		}
 		else if(keyword.equalsIgnoreCase(rb.getString("repeat"))){
-			return handleRepeat(input, searchStartIndex);
+			return repeat(input, searchStartIndex, 1);
+		}
+		else if(keyword.equalsIgnoreCase(rb.getString("dotimes"))){
+			return 0;
+		}	
+		else if(keyword.equalsIgnoreCase(rb.getString("for"))){
+			return 0;
 		}
 		else if(keyword.equalsIgnoreCase(rb.getString("if"))){
 			return handleIf(input, searchStartIndex);
@@ -223,8 +261,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		else if(keyword.equalsIgnoreCase(rb.getString("to"))){
 			return handleTo();
 		}
-		
-		//TODO: Implement dotimes, for
 		else return 0;
 	}
 
@@ -265,20 +301,20 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		return res;
 	}
 
-	private double handleRepeat(String[] input, int searchStartIndex) throws ClassNotFoundException,
+	private double repeat(String[] input, int searchStartIndex, int increment) throws ClassNotFoundException,
 			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		double[] param = parseParam(input, searchStartIndex+1, 1);
 		repCount = 0;
 		double res = 0;
 		String[] temp = listQueue.poll();
-		for(int i=0;i<param[0];i++){
+		for(int i=0;i<param[0];i = i + increment){
 			res = interpretCommand(temp, 0);
 			repCount++;
 		}
 		return res;
 	}
 
-	private double handleMakeVariable(String[] input, String[] parsed, int searchStartIndex) throws ClassNotFoundException,
+	private double makevariable(String[] input, String[] parsed, int searchStartIndex) throws ClassNotFoundException,
 			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		double[] param = parseParam(input, searchStartIndex+2, 1);
 		if(parsed[searchStartIndex+1].equalsIgnoreCase(rb.getString("VariableLabel"))){
@@ -391,7 +427,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		String[] split = input.split("\\s+");
 		for(String elem: split){
 			if(elem.equalsIgnoreCase(rb.getString("ask"))){
-				System.out.println("xxxx");
 				return true;
 			}
 		}
@@ -407,6 +442,11 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	private boolean isAskCommand(String input){
 		return input.equalsIgnoreCase(rb.getString("ask")) || input.equalsIgnoreCase(rb.getString("askwith"));
+	}
+	
+	private double presentEmptyListMessage() {
+		errorPresenter.presentError("List is Empty!");
+		return 0;
 	}
 	
 	/**

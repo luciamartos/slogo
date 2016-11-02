@@ -50,12 +50,17 @@ public class CanvasActions {
 	private Pane pane;
 	private double imageWidth;
 	private double imageHeight;
+	private double canvasHeight;
+	private double canvasWidth;
+	private int animationSpeed;
 
 	private Map<Integer, ImageView> map;
 
 	public CanvasActions(double canvasWidth, double canvasHeight, double imWidth, double imHeight) {
 		initializePane(canvasWidth, canvasHeight);
 		initializeCanvas(canvasWidth, canvasHeight);
+		this.canvasHeight = canvasHeight;
+		this.canvasWidth = canvasWidth;
 		imageWidth = imWidth;
 		imageHeight = imHeight;
 		pane.getChildren().addAll(canvas);
@@ -139,13 +144,9 @@ public class CanvasActions {
 	}
 
 	// where is the method that takes in the string?
-	public void setTurtleImage(int id, Image image) {
+	public void setTurtleImage(int id, String image) {
 		ImageView turtleImgView = map.get(id);
-		turtleImgView.setImage(image);
-		//
-		// pane.getChildren().remove(turtleImgView);
-		// turtleImgView = new ImageView(image);
-		// addTurtleAtXY();
+		turtleImgView.setImage(FileChooserPath.selectImage(IMAGE_PATH+image+".png", 50, 50));
 	}
 
 	public void initializeTurtle(int id, double xLoc, double yLoc, double heading, boolean isShowing, EventHandler<MouseEvent> e) {
@@ -163,5 +164,14 @@ public class CanvasActions {
 
 	public boolean turtleExists(int currId) {
 		return map.get(currId) != null;
+	}
+
+	public void clearCanvas() {
+		gc.clearRect(0, 0, canvasWidth, canvasHeight);
+		
+	}
+	
+	public void setAnimationSpeed(int speed){
+		animationSpeed = speed;
 	}
 }

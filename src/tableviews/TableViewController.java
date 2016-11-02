@@ -19,15 +19,31 @@ public class TableViewController {
 		turtleVariableTableView = new VariableTableView("", "Name", "Value");
 		userDefinedVariableTableView = new VariableTableView("User Defined Variables", "Name", "Value");
 		userDefinedCommandTableView = new VariableTableView("User Defined Commands", "Name", "Value");
-		colorTableView = new VariableTableView("Color Mapping", "ID Number", "Color (R, G, B)");
+		colorTableView = new VariableTableView("Parameter Mappings", "ID Number", "Value");
 
 	}
 	
-	public void updateColorList(Map<Integer, RGBColor> colorMap) {
+	public void updateMapList(Map<Integer, RGBColor> colorMap, Map<Integer, String> penTypeMap, Map<Integer, String> shapeMap) {
 		ObservableList<Variable> data = FXCollections.observableArrayList();
+		
+		data.add(new Variable("COLOR (R, G, B)", ""));
 		for(Integer i: colorMap.keySet()){
 			String hexColor = "("+colorMap.get(i).getRed()+", "+colorMap.get(i).getGreen()+", "+colorMap.get(i).getBlue()+")";
 			data.add(new Variable(Integer.toString(i),hexColor));
+		}
+		
+		data.add(new Variable("",""));
+		
+		data.add(new Variable("PEN TYPE", ""));
+		for(Integer i: penTypeMap.keySet()){
+			data.add(new Variable(Integer.toString(i),penTypeMap.get(i)));
+		}
+		
+		data.add(new Variable("",""));
+		
+		data.add(new Variable("SHAPE", ""));
+		for(Integer i: shapeMap.keySet()){
+			data.add(new Variable(Integer.toString(i),shapeMap.get(i)));
 		}
 		colorTableView.setItems(data);
 	}
