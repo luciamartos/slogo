@@ -104,7 +104,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		for(SubInterpreter elem: listOfSubInterpreters){
 			if(elem.canHandle(keyword)){	
 				if(elem.needList()){
-					if(listQueue.isEmpty()) errorPresenter.presentError("List is Empty!");
+					if(listQueue.isEmpty()) returnValue = presentEmptyListMessage();
 					elem.setList(listQueue);
 				}
 				returnValue = elem.handle(input, keyword, param, searchStartIndex);
@@ -442,6 +442,11 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	private boolean isAskCommand(String input){
 		return input.equalsIgnoreCase(rb.getString("ask")) || input.equalsIgnoreCase(rb.getString("askwith"));
+	}
+	
+	private double presentEmptyListMessage() {
+		errorPresenter.presentError("List is Empty!");
+		return 0;
 	}
 	
 	/**
