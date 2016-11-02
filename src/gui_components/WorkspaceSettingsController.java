@@ -37,7 +37,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class WorkspaceSettingsController extends Observable {
-
+	/**
+	 * @author Lucia Martos
+	 */
 	private static final String IMAGE_PATH = "resources/images/";
 
 	private static final int PADDING = 4;

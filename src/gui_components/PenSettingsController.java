@@ -21,7 +21,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
+/**
+ * @author Lucia Martos
+ */
 public class PenSettingsController extends Observable {
 
 	private static final String IMAGE_PATH = "resources/images/";
@@ -98,7 +100,6 @@ public class PenSettingsController extends Observable {
 		thicknessSlider.setMax(MAX_THICKNESS);
 		thicknessSlider.setValue(INIT_THICKNESS);
 		thicknessSlider.setMaxWidth(100);
-		
 		thicknessSlider.valueProperty().addListener(new ChangeListener<Number>(){
 			public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val){
 				setChanged();
@@ -106,7 +107,6 @@ public class PenSettingsController extends Observable {
 				notifyObservers();
 			}
 		});
-		//VBox tempBox = makeLabel(thicknessSlider, "Pen thickness");
 		thicknessBox.getChildren().add(thicknessSlider);
 		Label label = new Label("Pen\nThickness");
 		label.setFont(Font.font ("Verdana", 8));

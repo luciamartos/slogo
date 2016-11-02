@@ -20,7 +20,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.XMLReader;
-
+/**
+ * @author Lucia Martos
+ */
 public class GeneralSettingsController extends Observable implements ReadCommandFileInterface {
 	private Properties viewProperties;
 	private HBox hBox;

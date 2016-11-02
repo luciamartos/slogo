@@ -31,17 +31,20 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
+/**
+ * @author Lucia Martos
+ */
 public class TurtleSettingsController extends Observable {
 
 	private static final String IMAGE_PATH = "resources/images/";
-	private static final double MIN_SPEED = 0;
-	private static final double MAX_SPEED = 1000;
-	private static final double INIT_SPEED = 10;
+	private static final int MIN_SPEED = 1;
+	private static final int MAX_SPEED = 100;
+	private static final int INIT_SPEED = 8;
 	private int newAnimationSpeed;
 
 	private VBox vBox;
@@ -54,23 +57,30 @@ public class TurtleSettingsController extends Observable {
 		vBox.getChildren().add(new Label("Turtle settings"));
 		vBox.getChildren().add(initializeTurtleImageSetting());
 		vBox.getChildren().add(initializeAnimationSpeed());
+		newAnimationSpeed = INIT_SPEED;
 	}
 
 
 
 	private Node initializeAnimationSpeed(){
-		Slider turtleNumberSlider = new Slider();
-		turtleNumberSlider.setMin(MIN_SPEED);
-		turtleNumberSlider.setMax(MAX_SPEED);
-		turtleNumberSlider.setValue(INIT_SPEED);
-		turtleNumberSlider.valueProperty().addListener(new ChangeListener<Number>(){
+		HBox animationBox = new HBox(5);
+		Slider animationSpeedSlider = new Slider();
+		animationSpeedSlider.setMin(MIN_SPEED);
+		animationSpeedSlider.setMax(MAX_SPEED);
+		animationSpeedSlider.setValue(INIT_SPEED);
+		animationSpeedSlider.setMaxWidth(100);
+		animationSpeedSlider.valueProperty().addListener(new ChangeListener<Number>(){
 			public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val){
 				setChanged();
 				newAnimationSpeed = new_val.intValue();
 				notifyObservers();
 			}
 		});
-		return turtleNumberSlider;
+		animationBox.getChildren().add(animationSpeedSlider);
+		Label label = new Label("Animation\nSpeed");
+		label.setFont(Font.font ("Verdana", 8));
+		animationBox.getChildren().add(label);
+		return animationBox;
 	}
 	
 	private Node initializeTurtleImageSetting() {

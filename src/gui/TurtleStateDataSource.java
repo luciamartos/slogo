@@ -11,6 +11,7 @@ public interface TurtleStateDataSource {
 	public boolean getTurtleIsDrawing(int turtleID);
 	public int getShape(int turtleID);
 	
+	public int getNumberOfTurtles();
 	public Iterator<Integer> getTurtleIDs();
 	public List<Integer> getActiveTurtleIDs();
 }

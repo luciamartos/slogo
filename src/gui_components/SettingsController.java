@@ -20,7 +20,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class SettingsController extends Observable {
-
+	/**
+	 * @author Lucia Martos
+	 */
 	private static final String IMAGE_PATH = "resources/images/";
 
 	private static final int PADDING = 4;

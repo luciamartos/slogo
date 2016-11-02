@@ -6,9 +6,8 @@ import java.util.List;
 import model.PathLine;
 
 /**
-	 * This is a class to convert back end data to front end data
-	 * 
-	 */
+ * @author Lucia Martos
+ */
 
 public class TurtleDataTranslator {
 	private double width;
@@ -17,7 +16,6 @@ public class TurtleDataTranslator {
 	private double imageHeight;
 	
 	public TurtleDataTranslator(double canvasWidth, double canvasHeight, double imWidth, double imHeight) {
-		// TODO Auto-generated constructor stub
 		width = canvasWidth;
 		height = canvasHeight;
 		imageWidth = imWidth;
@@ -29,6 +27,7 @@ public class TurtleDataTranslator {
 	}
 	
 	public double convertYImageCordinate(double yCor){
+		System.out.println(height/2 - yCor-imageHeight/2);
 			return height/2 - yCor-imageHeight/2;
 	}
 	
