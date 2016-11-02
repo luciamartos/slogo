@@ -250,4 +250,9 @@ public class TurtleStatesController extends Observable implements interpreter.Tu
 			turtle.setActive(true);
 		}
 	}
+
+	@Override
+	public int getNumberOfTurtles() {
+		return this.turtles.size();
+	}
 }
