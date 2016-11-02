@@ -381,8 +381,8 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		while (pathLine.hasNext()) {
 			count++;
 			PathLine currPathLine = pathLine.next();
-			System.out.println(currPathLine.getPenColor().getRed() + " " + currPathLine.getPenColor().getGreen() + " "
-					+ currPathLine.getPenColor().getBlue());
+//			System.out.println(currPathLine.getPenColor().getRed() + " " + currPathLine.getPenColor().getGreen() + " "
+//					+ currPathLine.getPenColor().getBlue());
 			canvasActions.drawPath(
 					Color.rgb(currPathLine.getPenColor().getRed(), currPathLine.getPenColor().getGreen(),
 							currPathLine.getPenColor().getBlue()),
@@ -446,12 +446,28 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 
 	public void update(PenSettingsController obs, Object o) {
 		if (obs.getNewPenColor() != null) {
-			for (Integer myElem : colorMap.keySet()) {
-				if (colorMap.get(myElem).equals(obs.getNewPenColor())) {
-					turtleActionsHandler.setPenColor(myElem);
-					break;
+			int i =0;
+			if(!colorMap.containsValue(obs.getNewPenColor())){
+				while(true){
+					if(!colorMap.containsKey(i)) break;
+						i++;
+				}
+				colorMap.put(i, new RGBColor(obs.getNewPenColor()));
+				turtleActionsHandler.setPenColor(i);
+			}
+			if(i==0){
+				for(Integer myElem:colorMap.keySet()){
+					if (colorMap.get(myElem).equals(obs.getNewPenColor())) {
+						turtleActionsHandler.setPenColor(myElem);
+						break;
+					}
 				}
 			}
+//			for (Integer myElem : colorMap.keySet()) {
+//				if (colorMap.get(myElem).equals(obs.getNewPenColor())) {
+//					break;
+//				}
+//			}
 		}
 
 		if (obs.getNewPenType() != null && penTypeMap.containsKey(obs.getNewPenType())) {

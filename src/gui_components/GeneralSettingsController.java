@@ -84,7 +84,7 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	private Node initalizeCommandFileLoader() {
-		CommandFileUploader myUploader = new CommandFileUploader(this, "Command file", "data/examples/simple/");
+		CommandFileUploader myUploader = new CommandFileUploader(this, "Command file", "data/examples/loops/");
 		return myUploader.getFileUploaderButton();
 	}
 
