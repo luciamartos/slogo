@@ -1,4 +1,4 @@
-package XMLparser;
+package fileIO;
 
 import java.io.File;
 import java.util.Iterator;

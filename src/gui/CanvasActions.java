@@ -9,6 +9,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
 
+import fileIO.XMLReader;
 import general.Properties;
 import javafx.animation.Animation;
 import javafx.animation.PathTransition;
@@ -40,7 +41,6 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 import model.PathLine;
 import model.RGBColor;
-import model.XMLReader;
 
 public class CanvasActions {
 	private static final RGBColor COLOR_CANVAS = new RGBColor(255, 255, 255);

@@ -18,8 +18,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import XMLparser.PrintWriterClass;
-import XMLparser.XMLWriter;
+import fileIO.CommandPrinter;
+import fileIO.XMLWriter;
 import general.MainController;
 import general.NewSlogoInstanceCreator;
 import general.Properties;
@@ -535,7 +535,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		DateFormat df = new SimpleDateFormat("MM_dd_yyyy_HH_mm_ss");
 		Date today = Calendar.getInstance().getTime();
 		String reportDate = df.format(today);
-		PrintWriterClass myWriter = new PrintWriterClass("history_at_" + reportDate, pastCommands);
+		CommandPrinter myWriter = new CommandPrinter("history_at_" + reportDate, pastCommands);
 		
 		
 	}

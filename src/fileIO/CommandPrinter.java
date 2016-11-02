@@ -1,4 +1,4 @@
-package XMLparser;
+package fileIO;
 
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -17,11 +17,11 @@ import javafx.collections.ObservableList;
  * @author Lucia Martos
  */
 
-public class PrintWriterClass {
+public class CommandPrinter {
 	private static final String MY_PATH = "data/examples/";
 
 
-	public PrintWriterClass(String fileName, ObservableList<String> commands) {
+	public CommandPrinter(String fileName, ObservableList<String> commands) {
 		PrintWriter pwFile = null;
 		try {
 			pwFile = new PrintWriter(MY_PATH + fileName);

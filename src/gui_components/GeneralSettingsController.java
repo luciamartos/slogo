@@ -2,7 +2,8 @@ package gui_components;
 
 import java.util.Observable;
 
-import XMLparser.XMLWriter;
+import fileIO.XMLReader;
+import fileIO.XMLWriter;
 import general.NewSlogoInstanceCreator;
 
 import general.Properties;
@@ -19,7 +20,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.XMLReader;
 
 public class GeneralSettingsController extends Observable implements ReadCommandFileInterface {
 	private Properties viewProperties;

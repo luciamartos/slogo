@@ -1,6 +1,6 @@
 package gui_components;
 
-import model.XMLReader;
+import fileIO.XMLReader;
 /**
  * @author Lucia Martos
  */
