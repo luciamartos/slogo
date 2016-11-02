@@ -215,16 +215,14 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	IllegalArgumentException, InvocationTargetException{
 		
 		if(keyword.equalsIgnoreCase(rb.getString("if"))) return handleIf(input, searchStartIndex);	
+		else if(keyword.equalsIgnoreCase(rb.getString("dotimes")) || keyword.equalsIgnoreCase(rb.getString("for"))){
+			errorPresenter.presentError(rb.getString("UnimplementedCommandMessage"));
+			return 0;
+		}
 		
 		Class<?>[] args = createArgsForControl();
 		Method method = this.getClass().getDeclaredMethod(keyword, args);
 		return (double) method.invoke(this, input, parsed, searchStartIndex);
-//		else if(keyword.equalsIgnoreCase(rb.getString("dotimes"))){
-//			return 0;
-//		}	
-//		else if(keyword.equalsIgnoreCase(rb.getString("for"))){
-//			return 0;
-//		}
 	}
 
 	private Class<?>[] createArgsForControl() {

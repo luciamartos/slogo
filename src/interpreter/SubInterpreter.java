@@ -17,9 +17,8 @@ public abstract class SubInterpreter {
 	abstract SlogoUpdate getModel();
 	abstract boolean needList();
 	
-	
-	void setList(Queue<String[]> queue){
-		this.listQueue = queue;
+	void setList(Queue<String[]> listQueue){
+		this.listQueue = listQueue;
 	}
 	
 	protected Class<?>[] createDoubleArgs(int num){
