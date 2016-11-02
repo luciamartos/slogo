@@ -137,14 +137,15 @@ public class CanvasActions {
 	}
 
 	private void makeAnimationRotateTurtle(ImageView turtleImgView, double heading) {
-		RotateTransition rt = new RotateTransition(Duration.millis(300), turtleImgView);
+		RotateTransition rt = new RotateTransition(Duration.millis(3000/animationSpeed), turtleImgView);
 		rt.setByAngle(heading - turtleImgView.getRotate());
 		rt.play();
 		return;
 	}
 
 	private void makeAnimationMovementTurtle(int id, ImageView turtleImgView, double x2, double y2) {
-		TranslateTransition pt = new TranslateTransition(Duration.millis(100), turtleImgView);
+		System.out.println(animationSpeed);
+		TranslateTransition pt = new TranslateTransition(Duration.millis(1500/animationSpeed), turtleImgView);
 		pt.setByX(x2 - turtleImgView.getTranslateX());
 		pt.setByY(y2 - turtleImgView.getTranslateY());
 		pt.delayProperty();
