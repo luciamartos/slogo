@@ -6,12 +6,14 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class VariableTableView<Variable> extends TableView<Variable> {
+	
+	TableColumn<Variable, String> variables;
 
 	public VariableTableView(String title, String leftSubTitle, String rightSubTitle) {
 		setEditable(true);
 		managedProperty().bind(this.visibleProperty());
 
-		TableColumn<Variable, String> variables = new TableColumn<Variable, String>(title);
+		variables = new TableColumn<Variable, String>(title);
 		variables.setEditable(true);
 
 		TableColumn<Variable, String> variableNames = new TableColumn<Variable, String>(leftSubTitle);
@@ -24,6 +26,10 @@ public class VariableTableView<Variable> extends TableView<Variable> {
 
 		getColumns().add(variables);
 		setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+	}
+	
+	public void setTitle(String title){
+		variables.setText(title);
 	}
 
 }

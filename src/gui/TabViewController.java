@@ -44,11 +44,13 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import model.PathLine;
 import model.RGBColor;
+import tableviews.TableViewController;
 import tableviews.VariableTableView;
 
 /**
@@ -71,11 +73,11 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 
 	private BoardStateDataSource boardStateDataSource;
 	private TurtleStateDataSource turtleStateDataSource;
-
 	private BoardActionsHandler boardActionsHandler;
 	private TurtleActionsHandler turtleActionsHandler;
-
 	private SlogoCommandHandler commandHandler;
+
+	private TableViewController tableViewController;
 	private TurtleDataTranslator turtleTranslator;
 	private ListView<String> pastCommandsListView;
 	private Tab tab;
@@ -98,6 +100,8 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		for (int i = 0; i < types.length; i++) {
 			penTypeMap.put(i, types[i]);
 		}
+		tableViewController = new TableViewController();
+
 		setupTab(tabTitle);
 		tabPane.getTabs().add(tab);
 		turtleTranslator = new TurtleDataTranslator(viewProperties.getDoubleProperty("canvas_width"),
@@ -132,13 +136,13 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		canvasAndTablesBox.getChildren().add(createPastCommandsListView());
 
 		VBox leftTableBox = new VBox(15);
-		leftTableBox.getChildren().add(createDefaultVariableTableView());
-		leftTableBox.getChildren().add(createColorTableView());
+		leftTableBox.getChildren().add(tableViewController.getDefaultVariableTableView());
+		leftTableBox.getChildren().add(tableViewController.getColorTableView());
 		canvasAndTablesBox.getChildren().add(leftTableBox);
 
 		VBox rightTableBox = new VBox(15);
-		rightTableBox.getChildren().add(createUserDefinedVariableTableView());
-		rightTableBox.getChildren().add(createUserDefinedCommandTableView());
+		rightTableBox.getChildren().add(tableViewController.getUserDefinedVariableTableView());
+		rightTableBox.getChildren().add(tableViewController.getUserDefinedCommandTableView());
 		canvasAndTablesBox.getChildren().add(rightTableBox);
 
 		canvasAndCommandsBox.getChildren().add(createCanvas());
@@ -235,26 +239,6 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		return pastCommandsListView;
 	}
 
-	private Node createDefaultVariableTableView() {
-		defaultVariableTableView = new VariableTableView("Workspace Parameters", "Name", "Value");
-		return defaultVariableTableView;
-	}
-
-	private Node createUserDefinedVariableTableView() {
-		userDefinedVariableTableView = new VariableTableView("User Defined Variables", "Name", "Value");
-		return userDefinedVariableTableView;
-	}
-
-	private Node createUserDefinedCommandTableView() {
-		userDefinedCommandTableView = new VariableTableView("User Defined Commands", "Name", "Value");
-		return userDefinedCommandTableView;
-	}
-
-	private Node createColorTableView() {
-		colorTableView = new VariableTableView("Color Mapping", "ID Number", "Color");
-		return colorTableView;
-	}
-
 	private Node createCommandInputter() {
 		EventHandler<ActionEvent> runCommandHandler = event -> {
 			runCommandFromInputLine();
@@ -300,8 +284,6 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 
 	}
 
-	// currently only observable this controller observes is settingsController
-	// DOES THIS ACCOUNT FOR MY UPDATE THING TOO?
 	public void update(Observable obs, Object o) {
 		if (o != null) {
 			errorConsole.displayErrorMessage(o.toString());
@@ -312,20 +294,22 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 				if (c.equals(BoardStateDataSource.class)) {
 					update = getClass().getMethod("update", BoardStateDataSource.class, Object.class);
 					update.invoke(this, obs, o);
+					updateVariables();
 					return;
 				} else if (c.equals(TurtleStateDataSource.class)) {
 					update = getClass().getMethod("update", TurtleStateDataSource.class, Object.class);
 					update.invoke(this, obs, o);
+					updateVariables();
 					return;
 				}
 			}
 			update = getClass().getMethod("update", obs.getClass(), Object.class);
 			update.invoke(this, obs, o);
-
+			updateVariables();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		updateVariables();
+
 	}
 
 	@Override
@@ -350,12 +334,24 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 	}
 
 	private void initializeTurtle(int currId) {
+		
+		EventHandler<MouseEvent> e = new EventHandler<MouseEvent>() {
+
+		     @Override
+		     public void handle(MouseEvent event) {
+		    	 System.out.println(currId);
+		         turtleActionsHandler.toggleTurtle(currId);
+		         event.consume();
+		     }
+		};
+		
+		
 
 		canvasActions.initializeTurtle(currId,
 				turtleTranslator.convertXImageCordinate(turtleStateDataSource.getXCoordinate(currId)),
 				turtleTranslator.convertYImageCordinate(turtleStateDataSource.getYCoordinate(currId)),
 				turtleTranslator.convertAngle(turtleStateDataSource.getAngle(currId)),
-				turtleStateDataSource.getTurtleIsShowing(currId));
+				turtleStateDataSource.getTurtleIsShowing(currId), e);
 
 	}
 
@@ -366,41 +362,43 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		while (pathLine.hasNext()) {
 			count++;
 			PathLine currPathLine = pathLine.next();
-			System.out.println(currPathLine.getPenColor().getRed()+" " + currPathLine.getPenColor().getGreen() + " " +
-					currPathLine.getPenColor().getBlue());
-			canvasActions.drawPath(Color.rgb(currPathLine.getPenColor().getRed(), currPathLine.getPenColor().getGreen(),
+			canvasActions.drawPath(
+					Color.rgb(currPathLine.getPenColor().getRed(), currPathLine.getPenColor().getGreen(),
 							currPathLine.getPenColor().getBlue()),
-					currPathLine.getPenThickness(), turtleTranslator.convertXCordinate(currPathLine.getX1()), turtleTranslator.convertYCordinate(currPathLine.getY1()), turtleTranslator.convertXCordinate(currPathLine.getX2()),
-					turtleTranslator.convertYCordinate(currPathLine.getY2()),penTypeMap.get(currPathLine.getPenType()));
+					currPathLine.getPenThickness(), turtleTranslator.convertXCordinate(currPathLine.getX1()),
+					turtleTranslator.convertYCordinate(currPathLine.getY1()),
+					turtleTranslator.convertXCordinate(currPathLine.getX2()),
+					turtleTranslator.convertYCordinate(currPathLine.getY2()),
+					penTypeMap.get(currPathLine.getPenType()));
 
 		}
-		System.out.println(count);
+		// System.out.println(count);
 
 		canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getBackgroundColorIndex()));
 	}
 
 	public void update(GeneralSettingsController obs, Object o) {
-//		colorMap = boardStateDataSource.getColorMap();
-//		if (obs.getNewImage() != null) {
-//			Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
-//			while (turtleIds.hasNext()) {
-//				int currId = turtleIds.next();
-//				canvasActions.setTurtleImage(currId, obs.getNewImage());
-//			}
-//		}
+		// colorMap = boardStateDataSource.getColorMap();
+		// if (obs.getNewImage() != null) {
+		// Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
+		// while (turtleIds.hasNext()) {
+		// int currId = turtleIds.next();
+		// canvasActions.setTurtleImage(currId, obs.getNewImage());
+		// }
+		// }
 
 		if (obs.getNewCommandLineFromFile() != null)
 			runCommand(obs.getNewCommandLineFromFile());
-//		if (obs.getNewBackgroundColor() != -1)
-//			canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getNewBackgroundColor()));
-//		if (obs.getNewLanguage() != null)
-//			commandHandler.setLanguage(this, obs.getNewLanguage());
-//		if (obs.getNewPenColor() != -1)
-//			turtleActionsHandler.setPenColor(obs.getNewPenColor());
-//		if (obs.getNewPenType() != -1)
-//			turtleActionsHandler.setPenType(obs.getNewPenType());
-//		if (obs.getNewPenThickness() != -1)
-//			turtleActionsHandler.setPenThickness(obs.getNewPenThickness());
+		// if (obs.getNewBackgroundColor() != -1)
+		// canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getNewBackgroundColor()));
+		// if (obs.getNewLanguage() != null)
+		// commandHandler.setLanguage(this, obs.getNewLanguage());
+		// if (obs.getNewPenColor() != -1)
+		// turtleActionsHandler.setPenColor(obs.getNewPenColor());
+		// if (obs.getNewPenType() != -1)
+		// turtleActionsHandler.setPenType(obs.getNewPenType());
+		// if (obs.getNewPenThickness() != -1)
+		// turtleActionsHandler.setPenThickness(obs.getNewPenThickness());
 	}
 
 	public void update(TurtleSettingsController obs, Object o) {
@@ -446,6 +444,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 
 	public void setBoardStateDataSource(BoardStateDataSource boardStateDataSource) {
 		this.boardStateDataSource = boardStateDataSource;
+		colorMap = boardStateDataSource.getColorMap();
 	}
 
 	public void setTurtleStateDataSource(TurtleStateDataSource turtleStateDataSource) {
@@ -468,71 +467,10 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 	}
 
 	public void updateVariables() {
-
-		ObservableList<Variable> defaultVariableList = createDefaultVariablesList();
-		defaultVariableTableView.setItems(defaultVariableList);
-
-		ObservableList<Variable> userDefinedVariablesList = createUserDefinedVariablesList();
-		userDefinedVariableTableView.setItems(userDefinedVariablesList);
-
-		ObservableList<Variable> userDefinedVariableList = createUserDefinedCommandsList();
-		userDefinedCommandTableView.setItems(userDefinedVariableList);
-
-		ObservableList<Variable> colorList = createColorList();
-		colorTableView.setItems(colorList);
-
-	}
-
-	private ObservableList<Variable> createColorList() {
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("1", "yellow");
-		map.put("2", "red");
-
-		ObservableList<Variable> data = FXCollections.observableArrayList();
-		for (String s : map.keySet()) {
-			data.add(new Variable(s, map.get(s)));
-		}
-		return data;
-	}
-
-	private ObservableList<Variable> createDefaultVariablesList() {
-
-		ObservableList<Variable> data = FXCollections.observableArrayList();
-		data.add(new Variable("X Coordinate",
-				Double.toString(turtleStateDataSource.getXCoordinate(currentlySelectedID))));
-		data.add(new Variable("Y Coordinate",
-				Double.toString(turtleStateDataSource.getYCoordinate(currentlySelectedID))));
-		data.add(new Variable("Angle", Double.toString(turtleStateDataSource.getAngle(currentlySelectedID))));
-		data.add(new Variable("Turtle is Showing",
-				Boolean.toString(turtleStateDataSource.getTurtleIsShowing(currentlySelectedID))));
-		data.add(new Variable("Pen is Down",
-				Boolean.toString(turtleStateDataSource.getTurtleIsDrawing(currentlySelectedID))));
-
-		return data;
-	}
-
-	private ObservableList<Variable> createUserDefinedVariablesList() {
-
-		ObservableList<Variable> data = FXCollections.observableArrayList();
-		Map<String, String> map = boardStateDataSource.getUserDefinedVariables();
-
-		for (String s : map.keySet()) {
-			if (s.charAt(0) == ':')
-				data.add(new Variable(s.substring(1), map.get(s)));
-		}
-		return data;
-	}
-
-	private ObservableList<Variable> createUserDefinedCommandsList() {
-		Map<String, String> map = boardStateDataSource.getUserDefinedVariables();
-
-		ObservableList<Variable> data = FXCollections.observableArrayList();
-		for (String s : map.keySet()) {
-			if (s.charAt(0) != ':')
-				data.add(new Variable(s.substring(1), map.get(s)));
-		}
-		return data;
-
+		tableViewController.updateTurtleVariablesList(turtleStateDataSource, currentlySelectedID);
+		tableViewController.updateUserDefinedVariablesList(boardStateDataSource);
+		tableViewController.updateUserDefinedCommandsList(boardStateDataSource);
+		tableViewController.updateColorList(colorMap);
 	}
 
 	public void setCommandHandler(SlogoCommandHandler commandHandler) {

@@ -16,6 +16,7 @@ import javafx.animation.RotateTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -25,6 +26,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -146,13 +148,14 @@ public class CanvasActions {
 		// addTurtleAtXY();
 	}
 
-	public void initializeTurtle(int id, double xLoc, double yLoc, double heading, boolean isShowing) {
+	public void initializeTurtle(int id, double xLoc, double yLoc, double heading, boolean isShowing, EventHandler<MouseEvent> e) {
 		ImageView turtleImgView = new ImageView(
 				FileChooserPath.selectImage(IMAGE_PATH + "turtle.png", imageWidth, imageHeight));
 		turtleImgView.setTranslateX(xLoc);
 		turtleImgView.setTranslateY(yLoc);
 		turtleImgView.setRotate(heading);
 		turtleImgView.setVisible(isShowing);
+		turtleImgView.addEventHandler(MouseEvent.MOUSE_CLICKED, e);
 		map.put(id, turtleImgView);
 		pane.getChildren().add(turtleImgView);
 
