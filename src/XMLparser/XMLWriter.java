@@ -65,14 +65,13 @@ public class XMLWriter {
 		Element backgroundcolor = doc.createElement("backgroundcolor");
 		backgroundcolor.appendChild(doc.createTextNode(Integer.toString(boardStateDataSource.getBackgroundColorIndex())));
 		workspace.appendChild(backgroundcolor);
-		boardStateDataSource.getBackgroundColorIndex()
 
 //		Element language = doc.createElement("language");
 //		language.appendChild(doc.createTextNode("NEED TO DO THIS"));
 //		workspace.appendChild(language);
 
 		Element turtlecount = doc.createElement("turtlecount");
-		turtlecount.appendChild(doc.createTextNode("NEED TO IMPLEMENT"));
+		turtlecount.appendChild(doc.createTextNode(Integer.toString(turtleStateDataSource.getNumberOfTurtles())));
 		workspace.appendChild(turtlecount);
 		
 		// turtle elements

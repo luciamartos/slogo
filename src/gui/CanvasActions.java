@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.BasicStroke;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,6 +33,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.HLineTo;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
@@ -41,6 +43,7 @@ import javafx.util.Duration;
 import model.PathLine;
 import model.RGBColor;
 import model.XMLReader;
+
 /**
  * @author Lucia Martos
  */
@@ -97,20 +100,19 @@ public class CanvasActions {
 		return canvas;
 	}
 
- 	public void drawPath(Color color, int penThickness, double x1, double y1, double x2, double y2, String penType) {
+	public void drawPath(Color color, int penThickness, double x1, double y1, double x2, double y2, String penType) {
 		gc.setStroke(color);
 		gc.setLineWidth(penThickness);
 		gc.strokeLine(x1, y1, x2, y2);
 		gc.setFill(color);
 		handleDifferentPenTypes(penType);
+
 	}
 
 	private void handleDifferentPenTypes(String penType) {
 		if (penType.equals("dashed")) { // THESE ARENT WORKING EXACTLY HOW THEY
-										// SHOULD
-			System.out.println("dfas");
-			gc.setLineDashes(6.0f);
-			gc.setLineDashOffset(0.0f);
+			gc.setLineDashes(2.0f);
+			gc.setLineDashOffset(1.0f);
 		}
 		if (penType.equals("dotted")) {
 			gc.setLineDashes(3.0f);
@@ -130,7 +132,7 @@ public class CanvasActions {
 	}
 
 	private void makeAnimationRotateTurtle(ImageView turtleImgView, double heading) {
-		RotateTransition rt = new RotateTransition(Duration.millis(3000/animationSpeed), turtleImgView);
+		RotateTransition rt = new RotateTransition(Duration.millis(3000 / animationSpeed), turtleImgView);
 		rt.setByAngle(heading - turtleImgView.getRotate());
 		rt.play();
 		return;
@@ -138,7 +140,7 @@ public class CanvasActions {
 
 	private void makeAnimationMovementTurtle(int id, ImageView turtleImgView, double x2, double y2) {
 		System.out.println(animationSpeed);
-		TranslateTransition pt = new TranslateTransition(Duration.millis(1500/animationSpeed), turtleImgView);
+		TranslateTransition pt = new TranslateTransition(Duration.millis(1500 / animationSpeed), turtleImgView);
 		pt.setByX(x2 - turtleImgView.getTranslateX());
 		pt.setByY(y2 - turtleImgView.getTranslateY());
 		pt.delayProperty();
@@ -150,10 +152,11 @@ public class CanvasActions {
 	// where is the method that takes in the string?
 	public void setTurtleImage(int id, String image) {
 		ImageView turtleImgView = map.get(id);
-		turtleImgView.setImage(FileChooserPath.selectImage(IMAGE_PATH+image+".png", 50, 50));
+		turtleImgView.setImage(FileChooserPath.selectImage(IMAGE_PATH + image + ".png", 50, 50));
 	}
 
-	public void initializeTurtle(int id, double xLoc, double yLoc, double heading, boolean isShowing, EventHandler<MouseEvent> e) {
+	public void initializeTurtle(int id, double xLoc, double yLoc, double heading, boolean isShowing,
+			EventHandler<MouseEvent> e) {
 		ImageView turtleImgView = new ImageView(
 				FileChooserPath.selectImage(IMAGE_PATH + "turtle.png", imageWidth, imageHeight));
 		turtleImgView.setTranslateX(xLoc);
@@ -172,10 +175,10 @@ public class CanvasActions {
 
 	public void clearCanvas() {
 		gc.clearRect(0, 0, canvasWidth, canvasHeight);
-		
+
 	}
-	
-	public void setAnimationSpeed(int speed){
+
+	public void setAnimationSpeed(int speed) {
 		animationSpeed = speed;
 	}
 }
