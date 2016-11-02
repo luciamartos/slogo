@@ -3,8 +3,6 @@ package gui;
 import java.util.Iterator;
 import java.util.List;
 
-import javafx.scene.paint.Color;
-
 public interface TurtleStateDataSource {
 	public double getXCoordinate(int turtleID);
 	public double getYCoordinate(int turtleID);
