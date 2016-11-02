@@ -137,7 +137,7 @@ public class CanvasActions {
 
 	private void makeAnimationMovementTurtle(int id, ImageView turtleImgView, double x2, double y2) {
 		System.out.println(animationSpeed);
-		TranslateTransition pt = new TranslateTransition(Duration.millis(1000/animationSpeed), turtleImgView);
+		TranslateTransition pt = new TranslateTransition(Duration.millis(1500/animationSpeed), turtleImgView);
 		pt.setByX(x2 - turtleImgView.getTranslateX());
 		pt.setByY(y2 - turtleImgView.getTranslateY());
 		pt.delayProperty();
