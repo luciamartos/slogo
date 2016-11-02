@@ -47,22 +47,25 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 		newPenThickness = -1;
 		newBackgroundColor = -1;
 		newPenColor = -1;
-		VBox vBoxLeft = new VBox(viewProperties.getDoubleProperty("padding"));
-		vBoxLeft.getChildren().add(initializeUndoButton());
+		VBox vBox1 = new VBox(viewProperties.getDoubleProperty("padding"));
+		vBox1.getChildren().add(initializeUndoButton());
 	//	vBoxLeft.getChildren().add(initalizeFileLoader());
-		vBoxLeft.getChildren().add(initalizeCommandFileLoader());
+		vBox1.getChildren().add(initalizeCommandFileLoader());
 
-		VBox vBoxRight = new VBox(viewProperties.getDoubleProperty("padding"));
-		vBoxRight.getChildren().add(initializeAddTabButton());
-		vBoxRight.getChildren().add(initializeGetHelpButton());
-		vBoxRight.getChildren().add(initializeSaveWorskpaceButton());
-
+		VBox vBox2 = new VBox(viewProperties.getDoubleProperty("padding"));
+		vBox2.getChildren().add(initializeAddTabButton());
+		vBox2.getChildren().add(initializeGetHelpButton());
+		vBox2.getChildren().add(initializeSaveWorskpaceButton());
+		
+		VBox vBox3 = new VBox(viewProperties.getDoubleProperty("padding"));
+		vBox3.getChildren().add(initializeSaveHistoricCommandsButton());
+		
 		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
-		hBox.getChildren().addAll(vBoxLeft, vBoxRight);
+		hBox.getChildren().addAll(vBox1, vBox2,vBox3);
 	}
 
 	private Node initializeSaveWorskpaceButton() {
-		Button saveWorkspace = createButton(viewProperties.getStringProperty("Save_workspace"), viewProperties.getDoubleProperty("load_worskpace_button_width"));
+		Button saveWorkspace = createButton(viewProperties.getStringProperty("Save_workspace"), viewProperties.getDoubleProperty("loads_button_width"));
 		saveWorkspace.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
@@ -70,6 +73,17 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 			}
 		});
 		return saveWorkspace;
+	}
+	
+	private Node initializeSaveHistoricCommandsButton() {
+		Button saveHistoricCommands = createButton(viewProperties.getStringProperty("Save_history"), viewProperties.getDoubleProperty("loads_button_width"));
+		saveHistoricCommands.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				myInterface.saveHistoricCommands();
+			}
+		});
+		return saveHistoricCommands;	
 	}
 
 	private Node initializeAddTabButton() {
@@ -84,7 +98,7 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	private Node initalizeCommandFileLoader() {
-		CommandFileUploader myUploader = new CommandFileUploader(this, "Command file", "data/examples/loops/");
+		CommandFileUploader myUploader = new CommandFileUploader(this, "Command file", viewProperties.getStringProperty("command_file_uploader_path"));
 		return myUploader.getFileUploaderButton();
 	}
 
@@ -92,6 +106,7 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 		EnvironmentFileUploader myUploader = new EnvironmentFileUploader(this, "Settings file", "data/examples/workspace_settings/");
 		return myUploader.getFileUploaderButton();
 	}
+	
 
 	private Node initializeUndoButton() {
 		Button undoButton = createButton(viewProperties.getStringProperty("Undo"), viewProperties.getDoubleProperty("help_button_width"));
