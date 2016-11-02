@@ -1,5 +1,7 @@
 package model;
 
+import javafx.scene.paint.Color;
+
 public class RGBColor {
 	private int red;
 	private int green;
@@ -17,6 +19,11 @@ public class RGBColor {
 		this.blue = (int) blue;
 	}
 	
+	public RGBColor(Color color){
+		red = (int) color.getRed();
+		blue = (int) color.getBlue();
+		green = (int) color.getGreen();
+	}
 	public int getBlue() {
 		return blue;
 	}
