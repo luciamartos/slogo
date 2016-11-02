@@ -14,4 +14,5 @@ public interface BoardStateDataSource {
 	public Iterator<PathLine> getPaths();
 	public Map<String, String> getUserDefinedVariables();
 	public Map<Integer, RGBColor> getColorMap();
+	public void addColorToPalette(int index, int red, int green, int blue);
 }

@@ -52,6 +52,7 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	//	vBoxLeft.getChildren().add(initalizeFileLoader());
 		vBox1.getChildren().add(initalizeCommandFileLoader());
 
+
 		VBox vBox2 = new VBox(viewProperties.getDoubleProperty("padding"));
 		vBox2.getChildren().add(initializeAddTabButton());
 		vBox2.getChildren().add(initializeGetHelpButton());
@@ -66,6 +67,7 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 
 	private Node initializeSaveWorskpaceButton() {
 		Button saveWorkspace = createButton(viewProperties.getStringProperty("Save_workspace"), viewProperties.getDoubleProperty("loads_button_width"));
+
 		saveWorkspace.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
