@@ -41,7 +41,9 @@ import javafx.util.Duration;
 import model.PathLine;
 import model.RGBColor;
 import model.XMLReader;
-
+/**
+ * @author Lucia Martos
+ */
 public class CanvasActions {
 	private static final RGBColor COLOR_CANVAS = new RGBColor(255, 255, 255);
 	private static final String IMAGE_PATH = "resources/images/";

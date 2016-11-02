@@ -14,7 +14,9 @@ import org.w3c.dom.Element;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * @author Lucia Martos
+ */ 
 public class XMLReader {
 	private int backgroundColor;
 	private String language;
