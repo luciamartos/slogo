@@ -120,7 +120,7 @@ public class CanvasActions {
 //	        pen = new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 4.0f, dashes, 0.0f);
 //	        gc.setLineDashes(dashes);
 //	        gc.setStroke(pen);
-			System.out.println("fadsf");
+		//	System.out.println("fadsf");
 			gc.setLineCap(StrokeLineCap.BUTT);
 			gc.setLineJoin(StrokeLineJoin.MITER);
 			gc.setMiterLimit(10.0f);
@@ -152,7 +152,7 @@ public class CanvasActions {
 	}
 
 	private void makeAnimationMovementTurtle(int id, ImageView turtleImgView, double x2, double y2) {
-		System.out.println(animationSpeed);
+		//System.out.println(animationSpeed);
 		TranslateTransition pt = new TranslateTransition(Duration.millis(1500 / animationSpeed), turtleImgView);
 		pt.setByX(x2 - turtleImgView.getTranslateX());
 		pt.setByY(y2 - turtleImgView.getTranslateY());
