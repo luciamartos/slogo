@@ -38,6 +38,8 @@ import javafx.scene.shape.HLineTo;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import model.PathLine;
@@ -100,11 +102,11 @@ public class CanvasActions {
 	}
 
  	public void drawPath(Color color, int penThickness, double x1, double y1, double x2, double y2, String penType) {
+		handleDifferentPenTypes(penType);
 		gc.setStroke(color);
 		gc.setLineWidth(penThickness);
 		gc.strokeLine(x1, y1, x2, y2);
 		gc.setFill(color);
-		handleDifferentPenTypes(penType);
 
 	}
 
@@ -115,9 +117,11 @@ public class CanvasActions {
 //	        pen = new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 4.0f, dashes, 0.0f);
 //	        gc.setLineDashes(dashes);
 //	        gc.setStroke(pen);
-			gc.setLineDashes(2.0f);;
-	        gc.setLineDashOffset(1.0f);
-	        
+			gc.setLineCap(StrokeLineCap.BUTT);
+			gc.setLineJoin(StrokeLineJoin.MITER);
+			gc.setMiterLimit(10.0f);
+			gc.setLineDashes(10.0f);
+			gc.setLineDashOffset(0.0f);
 		}
 		if (penType.equals("dotted")) {
 			gc.setLineDashes(3.0f);
@@ -127,6 +131,8 @@ public class CanvasActions {
 	}
 
 	public void animatedMovementToXY(int id, double nextXLoc, double nextYLoc, double heading, boolean isShowing) {
+		gc.setLineDashes(2.0f);
+        gc.setLineDashOffset(10.0f);
 		ImageView turtleImgView = map.get(id);
 		turtleImgView.setVisible(isShowing);
 		if (heading != turtleImgView.getRotate())
