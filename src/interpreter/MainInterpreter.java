@@ -66,9 +66,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		 * **************************************************************
 		 * These lines must be removed on develop/master branch; they are only here for test purposes in "ray" branch!!!
 		 */
-//		listOfActiveTurtles = new ArrayList<Integer>();
-//		listOfActiveTurtles.add(6);
-//		turtleStateUpdater.setActiveTurtles(listOfActiveTurtles);		
+		listOfActiveTurtles = new ArrayList<Integer>();
+		listOfActiveTurtles.add(6);
+		turtleStateUpdater.setActiveTurtles(listOfActiveTurtles);		
 		/**
 		 * **************************************************************
 		 */
@@ -103,7 +103,10 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		
 		for(SubInterpreter elem: listOfSubInterpreters){
 			if(elem.canHandle(keyword)){	
-				if(elem.needList()) elem.setList(listQueue);
+				if(elem.needList()){
+					if(listQueue.isEmpty()) errorPresenter.presentError("List is Empty!");
+					elem.setList(listQueue);
+				}
 				returnValue = elem.handle(input, keyword, param, searchStartIndex);
 				if(elem.getModel() != null) model = elem.getModel(); 
 				break;
@@ -131,13 +134,17 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			}
 		}
 		else{
-			String errorMessage = "Invalid argument detected: '"+input[searchStartIndex]+"' is not a valid command!";
-			System.out.println(errorMessage);
-			errorPresenter.presentError(errorMessage);
-			System.out.println("Return Value: "+returnValue);
+			printErrorMessage(input, searchStartIndex, returnValue);
 			return returnValue;
 //			throw new IllegalArgumentException();
 		}
+	}
+
+	private void printErrorMessage(String[] input, int searchStartIndex, double returnValue) {
+		String errorMessage = "Invalid argument detected: '"+input[searchStartIndex]+"' is not a valid command!";
+		System.out.println(errorMessage);
+		errorPresenter.presentError(errorMessage);
+		System.out.println("Return Value: "+returnValue);
 	}
 	
 

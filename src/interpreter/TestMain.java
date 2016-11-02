@@ -8,7 +8,7 @@ import model.TurtleStatesController;
 public class TestMain extends Application{
 	
 	String input2 = "ifelse less? 1000 100 [ fd 100 ] [ fd 50 ]";
-	String input = "fd 50";
+	String input = "repeat 180 [ fd 5 rt 2 ]";
 	String inputtwo = "banana";
 	String language = "Chinese";
 	
