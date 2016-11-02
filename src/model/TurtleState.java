@@ -3,7 +3,7 @@ package model;
 import java.util.Observable;
 
 public class TurtleState extends Observable {
-	private final int DEFAULT_PEN_SIZE = 5;
+	private final int DEFAULT_PEN_SIZE = 2;
 	private final int DEFAULT_PEN_COLOR = 1;
 	
 	private double xCoordinate;
