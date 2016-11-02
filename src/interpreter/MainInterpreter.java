@@ -48,17 +48,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
 			InvocationTargetException{
 		List<Integer> listOfActiveTurtles = stateDataSource.getActiveTurtleIDs();
-		
-		/**
-		 * **************************************************************
-		 * These lines must be removed on develop/master branch; they are only here for test purposes in "ray" branch!!!
-		 */
-//		listOfActiveTurtles = new ArrayList<Integer>();
-//		listOfActiveTurtles.add(6);
-//		turtleStateUpdater.setActiveTurtles(listOfActiveTurtles);		
-		/**
-		 * **************************************************************
-		 */
 		boolean commandContainsAsk = containsAsk(input);
 		for(int turtleID: listOfActiveTurtles){
 			parseInputForActiveTurtles(input, turtleID);
