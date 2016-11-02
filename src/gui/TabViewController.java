@@ -373,6 +373,9 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 	public void update(BoardStateDataSource obs, Object o) {
 		colorMap = boardStateDataSource.getColorMap();
 		Iterator<PathLine> pathLine = obs.getPaths();
+		if (pathLine.hasNext() == false){
+			//TODO: Paint fresh rectangle to background color.
+		}
 		while (pathLine.hasNext()) {
 			PathLine currPathLine = pathLine.next();
 			canvasActions.drawPath(
