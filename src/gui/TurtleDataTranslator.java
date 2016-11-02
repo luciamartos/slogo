@@ -6,9 +6,8 @@ import java.util.List;
 import model.PathLine;
 
 /**
-	 * This is a class to convert back end data to front end data
-	 * 
-	 */
+ * @author Lucia Martos
+ */
 
 public class TurtleDataTranslator {
 	private double width;

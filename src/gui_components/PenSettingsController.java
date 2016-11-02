@@ -21,7 +21,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
+/**
+ * @author Lucia Martos
+ */
 public class PenSettingsController extends Observable {
 
 	private static final String IMAGE_PATH = "resources/images/";
