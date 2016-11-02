@@ -13,6 +13,9 @@ import javafx.collections.ObservableList;
  * 
  * 
  */
+/**
+ * @author Lucia Martos
+ */
 
 public class PrintWriterClass {
 	private static final String MY_PATH = "data/examples/";

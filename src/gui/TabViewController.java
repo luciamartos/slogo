@@ -61,7 +61,7 @@ import tableviews.VariableTableView;
 
 /**
  * 
- * @author LuciaMartos, Eric Song
+ * @author Lucia Martos, Eric Song
  */
 public class TabViewController implements Observer, ErrorPresenter, SaveWorkspaceInterface {
 	private Properties viewProperties;
@@ -450,8 +450,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 					if(!colorMap.containsKey(i)) break;
 						i++;
 				}
-				//colorMap.put(i, new RGBColor(obs.getNewPenColor()));
-				boardStateDataSource.addNewColorToMap(i,obs.getNewPenColor().getRed(),obs.getNewPenColor().getBlue(), obs.getNewPenColor().getGreen());
+				boardStateDataSource.addColorToPalette(i,(int)(obs.getNewPenColor().getRed()*255),(int)(obs.getNewPenColor().getBlue()*255), (int)(obs.getNewPenColor().getGreen()*255));
 				turtleActionsHandler.setPenColor(i);
 			}
 			if(i==0){
@@ -462,11 +461,6 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 					}
 				}
 			}
-//			for (Integer myElem : colorMap.keySet()) {
-//				if (colorMap.get(myElem).equals(obs.getNewPenColor())) {
-//					break;
-//				}
-//			}
 		}
 
 		if (obs.getNewPenType() != null && penTypeMap.containsKey(obs.getNewPenType())) {

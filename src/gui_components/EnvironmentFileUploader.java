@@ -1,7 +1,9 @@
 package gui_components;
 
 import model.XMLReader;
-
+/**
+ * @author Lucia Martos
+ */
 public class EnvironmentFileUploader extends FileChooser {
 	private String MY_PATH = "data/examples/workspace_settings/";
 	public EnvironmentFileUploader(ReadCommandFileInterface myInterface, String initVal, String filePath) {
