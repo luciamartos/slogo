@@ -33,7 +33,7 @@
 	+ Utilizes multiple subclasses to parse different commands accordingly
 	+ Utilizes interface to directly send over error messages to View Controller
 
-**Major backend changes during past two weeks **
+**Major backend changes during past two weeks**
 
 + Implementation of a separate Model Controller, as opposed to having controllers directly handle the model and pass the model around
 +  Integrating Main Interpreter into a single class that accepts a single String and parsing the input accordingly, as opposed to dividing it into an Actionable interpreter and a Non-actionable interpreter
