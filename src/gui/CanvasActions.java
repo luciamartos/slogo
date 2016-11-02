@@ -114,20 +114,19 @@ public class CanvasActions {
 	private void handleDifferentPenTypes(String penType) {
 		if (penType.equals("dashed")) { // THESE ARENT WORKING EXACTLY HOW THEY
 
-
-//	        Paint pen;
-//	        float[] dashes = { 2.0f};
-//	        pen = new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 4.0f, dashes, 0.0f);
-//	        gc.setLineDashes(dashes);
-//	        gc.setStroke(pen);
+			// Paint pen;
+			// float[] dashes = { 2.0f};
+			// pen = new BasicStroke(width, BasicStroke.CAP_ROUND,
+			// BasicStroke.JOIN_MITER, 4.0f, dashes, 0.0f);
+			// gc.setLineDashes(dashes);
+			// gc.setStroke(pen);
 			System.out.println("fadsf");
 			gc.setLineCap(StrokeLineCap.BUTT);
 			gc.setLineJoin(StrokeLineJoin.MITER);
 			gc.setMiterLimit(10.0f);
 			gc.setLineDashes(10.0f);
 			gc.setLineDashOffset(0.0f);
-		}
-		else if (penType.equals("dotted")) {
+		} else if (penType.equals("dotted")) {
 			gc.setLineDashes(3.0f);
 		} else {
 			gc.setLineDashes(null);
@@ -152,7 +151,6 @@ public class CanvasActions {
 	}
 
 	private void makeAnimationMovementTurtle(int id, ImageView turtleImgView, double x2, double y2) {
-		System.out.println(animationSpeed);
 		TranslateTransition pt = new TranslateTransition(Duration.millis(1500 / animationSpeed), turtleImgView);
 		pt.setByX(x2 - turtleImgView.getTranslateX());
 		pt.setByY(y2 - turtleImgView.getTranslateY());
@@ -193,5 +191,13 @@ public class CanvasActions {
 
 	public void setAnimationSpeed(int speed) {
 		animationSpeed = speed;
+	}
+
+	public void setTurtleActive(int currId, boolean active) {
+		ImageView turtleImgView = map.get(currId);
+		if (active)
+			turtleImgView.setOpacity(1);
+		else
+			turtleImgView.setOpacity(0.5);
 	}
 }
