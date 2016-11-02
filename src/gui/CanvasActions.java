@@ -101,18 +101,19 @@ public class CanvasActions {
 	}
 
 	public void drawPath(Color color, int penThickness, double x1, double y1, double x2, double y2, String penType) {
+		handleDifferentPenTypes(penType);
 		gc.setStroke(color);
 		gc.setLineWidth(penThickness);
 		gc.strokeLine(x1, y1, x2, y2);
 		gc.setFill(color);
-		handleDifferentPenTypes(penType);
 
 	}
 
 	private void handleDifferentPenTypes(String penType) {
 		if (penType.equals("dashed")) { // THESE ARENT WORKING EXACTLY HOW THEY
-			gc.setLineDashes(2.0f);
-			gc.setLineDashOffset(1.0f);
+			System.out.println("dfas");
+			gc.setLineDashes(10.0f);
+			gc.setLineDashOffset(20.0f);
 		}
 		if (penType.equals("dotted")) {
 			gc.setLineDashes(3.0f);
