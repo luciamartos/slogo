@@ -448,7 +448,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 	public void update(PenSettingsController obs, Object o) {
 		if (obs.getNewPenColor() != null) {
 			int i =0;
-			if(!colorMap.containsValue(obs.getNewPenColor())){
+			if(!colorMap.containsValue(new RGBColor(obs.getNewPenColor()))){
 				while(true){
 					if(!colorMap.containsKey(i)) break;
 						i++;
@@ -465,8 +465,8 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 				}
 			}
 		}
-
-		if (obs.getNewPenType() != null && penTypeMap.containsKey(obs.getNewPenType())) {
+		
+		if (obs.getNewPenType() != null && penTypeMap.containsValue(obs.getNewPenType())) {
 			for (Integer myElem : penTypeMap.keySet()) {
 				if (penTypeMap.get(myElem).equals(obs.getNewPenType())) {
 					turtleActionsHandler.setPenType(myElem);

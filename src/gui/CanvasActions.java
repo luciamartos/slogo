@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.BasicStroke;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,6 +33,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.HLineTo;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
@@ -103,13 +105,19 @@ public class CanvasActions {
 		gc.strokeLine(x1, y1, x2, y2);
 		gc.setFill(color);
 		handleDifferentPenTypes(penType);
+
 	}
 
 	private void handleDifferentPenTypes(String penType) {
 		if (penType.equals("dashed")) { // THESE ARENT WORKING EXACTLY HOW THEY
-										// SHOULD
-			gc.setLineDashes(6.0f);
-			gc.setLineDashOffset(0.0f);
+//	        Paint pen;
+//	        float[] dashes = { 2.0f};
+//	        pen = new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 4.0f, dashes, 0.0f);
+//	        gc.setLineDashes(dashes);
+//	        gc.setStroke(pen);
+			gc.setLineDashes(2.0f);;
+	        gc.setLineDashOffset(1.0f);
+	        
 		}
 		if (penType.equals("dotted")) {
 			gc.setLineDashes(3.0f);
