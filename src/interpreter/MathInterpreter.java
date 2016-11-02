@@ -15,17 +15,17 @@ public class MathInterpreter extends SubInterpreter{
 	@Override
 	double handle(String[] input, String keyword, double[] param, int searchStartIndex) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		if(isNonInputMathExpression(keyword)){
-			Class[] args = createDoubleArgs(0);
+			Class<?>[] args = createDoubleArgs(0);
 			Method method = this.getClass().getDeclaredMethod(keyword, args);
 			return (double) method.invoke(this);
 		}
 		else if(isUnaryMathExpression(keyword)){
-			Class[] args = createDoubleArgs(1);
+			Class<?>[] args = createDoubleArgs(1);
 			Method method = this.getClass().getDeclaredMethod(keyword, args);
 			return (double) method.invoke(this, param[0]);
 		}
 		else if(isBinaryMathExpression(keyword)){
-			Class[] args = createDoubleArgs(2);
+			Class<?>[] args = createDoubleArgs(2);
 			Method method = this.getClass().getDeclaredMethod(keyword, args);
 			return (double) method.invoke(this, param[0],param[1]);
 		}

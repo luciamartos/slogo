@@ -29,7 +29,7 @@ public class MultipleTurtleInterpreter extends SubInterpreter{
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException,
 			SecurityException, InstantiationException {
 		if(isMultipleTurtleCommand(keyword)){
-			Class[] args = createDoubleArgs(0);
+			Class<?>[] args = createDoubleArgs(0);
 			Method method = this.getClass().getDeclaredMethod(keyword, args);
 			return (double) method.invoke(this);
 		}
