@@ -1,6 +1,8 @@
 package gui;
 
 import java.util.Iterator;
+import java.util.List;
+
 import javafx.scene.paint.Color;
 
 public interface TurtleStateDataSource {
@@ -12,4 +14,5 @@ public interface TurtleStateDataSource {
 	public int getShape(int turtleID);
 	
 	public Iterator<Integer> getTurtleIDs();
+	public List<Integer> getActiveTurtleIDs();
 }
