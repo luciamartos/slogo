@@ -16,8 +16,10 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class PenSettingsController extends Observable {
@@ -43,8 +45,8 @@ public class PenSettingsController extends Observable {
 		lbl.setText("Pen settings");
 		vBox.getChildren().add(lbl);
 		vBox.getChildren().add(initializePenColorSetting());
-		vBox.getChildren().add(initializePenThicknessSetting());
 		vBox.getChildren().add(initializePenTypeSetting());
+		vBox.getChildren().add(initializePenThicknessSetting());
 	}
 	
 	public Node getPenSettingsController(){
@@ -90,10 +92,12 @@ public class PenSettingsController extends Observable {
 	}
 	
 	private Node initializePenThicknessSetting(){
+		HBox thicknessBox = new HBox(5);
 		Slider thicknessSlider = new Slider();
 		thicknessSlider.setMin(MIN_THICKNESS);
 		thicknessSlider.setMax(MAX_THICKNESS);
 		thicknessSlider.setValue(INIT_THICKNESS);
+		thicknessSlider.setMaxWidth(100);
 		
 		thicknessSlider.valueProperty().addListener(new ChangeListener<Number>(){
 			public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val){
@@ -103,7 +107,11 @@ public class PenSettingsController extends Observable {
 			}
 		});
 		//VBox tempBox = makeLabel(thicknessSlider, "Pen thickness");
-		return thicknessSlider;
+		thicknessBox.getChildren().add(thicknessSlider);
+		Label label = new Label("Pen\nThickness");
+		label.setFont(Font.font ("Verdana", 8));
+		thicknessBox.getChildren().add(label);
+		return thicknessBox;
 	}
 
 	

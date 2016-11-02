@@ -55,13 +55,13 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 		VBox vBoxRight = new VBox(viewProperties.getDoubleProperty("padding"));
 		vBoxRight.getChildren().add(initializeAddTabButton());
 		vBoxRight.getChildren().add(initializeGetHelpButton());
-		vBoxRight.getChildren().add(initializeSaveWorskpaceButton());
+		vBoxRight.getChildren().add(initializeSaveWorkspaceButton());
 
 		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
 		hBox.getChildren().addAll(vBoxLeft, vBoxRight);
 	}
 
-	private Node initializeSaveWorskpaceButton() {
+	private Node initializeSaveWorkspaceButton() {
 		Button saveWorkspace = createButton(viewProperties.getStringProperty("Save_workspace"), viewProperties.getDoubleProperty("load_worskpace_button_width"));
 		saveWorkspace.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
