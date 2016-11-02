@@ -3,9 +3,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+
+import fileIO.XMLReader;
 import general.Properties;
 import gui.BoardActionsHandler;
 import gui.BoardStateDataSource;
+import gui.TabViewController;
 import interpreter.BoardStateUpdater;
 import interpreter.UserVariablesDataSource;
 
@@ -26,6 +29,11 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 
 	public BoardStateController(){
 		boardState = new BoardState();
+		setBoardAttributes();
+		this.turtleController = new TurtleStatesController(this);
+	}
+	
+	private void setBoardAttributes(){
 		Properties visualProperties = new Properties(VIEW_PROPERTIES_FILE_PATH);
 		double boardWidth = visualProperties.getDoubleProperty(BOARD_WIDTH_KEY);
 		double boardHeight = visualProperties.getDoubleProperty(BOARD_HEIGHT_KEY);
@@ -33,7 +41,6 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 		minXCoordinate = -maxXCoordinate;
 		maxYCoordinate = boardHeight/2;
 		minYCoordinate = -maxYCoordinate;
-		this.turtleController = new TurtleStatesController(this);
 	}
 	
 	public void addBoardStateListener(Observer o){
@@ -140,4 +147,5 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	public Map<Integer, RGBColor> getColorMap() {
 		return boardState.getColorMap();
 	}
+
 }

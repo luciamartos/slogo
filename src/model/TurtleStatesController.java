@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.function.Consumer;
 
+import fileIO.TurtleData;
 import gui.TurtleActionsHandler;
 import interpreter.SlogoUpdate;
 import interpreter.TurtleStateDataSource;
@@ -39,8 +40,20 @@ public class TurtleStatesController extends Observable implements interpreter.Tu
 	
 	private TurtleState addNewTurtle(int id){
 		TurtleState turtle = new TurtleState();
+		turtle.setId(id);
 		turtles.put(id, turtle);
 		return turtle;
+	}
+	
+	public void addNewTurtle(TurtleData data, int turtleID){
+		TurtleState turtle = new TurtleState();
+		turtle.setId(turtleID);
+		turtle.setXCoordinate(data.getX());
+		turtle.setYCoordinate(data.getY());
+		turtle.setPenSize(data.getPenSize());
+		turtle.setPenType(data.getPenType());
+		turtle.setShapeIndex(data.getShapeIndex());
+		this.turtles.put(turtleID, turtle);
 	}
 
 	@Override
@@ -255,4 +268,6 @@ public class TurtleStatesController extends Observable implements interpreter.Tu
 	public int getNumberOfTurtles() {
 		return this.turtles.size();
 	}
+	
+	
 }

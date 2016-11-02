@@ -2,7 +2,8 @@ package gui_components;
 
 import java.util.Observable;
 
-import XMLparser.XMLWriter;
+import fileIO.XMLReader;
+import fileIO.XMLWriter;
 import general.NewSlogoInstanceCreator;
 
 import general.Properties;

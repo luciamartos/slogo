@@ -33,15 +33,18 @@ public class MainController implements NewSlogoInstanceCreator, SlogoCommandHand
     	BoardStateController modelController = new BoardStateController();
     	TurtleStatesController turtleStatesController = modelController.getTurtleStatesController();
     	vcMap.put(viewController, modelController);
-    	
-    	viewController.setBoardStateDataSource(modelController);
-    	viewController.setBoardActionsHandler(modelController);
+    	viewController.setCommandHandler(this);
+    	initializeControllerConnections(modelController, turtleStatesController, viewController);
+	}
+	
+	public static void initializeControllerConnections(BoardStateController boardController, TurtleStatesController turtleStatesController, TabViewController viewController){
+    	viewController.setBoardStateDataSource(boardController);
+    	viewController.setBoardActionsHandler(boardController);
     	viewController.setTurtleStateDataSource(turtleStatesController);
     	viewController.setTurtleActionsHandler(turtleStatesController);
-    	viewController.setCommandHandler(this);
     	viewController.updateVariables();
     	
-    	modelController.addBoardStateListener(viewController);
+    	boardController.addBoardStateListener(viewController);
     	turtleStatesController.addObserver(viewController);
 	}
 	

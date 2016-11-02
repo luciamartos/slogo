@@ -10,6 +10,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
 
+import fileIO.XMLReader;
 import general.Properties;
 import javafx.animation.Animation;
 import javafx.animation.PathTransition;
@@ -44,7 +45,6 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 import model.PathLine;
 import model.RGBColor;
-import model.XMLReader;
 
 /**
  * @author Lucia Martos
@@ -102,8 +102,7 @@ public class CanvasActions {
 		return canvas;
 	}
 
-
- 	public void drawPath(Color color, int penThickness, double x1, double y1, double x2, double y2, String penType) {
+	public void drawPath(Color color, int penThickness, double x1, double y1, double x2, double y2, String penType) {
 		handleDifferentPenTypes(penType);
 		gc.setStroke(color);
 		gc.setLineWidth(penThickness);
@@ -115,19 +114,20 @@ public class CanvasActions {
 	private void handleDifferentPenTypes(String penType) {
 		if (penType.equals("dashed")) { // THESE ARENT WORKING EXACTLY HOW THEY
 
+
 //	        Paint pen;
 //	        float[] dashes = { 2.0f};
 //	        pen = new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 4.0f, dashes, 0.0f);
 //	        gc.setLineDashes(dashes);
 //	        gc.setStroke(pen);
+			System.out.println("fadsf");
 			gc.setLineCap(StrokeLineCap.BUTT);
 			gc.setLineJoin(StrokeLineJoin.MITER);
 			gc.setMiterLimit(10.0f);
 			gc.setLineDashes(10.0f);
 			gc.setLineDashOffset(0.0f);
-
 		}
-		if (penType.equals("dotted")) {
+		else if (penType.equals("dotted")) {
 			gc.setLineDashes(3.0f);
 		} else {
 			gc.setLineDashes(null);
@@ -135,8 +135,6 @@ public class CanvasActions {
 	}
 
 	public void animatedMovementToXY(int id, double nextXLoc, double nextYLoc, double heading, boolean isShowing) {
-		gc.setLineDashes(2.0f);
-        gc.setLineDashOffset(10.0f);
 		ImageView turtleImgView = map.get(id);
 		turtleImgView.setVisible(isShowing);
 		if (heading != turtleImgView.getRotate())

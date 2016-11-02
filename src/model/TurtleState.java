@@ -19,7 +19,7 @@ public class TurtleState extends Observable {
 	private boolean active;
 	private int id;
 
-	TurtleState(){
+	public TurtleState(){
 		setToDefaultValues();
 	}
 	
@@ -136,5 +136,13 @@ public class TurtleState extends Observable {
 	
 	int getPenType(){
 		return this.penType;
+	}
+
+	int getId() {
+		return id;
+	}
+
+	void setId(int id) {
+		this.id = id;
 	}
 }
