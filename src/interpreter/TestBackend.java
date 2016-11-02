@@ -5,10 +5,10 @@ import javafx.stage.Stage;
 import model.BoardStateController;
 import model.TurtleStatesController;
 
-public class TestMain extends Application{
+public class TestBackend extends Application{
 	
 	String input2 = "ifelse less? 10 100 [ fd 100 ] [ fd 50 ]";
-	String input = "to [ potato ] [ fd 5 ]";
+	String input = "right";
 	String inputtwo = "potato";
 	String language = "Chinese";
 	
@@ -32,6 +32,6 @@ public class TestMain extends Application{
 		
 //		main.setLanguage(language);
 		main.parseInput(input);   
-		main.parseInput(inputtwo);   
+//		main.parseInput(inputtwo);   
 	}
 }

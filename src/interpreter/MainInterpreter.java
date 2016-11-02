@@ -44,20 +44,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		rb = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+PROPERTIES_TITLE);
 	}
 	
-	/**
-	 * Overload of parseInput() method that enables a global interpreter for multiple turtles
-	 */
-// 	public void parseInput(String input, TurtleStateDataSource stateDataSource, TurtleStateUpdater turtleStateUpdater, BoardStateUpdater boardStateUpdater, UserVariablesDataSource varDataSource, ErrorPresenter errorPresenter) throws ClassNotFoundException, NoSuchMethodException, 
-// 	SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
-// 	InvocationTargetException{
-// 		this.stateDataSource = stateDataSource;
-// 		this.turtleStateUpdater = turtleStateUpdater;
-// 		this.boardStateUpdater = boardStateUpdater;
-// 		this.varDataSource = varDataSource;
-// 		this.errorPresenter = errorPresenter;
-// 		this.parseInput(input);
-// 	}
-	
 	public void parseInput(String input) throws ClassNotFoundException, NoSuchMethodException, 
 			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
 			InvocationTargetException{
@@ -365,6 +351,11 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		double[] res = new double[numOfParams];
 		int index=0;
 		for(int i=startSearchIndex;i<startSearchIndex+numOfParams;i++){
+			if(i >= input.length){
+				System.out.println(rb.getString("AOBMessage"));
+				errorPresenter.presentError(rb.getString("AOBMessage"));
+				break;
+			}
 			if(isDouble(input[i])){
 				double temp = Double.parseDouble(input[i]);
 				res[index++] = temp;
@@ -445,7 +436,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	}
 	
 	private double presentEmptyListMessage() {
-		errorPresenter.presentError("List is Empty!");
+		errorPresenter.presentError(rb.getString("EmptyListMessage"));
 		return 0;
 	}
 	
