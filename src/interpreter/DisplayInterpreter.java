@@ -24,17 +24,17 @@ public class DisplayInterpreter extends SubInterpreter{
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException,
 			SecurityException, InstantiationException {
 		if(isNonInputDisplayCommand(keyword)){
-			Class[] args = createDoubleArgs(0);
+			Class<?>[] args = createDoubleArgs(0);
 			Method method = this.getClass().getDeclaredMethod(keyword, args);
 			return (double) method.invoke(this);
 		}
 		else if(isUnaryDisplayCommand(keyword)){
-			Class[] args = createDoubleArgs(1);
+			Class<?>[] args = createDoubleArgs(1);
 			Method method = this.getClass().getDeclaredMethod(keyword, args);
 			return (double) method.invoke(this, param[0]);
 		}
 		else if(isMultipleInputDisplayCommand(keyword)){
-			Class[] args = createDoubleArgs(3);
+			Class<?>[] args = createDoubleArgs(3);
 			Method method = this.getClass().getDeclaredMethod(keyword, args);
 			return (double) method.invoke(this, param[0], param[1], param[2]);
 		}

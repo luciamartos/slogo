@@ -1,6 +1,7 @@
 package interpreter;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -240,31 +241,29 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, 
 	IllegalArgumentException, InvocationTargetException{
 		
-		if(keyword.equalsIgnoreCase(rb.getString("makevar"))){
-			return makevariable(input, parsed, searchStartIndex);
-		}
-		else if(keyword.equalsIgnoreCase(rb.getString("repeat"))){
-			return repeat(input, searchStartIndex, 1);
-		}
-		else if(keyword.equalsIgnoreCase(rb.getString("dotimes"))){
-			return 0;
-		}	
-		else if(keyword.equalsIgnoreCase(rb.getString("for"))){
-			return 0;
-		}
-		else if(keyword.equalsIgnoreCase(rb.getString("if"))){
-			return handleIf(input, searchStartIndex);
-		}
-		else if(keyword.equalsIgnoreCase(rb.getString("ifelse"))){
-			return handleElseIf(input, searchStartIndex);
-		}
-		else if(keyword.equalsIgnoreCase(rb.getString("to"))){
-			return handleTo();
-		}
-		else return 0;
+		if(keyword.equalsIgnoreCase(rb.getString("if"))) return handleIf(input, searchStartIndex);	
+		
+		Class<?>[] args = createArgsForControl();
+		Method method = this.getClass().getDeclaredMethod(keyword, args);
+		return (double) method.invoke(this, input, parsed, searchStartIndex);
+//		else if(keyword.equalsIgnoreCase(rb.getString("dotimes"))){
+//			return 0;
+//		}	
+//		else if(keyword.equalsIgnoreCase(rb.getString("for"))){
+//			return 0;
+//		}
+
 	}
 
-	private double handleTo() {
+	private Class<?>[] createArgsForControl() {
+		Class<?>[] args = new Class[3];
+		args[0] = String[].class;
+		args[1] = String[].class;
+		args[2] = Integer.TYPE;
+		return args;
+	}
+
+	private double makeuserinstruction(String[] input, String[] parsed, int index) {
 		if(listQueue.size()!=2) return 0;
 		String[] varNameInArray = listQueue.poll();
 		String varName = "";
@@ -275,7 +274,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		return 1;
 	}
 	
-	private double handleElseIf(String[] input, int searchStartIndex) throws ClassNotFoundException,
+	private double ifelse(String[] input, String[] parsed, int searchStartIndex) throws ClassNotFoundException,
 	NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		double[] param = parseParam(input, searchStartIndex+1, 1);
 		double res = 0;
@@ -301,13 +300,14 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		return res;
 	}
 
-	private double repeat(String[] input, int searchStartIndex, int increment) throws ClassNotFoundException,
+	private double repeat(String[] input, String[] parsed, int searchStartIndex) throws ClassNotFoundException,
 			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		double[] param = parseParam(input, searchStartIndex+1, 1);
 		repCount = 0;
 		double res = 0;
+		System.out.println("qwerqwer: " + param[0]);
 		String[] temp = listQueue.poll();
-		for(int i=0;i<param[0];i = i + increment){
+		for(int i=0;i<param[0];i++){
 			res = interpretCommand(temp, 0);
 			repCount++;
 		}
