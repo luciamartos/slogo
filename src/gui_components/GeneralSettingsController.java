@@ -62,7 +62,7 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	private Node initializeSaveWorskpaceButton() {
-		Button saveWorkspace = createButton("Load workspace", viewProperties.getDoubleProperty("load_worskpace_button_width"));
+		Button saveWorkspace = createButton(viewProperties.getStringProperty("Save_workspace"), viewProperties.getDoubleProperty("load_worskpace_button_width"));
 		saveWorkspace.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
@@ -94,7 +94,7 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	private Node initializeUndoButton() {
-		Button undoButton = createButton("Undo", viewProperties.getDoubleProperty("help_button_width"));
+		Button undoButton = createButton(viewProperties.getStringProperty("Undo"), viewProperties.getDoubleProperty("help_button_width"));
 		undoButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
@@ -107,7 +107,7 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	private Node initializeGetHelpButton() {
-		Button helpButton = createButton("Get help!", viewProperties.getDoubleProperty("help_button_width"));
+		Button helpButton = createButton(viewProperties.getStringProperty("get_help"), viewProperties.getDoubleProperty("help_button_width"));
 		helpButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
