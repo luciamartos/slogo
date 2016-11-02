@@ -46,7 +46,7 @@ public class TurtleSettingsController extends Observable {
 
 	private VBox vBox;
 
-	private Image newImage;
+	private String newImage;
 
 
 	public TurtleSettingsController(Properties viewProperties) {
@@ -55,7 +55,7 @@ public class TurtleSettingsController extends Observable {
 		lbl.setText("Turtle settings");
 		vBox.getChildren().add(lbl);
 		vBox.getChildren().add(initializeTurtleImageSetting());
-		vBox.getChildren().add(initializeTurtleNumber());
+		//vBox.getChildren().add(initializeTurtleNumber());
 	}
 
 
@@ -91,8 +91,7 @@ public class TurtleSettingsController extends Observable {
 			public void changed(ObservableValue ov, String t, String t1) {
 				if(t1!=null){
 				setChanged();
-				Image image = FileChooserPath.selectImage(IMAGE_PATH+t1+".png", 50, 50);
-				newImage = image;
+				newImage = t1;
 				notifyObservers();
 				}
 			}
@@ -105,7 +104,7 @@ public class TurtleSettingsController extends Observable {
 		return vBox;
 	}
 
-	public Image getNewImage() {
+	public String getNewImage() {
 		return newImage;
 	}
 

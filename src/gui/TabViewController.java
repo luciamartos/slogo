@@ -1,12 +1,10 @@
 package gui;
 
-import java.awt.Canvas;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -43,6 +41,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -83,6 +82,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 	private int currentlySelectedID;
 	private Map<Integer, RGBColor> colorMap;
 	private Map<Integer, String> penTypeMap;
+	private Map<Integer, String> shapeMap;
 
 	TableView<Variable> defaultVariableTableView;
 	TableView<Variable> userDefinedVariableTableView;
@@ -93,15 +93,30 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 			NewSlogoInstanceCreator instanceCreator) {
 		this.instanceCreator = instanceCreator;
 		this.viewProperties = viewProperties;
+
+		populatePenTypeMap();
+		populateShapeMap();
+
+		setupTab(tabTitle);
+		tabPane.getTabs().add(tab);
+		turtleTranslator = new TurtleDataTranslator(viewProperties.getDoubleProperty("canvas_width"),
+				viewProperties.getDoubleProperty("canvas_height"), getImageWidth(), getImageHeight());
+	}
+
+	private void populateShapeMap() {
+		String[] types = viewProperties.getStringProperty("shape_types").split(" ");
+		shapeMap = new HashMap<Integer, String>();
+		for (int i = 0; i < types.length; i++) {
+			shapeMap.put(i, types[i]);
+		}
+	}
+
+	private void populatePenTypeMap() {
 		String[] types = viewProperties.getStringProperty("pen_type").split(" ");
 		penTypeMap = new HashMap<Integer, String>();
 		for (int i = 0; i < types.length; i++) {
 			penTypeMap.put(i, types[i]);
 		}
-		setupTab(tabTitle);
-		tabPane.getTabs().add(tab);
-		turtleTranslator = new TurtleDataTranslator(viewProperties.getDoubleProperty("canvas_width"),
-				viewProperties.getDoubleProperty("canvas_height"), getImageWidth(), getImageHeight());
 	}
 
 	private void setupTab(String tabTitle) {
@@ -301,7 +316,6 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 	}
 
 	// currently only observable this controller observes is settingsController
-	// DOES THIS ACCOUNT FOR MY UPDATE THING TOO?
 	public void update(Observable obs, Object o) {
 		if (o != null) {
 			errorConsole.displayErrorMessage(o.toString());
@@ -341,6 +355,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 			if (!canvasActions.turtleExists(currId))
 				initializeTurtle(currId);
 
+			canvasActions.setTurtleImage(currId, shapeMap.get(turtleStateDataSource.getShape(currId)));
 			canvasActions.animatedMovementToXY(currId,
 					turtleTranslator.convertXImageCordinate(turtleStateDataSource.getXCoordinate(currId)),
 					turtleTranslator.convertYImageCordinate(turtleStateDataSource.getYCoordinate(currId)),
@@ -366,51 +381,58 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		while (pathLine.hasNext()) {
 			count++;
 			PathLine currPathLine = pathLine.next();
-			System.out.println(currPathLine.getPenColor().getRed()+" " + currPathLine.getPenColor().getGreen() + " " +
-					currPathLine.getPenColor().getBlue());
-			canvasActions.drawPath(Color.rgb(currPathLine.getPenColor().getRed(), currPathLine.getPenColor().getGreen(),
+			System.out.println(currPathLine.getPenColor().getRed() + " " + currPathLine.getPenColor().getGreen() + " "
+					+ currPathLine.getPenColor().getBlue());
+			canvasActions.drawPath(
+					Color.rgb(currPathLine.getPenColor().getRed(), currPathLine.getPenColor().getGreen(),
 							currPathLine.getPenColor().getBlue()),
-					currPathLine.getPenThickness(), turtleTranslator.convertXCordinate(currPathLine.getX1()), turtleTranslator.convertYCordinate(currPathLine.getY1()), turtleTranslator.convertXCordinate(currPathLine.getX2()),
-					turtleTranslator.convertYCordinate(currPathLine.getY2()),penTypeMap.get(currPathLine.getPenType()));
-
+					currPathLine.getPenThickness(), turtleTranslator.convertXCordinate(currPathLine.getX1()),
+					turtleTranslator.convertYCordinate(currPathLine.getY1()),
+					turtleTranslator.convertXCordinate(currPathLine.getX2()),
+					turtleTranslator.convertYCordinate(currPathLine.getY2()),
+					penTypeMap.get(currPathLine.getPenType()));
 		}
-		System.out.println(count);
-
+		if (count == 0)
+			canvasActions.clearCanvas();
 		canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getBackgroundColorIndex()));
 	}
 
 	public void update(GeneralSettingsController obs, Object o) {
-//		colorMap = boardStateDataSource.getColorMap();
-//		if (obs.getNewImage() != null) {
-//			Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
-//			while (turtleIds.hasNext()) {
-//				int currId = turtleIds.next();
-//				canvasActions.setTurtleImage(currId, obs.getNewImage());
-//			}
-//		}
+		// colorMap = boardStateDataSource.getColorMap();
+		// if (obs.getNewImage() != null) {
+		// Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
+		// while (turtleIds.hasNext()) {
+		// int currId = turtleIds.next();
+		// canvasActions.setTurtleImage(currId, obs.getNewImage());
+		// }
+		// }
 
 		if (obs.getNewCommandLineFromFile() != null)
 			runCommand(obs.getNewCommandLineFromFile());
-//		if (obs.getNewBackgroundColor() != -1)
-//			canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getNewBackgroundColor()));
-//		if (obs.getNewLanguage() != null)
-//			commandHandler.setLanguage(this, obs.getNewLanguage());
-//		if (obs.getNewPenColor() != -1)
-//			turtleActionsHandler.setPenColor(obs.getNewPenColor());
-//		if (obs.getNewPenType() != -1)
-//			turtleActionsHandler.setPenType(obs.getNewPenType());
-//		if (obs.getNewPenThickness() != -1)
-//			turtleActionsHandler.setPenThickness(obs.getNewPenThickness());
+		// if (obs.getNewBackgroundColor() != -1)
+		// canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getNewBackgroundColor()));
+		// if (obs.getNewLanguage() != null)
+		// commandHandler.setLanguage(this, obs.getNewLanguage());
+		// if (obs.getNewPenColor() != -1)
+		// turtleActionsHandler.setPenColor(obs.getNewPenColor());
+		// if (obs.getNewPenType() != -1)
+		// turtleActionsHandler.setPenType(obs.getNewPenType());
+		// if (obs.getNewPenThickness() != -1)
+		// turtleActionsHandler.setPenThickness(obs.getNewPenThickness());
 	}
 
 	public void update(TurtleSettingsController obs, Object o) {
 		if (obs.getNewImage() != null) {
-			Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
-			while (turtleIds.hasNext()) {
-				int currId = turtleIds.next();
-				canvasActions.setTurtleImage(currId, obs.getNewImage());
+			int myShape = 0;
+			for (Integer myElem : shapeMap.keySet()) {
+				if (shapeMap.get(myElem).equals(obs.getNewImage())) {
+					myShape = myElem;
+					break;
+				}
 			}
+			turtleActionsHandler.setShape(myShape);
 		}
+
 	}
 
 	public void update(WorkspaceSettingsController obs, Object o) {
@@ -549,7 +571,10 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 
 	@Override
 	public void saveWorkspace() {
-		XMLWriter myWriter = new XMLWriter("luciaTest", boardStateDataSource, turtleStateDataSource);
+		DateFormat df = new SimpleDateFormat("MM_dd_yyyy_HH_mm_ss");
+		Date today = Calendar.getInstance().getTime();
+		String reportDate = df.format(today);
+		XMLWriter myWriter = new XMLWriter(reportDate, boardStateDataSource, turtleStateDataSource);
 
 	}
 }
