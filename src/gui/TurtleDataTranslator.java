@@ -16,7 +16,6 @@ public class TurtleDataTranslator {
 	private double imageHeight;
 	
 	public TurtleDataTranslator(double canvasWidth, double canvasHeight, double imWidth, double imHeight) {
-		// TODO Auto-generated constructor stub
 		width = canvasWidth;
 		height = canvasHeight;
 		imageWidth = imWidth;
@@ -28,6 +27,7 @@ public class TurtleDataTranslator {
 	}
 	
 	public double convertYImageCordinate(double yCor){
+		System.out.println(height/2 - yCor-imageHeight/2);
 			return height/2 - yCor-imageHeight/2;
 	}
 	

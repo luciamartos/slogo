@@ -233,6 +233,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		settingsController.getWorkspaceSettingsController().addObserver(this);
 		settingsController.getGeneralSettingsController().addObserver(this);
 		settingsController.getTurtleSettingsController().addObserver(this);
+		canvasActions.setAnimationSpeed(settingsController.getTurtleSettingsController().getNewAnimationSpeed());
 		return settingsController.getNode();
 	}
 
@@ -361,7 +362,6 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println(currId);
 				turtleActionsHandler.toggleTurtle(currId);
 				currentlySelectedID = currId;
 				updateVariables();
@@ -398,27 +398,8 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 	}
 
 	public void update(GeneralSettingsController obs, Object o) {
-		// colorMap = boardStateDataSource.getColorMap();
-		// if (obs.getNewImage() != null) {
-		// Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
-		// while (turtleIds.hasNext()) {
-		// int currId = turtleIds.next();
-		// canvasActions.setTurtleImage(currId, obs.getNewImage());
-		// }
-		// }
-
 		if (obs.getNewCommandLineFromFile() != null)
 			runCommand(obs.getNewCommandLineFromFile());
-		// if (obs.getNewBackgroundColor() != -1)
-		// canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getNewBackgroundColor()));
-		// if (obs.getNewLanguage() != null)
-		// commandHandler.setLanguage(this, obs.getNewLanguage());
-		// if (obs.getNewPenColor() != -1)
-		// turtleActionsHandler.setPenColor(obs.getNewPenColor());
-		// if (obs.getNewPenType() != -1)
-		// turtleActionsHandler.setPenType(obs.getNewPenType());
-		// if (obs.getNewPenThickness() != -1)
-		// turtleActionsHandler.setPenThickness(obs.getNewPenThickness());
 	}
 
 	public void update(TurtleSettingsController obs, Object o) {
@@ -431,8 +412,9 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 				}
 			}
 			turtleActionsHandler.setShape(myShape);
-			canvasActions.setAnimationSpeed(obs.getNewAnimationSpeed());
+			
 		}
+		canvasActions.setAnimationSpeed(obs.getNewAnimationSpeed());
 
 	}
 
@@ -448,7 +430,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 	public void update(PenSettingsController obs, Object o) {
 		if (obs.getNewPenColor() != null) {
 			int i =0;
-			if(!colorMap.containsValue(obs.getNewPenColor())){
+			if(!colorMap.containsValue(new RGBColor(obs.getNewPenColor()))){
 				while(true){
 					if(!colorMap.containsKey(i)) break;
 						i++;
@@ -465,8 +447,8 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 				}
 			}
 		}
-
-		if (obs.getNewPenType() != null && penTypeMap.containsKey(obs.getNewPenType())) {
+		
+		if (obs.getNewPenType() != null && penTypeMap.containsValue(obs.getNewPenType())) {
 			for (Integer myElem : penTypeMap.keySet()) {
 				if (penTypeMap.get(myElem).equals(obs.getNewPenType())) {
 					turtleActionsHandler.setPenType(myElem);

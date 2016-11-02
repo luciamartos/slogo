@@ -1,6 +1,7 @@
 package interpreter;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,6 +37,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private ErrorPresenter errorPresenter;
 	private ResourceBundle rb;
 	private Queue<String[]> listQueue;
+	
 	private int repCount;
 	private double singleRetVal;
 	
@@ -43,35 +45,10 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		rb = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+PROPERTIES_TITLE);
 	}
 	
-	/**
-	 * Overload of parseInput() method that enables a global interpreter for multiple turtles
-	 */
-// 	public void parseInput(String input, TurtleStateDataSource stateDataSource, TurtleStateUpdater turtleStateUpdater, BoardStateUpdater boardStateUpdater, UserVariablesDataSource varDataSource, ErrorPresenter errorPresenter) throws ClassNotFoundException, NoSuchMethodException, 
-// 	SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
-// 	InvocationTargetException{
-// 		this.stateDataSource = stateDataSource;
-// 		this.turtleStateUpdater = turtleStateUpdater;
-// 		this.boardStateUpdater = boardStateUpdater;
-// 		this.varDataSource = varDataSource;
-// 		this.errorPresenter = errorPresenter;
-// 		this.parseInput(input);
-// 	}
-	
 	public void parseInput(String input) throws ClassNotFoundException, NoSuchMethodException, 
 			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, 
 			InvocationTargetException{
 		List<Integer> listOfActiveTurtles = stateDataSource.getActiveTurtleIDs();
-		
-		/**
-		 * **************************************************************
-		 * These lines must be removed on develop/master branch; they are only here for test purposes in "ray" branch!!!
-		 */
-//		listOfActiveTurtles = new ArrayList<Integer>();
-//		listOfActiveTurtles.add(6);
-//		turtleStateUpdater.setActiveTurtles(listOfActiveTurtles);		
-		/**
-		 * **************************************************************
-		 */
 		boolean commandContainsAsk = containsAsk(input);
 		for(int turtleID: listOfActiveTurtles){
 			parseInputForActiveTurtles(input, turtleID);
@@ -96,9 +73,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		String[] parsed = createParsedArray(input, lang);
 		String keyword = parsed[searchStartIndex].toLowerCase();
 
-		listQueue = searchForList(input, parsed); //scan for list first before anything else
+		listQueue = searchForList(input, parsed); //scan for list first before executing commands
 		
-		double returnValue = erroneousReturnValue; //initialized as an erroneous number
+		double returnValue = erroneousReturnValue; //return value is initialized as erroneous number
 		double[] param = createParams(input, keyword, searchStartIndex);
 		
 		for(SubInterpreter elem: listOfSubInterpreters){
@@ -136,7 +113,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		else{
 			printErrorMessage(input, searchStartIndex, returnValue);
 			return returnValue;
-//			throw new IllegalArgumentException();
 		}
 	}
 
@@ -151,11 +127,10 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private double handleEdgeCases(String[] input, int searchStartIndex, String[] parsed, String keyword,
 			double returnValue) throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
 			IllegalAccessException, InvocationTargetException {
-		//control keywords are handled differently from other keywords
 		if(isControl(keyword)) returnValue = interpretControl(input, parsed, keyword, searchStartIndex);
 		if(isAskCommand(keyword)) returnValue = handleAsk(keyword);
 		
-		//retrieves variable
+		//if not a valid command, check whether it is pre-defined variable or method
 		Set<String> userDefinedVariables = varDataSource.getUserDefinedVariables().keySet();
 		String newKeyword = input[searchStartIndex];
 		if(keyword.equalsIgnoreCase(rb.getString("VariableLabel"))) returnValue = handleVariable(input, searchStartIndex);
@@ -164,13 +139,12 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			parseInput(newCommand);
 			returnValue = singleRetVal;
 		}
-		
 		return returnValue;
 	}
 
 	private double handleAsk(String keyword) throws ClassNotFoundException, NoSuchMethodException,
 			InstantiationException, IllegalAccessException, InvocationTargetException {
-		double res=erroneousReturnValue; // 0 is set for initialization purposes
+		double res=erroneousReturnValue; // initialized as erroneous value
 		Queue<String[]> newListQueue = new LinkedList<String[]>();
 		while(!listQueue.isEmpty()){
 			newListQueue.add(listQueue.poll());
@@ -191,7 +165,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		String[] command = newListQueue.poll();
 		double valueOfCommand = interpretCommand(command, 0);
 		
-		//TODO: currently adds value of command as index of turtle
+		//currently adds value of command as index of turtle
 		if(valueOfCommand!=0){
 			turtlesToAsk.add((int)valueOfCommand);
 		}
@@ -240,31 +214,28 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, 
 	IllegalArgumentException, InvocationTargetException{
 		
-		if(keyword.equalsIgnoreCase(rb.getString("makevar"))){
-			return makevariable(input, parsed, searchStartIndex);
-		}
-		else if(keyword.equalsIgnoreCase(rb.getString("repeat"))){
-			return repeat(input, searchStartIndex, 1);
-		}
-		else if(keyword.equalsIgnoreCase(rb.getString("dotimes"))){
-			return 0;
-		}	
-		else if(keyword.equalsIgnoreCase(rb.getString("for"))){
-			return 0;
-		}
-		else if(keyword.equalsIgnoreCase(rb.getString("if"))){
-			return handleIf(input, searchStartIndex);
-		}
-		else if(keyword.equalsIgnoreCase(rb.getString("ifelse"))){
-			return handleElseIf(input, searchStartIndex);
-		}
-		else if(keyword.equalsIgnoreCase(rb.getString("to"))){
-			return handleTo();
-		}
-		else return 0;
+		if(keyword.equalsIgnoreCase(rb.getString("if"))) return handleIf(input, searchStartIndex);	
+		
+		Class<?>[] args = createArgsForControl();
+		Method method = this.getClass().getDeclaredMethod(keyword, args);
+		return (double) method.invoke(this, input, parsed, searchStartIndex);
+//		else if(keyword.equalsIgnoreCase(rb.getString("dotimes"))){
+//			return 0;
+//		}	
+//		else if(keyword.equalsIgnoreCase(rb.getString("for"))){
+//			return 0;
+//		}
 	}
 
-	private double handleTo() {
+	private Class<?>[] createArgsForControl() {
+		Class<?>[] args = new Class[3];
+		args[0] = String[].class;
+		args[1] = String[].class;
+		args[2] = Integer.TYPE;
+		return args;
+	}
+
+	private double makeuserinstruction(String[] input, String[] parsed, int index) {
 		if(listQueue.size()!=2) return 0;
 		String[] varNameInArray = listQueue.poll();
 		String varName = "";
@@ -275,7 +246,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		return 1;
 	}
 	
-	private double handleElseIf(String[] input, int searchStartIndex) throws ClassNotFoundException,
+	private double ifelse(String[] input, String[] parsed, int searchStartIndex) throws ClassNotFoundException,
 	NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		double[] param = parseParam(input, searchStartIndex+1, 1);
 		double res = 0;
@@ -301,13 +272,14 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		return res;
 	}
 
-	private double repeat(String[] input, int searchStartIndex, int increment) throws ClassNotFoundException,
+	private double repeat(String[] input, String[] parsed, int searchStartIndex) throws ClassNotFoundException,
 			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		double[] param = parseParam(input, searchStartIndex+1, 1);
 		repCount = 0;
 		double res = 0;
+		System.out.println("qwerqwer: " + param[0]);
 		String[] temp = listQueue.poll();
-		for(int i=0;i<param[0];i = i + increment){
+		for(int i=0;i<param[0];i++){
 			res = interpretCommand(temp, 0);
 			repCount++;
 		}
@@ -353,7 +325,6 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		else if(determineNumberOfInputs(keyword, MULTIPLE_INPUT_TITLE)){
 			param = parseParam(input, searchStartIndex+1, 3);
 		}
-//		else throw new IllegalArgumentException();
 		else param = null;
 		return param;
 	}
@@ -365,14 +336,16 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		double[] res = new double[numOfParams];
 		int index=0;
 		for(int i=startSearchIndex;i<startSearchIndex+numOfParams;i++){
+			if(i >= input.length){
+				System.out.println(rb.getString("AOBMessage"));
+				errorPresenter.presentError(rb.getString("AOBMessage"));
+				break;
+			}
 			if(isDouble(input[i])){
 				double temp = Double.parseDouble(input[i]);
 				res[index++] = temp;
 			}
-			else{
-				//recursive parsing of input statement
-				res[index++] = interpretCommand(input, i);
-			}
+			else res[index++] = interpretCommand(input, i); //recursive parsing of input statement
 		}
 		return res;
 	}
@@ -391,9 +364,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private boolean determineNumberOfInputs(String keyword, String properties){
 		ResourceBundle reader = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+properties);
 		for(String elem: reader.keySet()){
-			if(keyword.equalsIgnoreCase(reader.getString(elem))){
-				return true;
-			}
+			if(keyword.equalsIgnoreCase(reader.getString(elem))) return true;
 		}	
 		return false;
 	}
@@ -426,9 +397,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	private boolean containsAsk(String input){
 		String[] split = input.split("\\s+");
 		for(String elem: split){
-			if(elem.equalsIgnoreCase(rb.getString("ask"))){
-				return true;
-			}
+			if(elem.equalsIgnoreCase(rb.getString("ask"))) return true;
 		}
 		return false;
 	}
@@ -445,7 +414,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	}
 	
 	private double presentEmptyListMessage() {
-		errorPresenter.presentError("List is Empty!");
+		errorPresenter.presentError(rb.getString("EmptyListMessage"));
 		return 0;
 	}
 	
@@ -454,14 +423,12 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	 */
 	private int hasRemainingActionable(String[] parsed, int index){
 		int resIndex = -1;
-//		System.out.println("input index: " + index + ", Parsed length: " + parsed.length);
 		
-		//TODO: Is this the best way to tell TurtleCommand or not? Is instantiating new TurtleCommandInterpreter OK?
+		//Instantiates copy of turtleCommandInterpreter to check keyword
 		TurtleCommandInterpreter interpreter = new TurtleCommandInterpreter(model, boardStateUpdater);
 		if(index == parsed.length) return resIndex;
 		for(int i=index+1;i<parsed.length;i++){
-			
-			//TODO: Right now, if at any point the command includes '[', method returns "There are no further actionables"
+			//If at any point the command includes '[', method returns "There are no further actionables"
 			if(parsed[i].equalsIgnoreCase(rb.getString("ListStartLabel"))){
 				return resIndex;
 			}

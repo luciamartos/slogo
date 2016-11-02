@@ -1,7 +1,6 @@
 package interpreter;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Queue;
 import java.util.ResourceBundle;
 
@@ -23,21 +22,12 @@ public abstract class SubInterpreter {
 		this.listQueue = queue;
 	}
 	
-	protected Class[] createDoubleArgs(int num){
-		Class[] args = new Class[num];
+	protected Class<?>[] createDoubleArgs(int num){
+		Class<?>[] args = new Class[num];
 		for(int i=0;i<args.length;i++){
 			args[i] = Double.TYPE;
 		}
 		return args;
-	}
-	
-	private boolean isDouble(String str) {
-		try {
-			Double.parseDouble(str);
-			return true;
-		} catch (NumberFormatException e) {
-			return false;
-		}
 	}
 	
 }

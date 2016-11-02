@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.BasicStroke;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,15 +34,21 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.HLineTo;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import model.PathLine;
 import model.RGBColor;
 
+/**
+ * @author Lucia Martos
+ */
 public class CanvasActions {
 	private static final RGBColor COLOR_CANVAS = new RGBColor(255, 255, 255);
 	private static final String IMAGE_PATH = "resources/images/";
@@ -95,21 +102,32 @@ public class CanvasActions {
 		return canvas;
 	}
 
- 	public void drawPath(Color color, int penThickness, double x1, double y1, double x2, double y2, String penType) {
+	public void drawPath(Color color, int penThickness, double x1, double y1, double x2, double y2, String penType) {
+		handleDifferentPenTypes(penType);
 		gc.setStroke(color);
 		gc.setLineWidth(penThickness);
 		gc.strokeLine(x1, y1, x2, y2);
 		gc.setFill(color);
-		handleDifferentPenTypes(penType);
+
 	}
 
 	private void handleDifferentPenTypes(String penType) {
 		if (penType.equals("dashed")) { // THESE ARENT WORKING EXACTLY HOW THEY
-										// SHOULD
-			gc.setLineDashes(6.0f);
+
+
+//	        Paint pen;
+//	        float[] dashes = { 2.0f};
+//	        pen = new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 4.0f, dashes, 0.0f);
+//	        gc.setLineDashes(dashes);
+//	        gc.setStroke(pen);
+			System.out.println("fadsf");
+			gc.setLineCap(StrokeLineCap.BUTT);
+			gc.setLineJoin(StrokeLineJoin.MITER);
+			gc.setMiterLimit(10.0f);
+			gc.setLineDashes(10.0f);
 			gc.setLineDashOffset(0.0f);
 		}
-		if (penType.equals("dotted")) {
+		else if (penType.equals("dotted")) {
 			gc.setLineDashes(3.0f);
 		} else {
 			gc.setLineDashes(null);
@@ -127,14 +145,15 @@ public class CanvasActions {
 	}
 
 	private void makeAnimationRotateTurtle(ImageView turtleImgView, double heading) {
-		RotateTransition rt = new RotateTransition(Duration.millis(300), turtleImgView);
+		RotateTransition rt = new RotateTransition(Duration.millis(3000 / animationSpeed), turtleImgView);
 		rt.setByAngle(heading - turtleImgView.getRotate());
 		rt.play();
 		return;
 	}
 
 	private void makeAnimationMovementTurtle(int id, ImageView turtleImgView, double x2, double y2) {
-		TranslateTransition pt = new TranslateTransition(Duration.millis(100), turtleImgView);
+		System.out.println(animationSpeed);
+		TranslateTransition pt = new TranslateTransition(Duration.millis(1500 / animationSpeed), turtleImgView);
 		pt.setByX(x2 - turtleImgView.getTranslateX());
 		pt.setByY(y2 - turtleImgView.getTranslateY());
 		pt.delayProperty();
@@ -146,10 +165,11 @@ public class CanvasActions {
 	// where is the method that takes in the string?
 	public void setTurtleImage(int id, String image) {
 		ImageView turtleImgView = map.get(id);
-		turtleImgView.setImage(FileChooserPath.selectImage(IMAGE_PATH+image+".png", 50, 50));
+		turtleImgView.setImage(FileChooserPath.selectImage(IMAGE_PATH + image + ".png", 50, 50));
 	}
 
-	public void initializeTurtle(int id, double xLoc, double yLoc, double heading, boolean isShowing, EventHandler<MouseEvent> e) {
+	public void initializeTurtle(int id, double xLoc, double yLoc, double heading, boolean isShowing,
+			EventHandler<MouseEvent> e) {
 		ImageView turtleImgView = new ImageView(
 				FileChooserPath.selectImage(IMAGE_PATH + "turtle.png", imageWidth, imageHeight));
 		turtleImgView.setTranslateX(xLoc);
@@ -168,10 +188,10 @@ public class CanvasActions {
 
 	public void clearCanvas() {
 		gc.clearRect(0, 0, canvasWidth, canvasHeight);
-		
+
 	}
-	
-	public void setAnimationSpeed(int speed){
+
+	public void setAnimationSpeed(int speed) {
 		animationSpeed = speed;
 	}
 }

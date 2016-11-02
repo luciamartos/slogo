@@ -2,7 +2,6 @@ package interpreter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Queue;
 
 public class BooleanInterpreter extends SubInterpreter{
 	
@@ -14,12 +13,12 @@ public class BooleanInterpreter extends SubInterpreter{
 	@Override
 	double handle(String[] input, String keyword, double[] param, int searchStartIndex) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		if(isUnaryBooleanExpression(keyword)){
-			Class[] args = createDoubleArgs(1);
+			Class<?>[] args = createDoubleArgs(1);
 			Method method = this.getClass().getDeclaredMethod(keyword, args);
 			return (double) method.invoke(this, param[0]);
 		}
 		else if(isBinaryBooleanExpression(keyword)){
-			Class[] args = createDoubleArgs(2);
+			Class<?>[] args = createDoubleArgs(2);
 			Method method = this.getClass().getDeclaredMethod(keyword, args);
 			return (double) method.invoke(this, param[0],param[1]);
 		}
