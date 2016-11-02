@@ -51,7 +51,7 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 		newPenColor = -1;
 		VBox vBox1 = new VBox(viewProperties.getDoubleProperty("padding"));
 		vBox1.getChildren().add(initializeUndoButton());
-	//	vBoxLeft.getChildren().add(initalizeFileLoader());
+		vBox1.getChildren().add(initalizeFileLoader());
 		vBox1.getChildren().add(initalizeCommandFileLoader());
 
 
@@ -158,6 +158,11 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 
 	public String getNewCommandLineFromFile() {
 		return newCommandString;
+	}
+
+	@Override
+	public void loadBoard(String string) {
+		myInterface.loadBoard(string);	
 	}
 
 //	@Override

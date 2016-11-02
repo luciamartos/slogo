@@ -11,7 +11,7 @@ import model.TurtleStatesController;
 
 public class FileIOController {
 	
-	public void loadBoardWithFile(String xmlFile, TabViewController tabViewController){
+	public static void loadBoardWithFile(String xmlFile, TabViewController tabViewController){
 		
 		XMLReader fileReader = new XMLReader(xmlFile);
 		BoardStateController boardController  = new BoardStateController();

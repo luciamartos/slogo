@@ -19,6 +19,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import fileIO.CommandPrinter;
+import fileIO.FileIOController;
 import fileIO.XMLWriter;
 import general.MainController;
 import general.NewSlogoInstanceCreator;
@@ -520,5 +521,10 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		CommandPrinter myWriter = new CommandPrinter("history_at_" + reportDate, pastCommands);
 		
 		
+	}
+
+	@Override
+	public void loadBoard(String string) {
+		FileIOController.loadBoardWithFile(string, this);		
 	}
 }
