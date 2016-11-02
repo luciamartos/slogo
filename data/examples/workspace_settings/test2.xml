@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<workspace>
+	<type id="properties">
+		<imageURL>resources/images/turtle.png</imageURL>
+		<backgroundcolor>blue</backgroundcolor>
+		<language>spanish</language>
+		<turtlecount>1</turtlecount>
+		<pencolor>red</pencolor>
+		<penthickness>3</penthickness>
+		<pendown>no</pendown>
+		<linestyle>solid</linestyle>
+	</type>
+</workspace>

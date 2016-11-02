@@ -1,4 +1,8 @@
 package interpreter;
+
+import java.util.Collection;
+import java.util.HashSet;
+
 /**
  * @author Andrew Bihl
  */
@@ -8,13 +12,21 @@ public class SlogoUpdate {
 	private double xCoordinate;
 	private double yCoordinate;
 	private double angle;
+	private int penColor;
+	private int penSize;
+	private int shape;
+	private int turtleID;
 	
-	public SlogoUpdate(TurtleStateDataSource source){
-		angle = source.getAngle();
-		turtleShouldDraw = source.getTurtleIsDrawing();
-		turtleShouldShow = source.getTurtleIsShowing();
-		xCoordinate = source.getXCoordinate();
-		yCoordinate = source.getYCoordinate();
+	public SlogoUpdate(TurtleStateDataSource source, int turtleID){
+		angle = source.getAngle(turtleID);
+		turtleShouldDraw = source.getTurtleIsDrawing(turtleID);
+		turtleShouldShow = source.getTurtleIsShowing(turtleID);
+		xCoordinate = source.getXCoordinate(turtleID);
+		yCoordinate = source.getYCoordinate(turtleID);
+		penColor = source.getPenColor(turtleID);
+		penSize = source.getPenSize(turtleID);
+		shape = source.getShape(turtleID);
+		this.turtleID = turtleID;
 	}
 	
 	public Boolean getTurtleShouldDraw(){
@@ -37,15 +49,29 @@ public class SlogoUpdate {
 		return angle;
 	}
 	
+	public int getPenColor(){
+		return penColor;
+	}
+	
+	public int getPenSize(){
+		return penSize;
+	}
+	
+	public int getShape(){
+		return shape;
+	}
+	
 //Interpreter should call these methods to update the data object as it handles commands
 	
 	//TODO: Implement methods.
 	public void rotateClockwise(double degrees){
-		angle = convertAngle(angle - degrees);
+//		angle = convertAngle(angle - degrees);
+		angle = angle - degrees;
 	}
 	
 	public void rotateCounterClockwise(double degrees){
-		angle = convertAngle(angle + degrees);
+//		angle = convertAngle(angle + degrees);
+		angle = angle+degrees;
 	}
 	
 	public void moveForward(double pixels){
@@ -102,6 +128,17 @@ public class SlogoUpdate {
 		turtleShouldDraw = false;
 	}
 	
+	public void setShape(int index){
+		this.shape = index;
+	}
+	
+	public void setPenColor(int index){
+		this.penColor = index;
+	}
+	
+	public void setPenSize(int pixels){
+		this.penSize = pixels;
+	}
 	/**
 	 * @param unconvertedAngle
 	 * @return The angle converted to a positive value between 0.0 and 360.0
@@ -117,6 +154,10 @@ public class SlogoUpdate {
 			numerator = denominator + numerator;
 		}		
 		return numerator;
+	}
+	
+	public int getTurtleID(){
+		return this.turtleID;
 	}
 	
 }

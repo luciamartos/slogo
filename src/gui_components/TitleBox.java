@@ -1,4 +1,4 @@
-package gui;
+package gui_components;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -6,10 +6,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-/**
- * 
- * @author LuciaMartos
- */
+
 
 public class TitleBox extends Group {
     private static final Color BACKGROUND_COLOR = Color.CORNFLOWERBLUE;

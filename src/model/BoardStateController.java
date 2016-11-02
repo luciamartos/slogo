@@ -1,85 +1,59 @@
 package model;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Observable;
 import java.util.Observer;
-
+import general.Properties;
+import gui.BoardActionsHandler;
 import gui.BoardStateDataSource;
-import interpreter.SlogoUpdate;
-import interpreter.TurtleStateDataSource;
-import interpreter.TurtleStateUpdater;
+import interpreter.BoardStateUpdater;
 import interpreter.UserVariablesDataSource;
 
 /**
  * @author Andrew Bihl
  */
 
-public class BoardStateController implements TurtleStateDataSource, BoardStateDataSource, TurtleStateUpdater, UserVariablesDataSource {
-	
-	
-	public void applyChanges(SlogoUpdate changes){
-		BoardState modelToUpdate = BoardState.getCurrentState();
-		modelToUpdate.setAngle(changes.getAngle());
-		modelToUpdate.setDrawing(changes.getTurtleShouldDraw());
-		modelToUpdate.setShowing(changes.getTurtleShouldShow());
-		if (modelToUpdate.isDrawing()){
-			double currentX = modelToUpdate.getXCoordinate();
-			double currentY = modelToUpdate.getYCoordinate();
-			double newX = changes.getXCoordinate();
-			double newY = changes.getYCoordinate();
-			PathLine line = new PathLine(currentX, currentY, newX, newY);
-			modelToUpdate.addLineCoordinates(line);
-		}
-		modelToUpdate.setXCoordinate(changes.getXCoordinate());
-		modelToUpdate.setYCoordinate(changes.getYCoordinate());
-		//TODO: Update distance covered
-		modelToUpdate.notifyObservers(this);
+public class BoardStateController extends Observable implements BoardStateDataSource, BoardStateUpdater, UserVariablesDataSource, BoardActionsHandler{
+	private final String VIEW_PROPERTIES_FILE_PATH = "resources.properties.View";
+	private final String BOARD_WIDTH_KEY = "canvas_width";
+	private final String BOARD_HEIGHT_KEY = "canvas_height";
+	private double maxXCoordinate;
+	private double minXCoordinate;
+	private double maxYCoordinate;
+	private double minYCoordinate;
+	private BoardState boardState;
+	private TurtleStatesController turtleController;
+
+	public BoardStateController(){
+		boardState = new BoardState();
+		Properties visualProperties = new Properties(VIEW_PROPERTIES_FILE_PATH);
+		double boardWidth = visualProperties.getDoubleProperty(BOARD_WIDTH_KEY);
+		double boardHeight = visualProperties.getDoubleProperty(BOARD_HEIGHT_KEY);
+		maxXCoordinate = boardWidth/2;
+		minXCoordinate = -maxXCoordinate;
+		maxYCoordinate = boardHeight/2;
+		minYCoordinate = -maxYCoordinate;
+		this.turtleController = new TurtleStatesController(this);
 	}
 	
 	public void addBoardStateListener(Observer o){
-		BoardState.getCurrentState().addObserver(o);
-		BoardState.getCurrentState().notifyObservers(this);
+		//TODO: Decide whether it is necessary to override this stuff.
+		this.addObserver(o);
+		setChanged();
+		this.notifyObservers();
 	}
-	
-/*
- * interpreter.TurtleQueryDataSource interface methods
- */
-	@Override
-	public double getXCoordinate() {
-		return BoardState.getCurrentState().getXCoordinate();
-	}
-
-	@Override
-	public double getYCoordinate() {
-		return BoardState.getCurrentState().getYCoordinate();
-	}
-
-	@Override
-	public double getAngle() {
-		return BoardState.getCurrentState().getAngle();
-	}
-
-	@Override
-	public boolean getTurtleIsShowing() {
-		return BoardState.getCurrentState().isShowing();
-	}
-
-	@Override
-	public boolean getTurtleIsDrawing() {
-		return BoardState.getCurrentState().isDrawing();
-	}
-
 	
 /*
  * gui.BoardStateDataSource 
  */
 	@Override
-	public List<PathLine> getLineCoordinates() {
-		return BoardState.getCurrentState().getLineCoordinates();
+	public Iterator<PathLine> getPaths() {
+		return boardState.getLineCoordinates().iterator();
 	}
 
 	@Override
 	public Map<String, String> getUserDefinedVariables() {
-		return BoardState.getCurrentState().getUserDefinedVariables();
+		return boardState.getUserDefinedVariables();
 	}
 	
 /*
@@ -87,18 +61,83 @@ public class BoardStateController implements TurtleStateDataSource, BoardStateDa
  */
 	@Override
 	public void addUserDefinedVariable(String varName, String userInput) {
-		BoardState.getCurrentState().addUserDefinedVariable(varName, userInput);
+		boardState.addUserDefinedVariable(varName, userInput);
+		this.setChanged();
+		this.notifyObservers();
 	}
 
 	@Override
 	public String getUserDefinedVariable(String key) {
-		return BoardState.getCurrentState().getUserDefinedVariables().get(key);
+		return boardState.getUserDefinedVariables().get(key);
 	}
 
 	@Override
 	public void resetBoard() {
-		// TODO Auto-generated method stub
-		
+		this.boardState.setToDefaultValues();
+		this.turtleController.setDefaultTurtles();
+		setChanged();
+		notifyObservers();
 	}
 	
+	double getMaxXCoordinate(){
+		return this.maxXCoordinate;
+	}
+	
+	double getMinXCoordinate(){
+		return this.minXCoordinate;
+	}
+	
+	double getMaxYCoordinate(){
+		return this.maxYCoordinate;
+	}
+	
+	double getMinYCoordinate(){
+		return this.minYCoordinate;
+	}
+	
+	void addLine(PathLine line){
+		boardState.addLineCoordinates(line);
+		this.setChanged();
+		this.notifyObservers();
+	}
+
+	@Override
+	public int getBackgroundColorIndex() {
+		return this.boardState.getBackgroundColorIndex();
+	}
+	
+	RGBColor getColorForIndex(int i){
+		return this.boardState.getColorForIndex(i);
+	}
+	
+	public TurtleStatesController getTurtleStatesController(){
+		return this.turtleController;
+	}
+
+	@Override
+	public void undo() {
+		// TODO Auto-generated method stub
+		this.setChanged();
+		this.notifyObservers();
+	}
+
+	@Override
+	public void setBackgroundColor(int colorIndex) {
+		this.boardState.setBackgroundColorIndex(colorIndex);
+		this.setChanged();
+		this.notifyObservers();
+	}
+
+	@Override
+	public void addColorToPalette(int index, int red, int green, int blue) {
+		RGBColor color = new RGBColor(red, green, blue);
+		this.boardState.addColorToMap(color, index);
+		this.setChanged();
+		this.notifyObservers();
+	}
+
+	@Override
+	public Map<Integer, RGBColor> getColorMap() {
+		return boardState.getColorMap();
+	}
 }

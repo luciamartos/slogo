@@ -3,126 +3,68 @@ package model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Observable;
 
 /**
- * @author Andrew Bihl
+ * @author Andrew Bihl, Eric Song
  */
 
-public class BoardState extends Observable {
-	private double xCoordinate;
-	private double yCoordinate;
-	private double angle;
-	private double distanceMoved;
-	private boolean drawing;
-	private boolean showing;
+public class BoardState{
 	private ArrayList<PathLine> lineCoordinates;
 	private HashMap<String, String> userDefinedVariables;
+	private HashMap<Integer, RGBColor> colors;
+	private int backgroundColorIndex;
 	
-	private static BoardState currentState;
 	
-	protected BoardState(){
+	BoardState(){
+		setToDefaultValues();
+	}
+	
+	void setToDefaultValues(){
 		this.lineCoordinates= new ArrayList<PathLine>();
 		this.userDefinedVariables = new HashMap<String, String>();
-	}
-	
-	private void setToDefaultValues(){
-		setXCoordinate(0.0);
-		setYCoordinate(0.0);
-		setAngle(90.0);
-		setDrawing(true);
-		setShowing(true);
-		setChanged();
-	}
-	
-	
-	public static BoardState getCurrentState(){
-		if (currentState == null){
-			currentState = new BoardState();
-			currentState.setToDefaultValues();
-		}
-		return currentState;
+		this.colors = new HashMap<Integer, RGBColor>();
+		RGBColor white = new RGBColor(255,255,255);
+		RGBColor black = new RGBColor(0,0,0);
+		RGBColor red = new RGBColor(255, 0, 0);
+		this.colors.put(0, white);
+		this.colors.put(1, black);
+		this.colors.put(2,red);
+		this.backgroundColorIndex = 0;
 	}
 
-// Getters and Setters
-	
-	public double getXCoordinate() {
-		return xCoordinate;
-	}
-
-	public void setXCoordinate(double xCoordinate) {
-		if (this.xCoordinate != xCoordinate){
-			this.xCoordinate = xCoordinate;
-			setChanged();
-		}
-	
-	}
-
-	public double getYCoordinate() {
-		return yCoordinate;
-	}
-
-	public void setYCoordinate(double yCoordinate) {
-		if (this.yCoordinate != yCoordinate){
-			this.yCoordinate = yCoordinate;
-			setChanged();
-		}
-	}
-
-	public double getAngle() {
-		return angle;
-	}
-
-	public void setAngle(double angle) {
-		if (this.angle != angle){
-			this.angle = angle;
-			setChanged();
-		}
-	}
-
-	public boolean isDrawing() {
-		return drawing;
-	}
-
-	public void setDrawing(boolean turtleShouldDraw) {
-		this.drawing = turtleShouldDraw;
-	}
-
-	public double getDistanceMoved() {
-		return distanceMoved;
-	}
-
-	public void setDistanceMoved(double distanceMoved) {
-		this.distanceMoved = distanceMoved;
-	}
-
-	public boolean isShowing() {
-		return showing;
-	}
-
-	public void setShowing(boolean turtleShouldShow) {
-		if (this.showing != turtleShouldShow){
-			this.showing = turtleShouldShow;
-			setChanged();
-		}
-	}
-	
-	public List<PathLine> getLineCoordinates(){
+	List<PathLine> getLineCoordinates(){
 		return lineCoordinates;
 	}
 	
-	public void addLineCoordinates(PathLine line){
+	void addLineCoordinates(PathLine line){
 		lineCoordinates.add(line);
-		setChanged();
 	}
 	
-	public void addUserDefinedVariable(String varName, String userInput){
+	void addUserDefinedVariable(String varName, String userInput){
 		this.userDefinedVariables.put(varName, userInput);
-		setChanged();
 	}
 	
-	public HashMap<String, String> getUserDefinedVariables(){
+	HashMap<String, String> getUserDefinedVariables(){
 		return userDefinedVariables;
 	}
 	
+	int getBackgroundColorIndex(){
+		return this.backgroundColorIndex;
+	}
+
+	void setBackgroundColorIndex(int index){
+		this.backgroundColorIndex = index;
+	}
+	
+	void addColorToMap(RGBColor color, int index){
+		this.colors.put(index, color);
+	}
+	
+	RGBColor getColorForIndex(int i){
+		return colors.get(i);
+	}
+	
+	HashMap<Integer, RGBColor> getColorMap(){
+		return this.colors;
+	}
 }
