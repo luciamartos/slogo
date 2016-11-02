@@ -8,7 +8,9 @@ import java.util.Scanner;
 
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
-
+/**
+ * @author Lucia Martos
+ */
 public class CommandFileUploader extends FileChooser {
 
 	private String myCommandLine;

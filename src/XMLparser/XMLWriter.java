@@ -24,7 +24,9 @@ import javafx.scene.paint.Color;
 import model.PathLine;
 
 public class XMLWriter {
-
+	/**adjusted from internet resource
+	 * @author Lucia Martos
+	 */
 	private static final String MY_PATH = "data/examples/";
 
 	public XMLWriter(String fileName, BoardStateDataSource boardStateDataSource, TurtleStateDataSource turtleStateDataSource) {

@@ -35,7 +35,9 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
+/**
+ * @author Lucia Martos
+ */
 public class TurtleSettingsController extends Observable {
 
 	private static final String IMAGE_PATH = "resources/images/";
