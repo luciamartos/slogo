@@ -103,7 +103,10 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		
 		for(SubInterpreter elem: listOfSubInterpreters){
 			if(elem.canHandle(keyword)){	
-				if(elem.needList()) elem.setList(listQueue);
+				if(elem.needList()){
+					if(listQueue.isEmpty()) returnValue = presentEmptyListMessage();
+					elem.setList(listQueue);
+				}
 				returnValue = elem.handle(input, keyword, param, searchStartIndex);
 				if(elem.getModel() != null) model = elem.getModel(); 
 				break;
@@ -131,13 +134,17 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			}
 		}
 		else{
-			String errorMessage = "Invalid argument detected: '"+input[searchStartIndex]+"' is not a valid command!";
-			System.out.println(errorMessage);
-			errorPresenter.presentError(errorMessage);
-			System.out.println("Return Value: "+returnValue);
+			printErrorMessage(input, searchStartIndex, returnValue);
 			return returnValue;
 //			throw new IllegalArgumentException();
 		}
+	}
+
+	private void printErrorMessage(String[] input, int searchStartIndex, double returnValue) {
+		String errorMessage = "Invalid argument detected: '"+input[searchStartIndex]+"' is not a valid command!";
+		System.out.println(errorMessage);
+		errorPresenter.presentError(errorMessage);
+		System.out.println("Return Value: "+returnValue);
 	}
 	
 
@@ -435,6 +442,11 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	private boolean isAskCommand(String input){
 		return input.equalsIgnoreCase(rb.getString("ask")) || input.equalsIgnoreCase(rb.getString("askwith"));
+	}
+	
+	private double presentEmptyListMessage() {
+		errorPresenter.presentError("List is Empty!");
+		return 0;
 	}
 	
 	/**
