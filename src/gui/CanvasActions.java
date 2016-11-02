@@ -45,6 +45,7 @@ import javafx.util.Duration;
 import model.PathLine;
 import model.RGBColor;
 import model.XMLReader;
+
 /**
  * @author Lucia Martos
  */
@@ -101,6 +102,7 @@ public class CanvasActions {
 		return canvas;
 	}
 
+
  	public void drawPath(Color color, int penThickness, double x1, double y1, double x2, double y2, String penType) {
 		handleDifferentPenTypes(penType);
 		gc.setStroke(color);
@@ -112,6 +114,7 @@ public class CanvasActions {
 
 	private void handleDifferentPenTypes(String penType) {
 		if (penType.equals("dashed")) { // THESE ARENT WORKING EXACTLY HOW THEY
+
 //	        Paint pen;
 //	        float[] dashes = { 2.0f};
 //	        pen = new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 4.0f, dashes, 0.0f);
@@ -122,6 +125,7 @@ public class CanvasActions {
 			gc.setMiterLimit(10.0f);
 			gc.setLineDashes(10.0f);
 			gc.setLineDashOffset(0.0f);
+
 		}
 		if (penType.equals("dotted")) {
 			gc.setLineDashes(3.0f);
@@ -143,7 +147,7 @@ public class CanvasActions {
 	}
 
 	private void makeAnimationRotateTurtle(ImageView turtleImgView, double heading) {
-		RotateTransition rt = new RotateTransition(Duration.millis(3000/animationSpeed), turtleImgView);
+		RotateTransition rt = new RotateTransition(Duration.millis(3000 / animationSpeed), turtleImgView);
 		rt.setByAngle(heading - turtleImgView.getRotate());
 		rt.play();
 		return;
@@ -151,7 +155,7 @@ public class CanvasActions {
 
 	private void makeAnimationMovementTurtle(int id, ImageView turtleImgView, double x2, double y2) {
 		System.out.println(animationSpeed);
-		TranslateTransition pt = new TranslateTransition(Duration.millis(1500/animationSpeed), turtleImgView);
+		TranslateTransition pt = new TranslateTransition(Duration.millis(1500 / animationSpeed), turtleImgView);
 		pt.setByX(x2 - turtleImgView.getTranslateX());
 		pt.setByY(y2 - turtleImgView.getTranslateY());
 		pt.delayProperty();
@@ -163,10 +167,11 @@ public class CanvasActions {
 	// where is the method that takes in the string?
 	public void setTurtleImage(int id, String image) {
 		ImageView turtleImgView = map.get(id);
-		turtleImgView.setImage(FileChooserPath.selectImage(IMAGE_PATH+image+".png", 50, 50));
+		turtleImgView.setImage(FileChooserPath.selectImage(IMAGE_PATH + image + ".png", 50, 50));
 	}
 
-	public void initializeTurtle(int id, double xLoc, double yLoc, double heading, boolean isShowing, EventHandler<MouseEvent> e) {
+	public void initializeTurtle(int id, double xLoc, double yLoc, double heading, boolean isShowing,
+			EventHandler<MouseEvent> e) {
 		ImageView turtleImgView = new ImageView(
 				FileChooserPath.selectImage(IMAGE_PATH + "turtle.png", imageWidth, imageHeight));
 		turtleImgView.setTranslateX(xLoc);
@@ -185,10 +190,10 @@ public class CanvasActions {
 
 	public void clearCanvas() {
 		gc.clearRect(0, 0, canvasWidth, canvasHeight);
-		
+
 	}
-	
-	public void setAnimationSpeed(int speed){
+
+	public void setAnimationSpeed(int speed) {
 		animationSpeed = speed;
 	}
 }
