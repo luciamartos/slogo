@@ -108,6 +108,7 @@ public class CanvasActions {
 	private void handleDifferentPenTypes(String penType) {
 		if (penType.equals("dashed")) { // THESE ARENT WORKING EXACTLY HOW THEY
 										// SHOULD
+			System.out.println("dfas");
 			gc.setLineDashes(6.0f);
 			gc.setLineDashOffset(0.0f);
 		}
