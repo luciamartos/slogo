@@ -342,6 +342,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 
 	public void update(TurtleStateDataSource obs, Object o) {
 		Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
+		List<Integer> activeTurtleIds = turtleStateDataSource.getActiveTurtleIDs();
 		while (turtleIds.hasNext()) {
 			int currId = turtleIds.next();
 
@@ -349,6 +350,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 				initializeTurtle(currId);
 		
 			canvasActions.setTurtleImage(currId, shapeMap.get(turtleStateDataSource.getShape(currId)));
+			canvasActions.setTurtleActive(currId, activeTurtleIds.contains(currId));
 			canvasActions.animatedMovementToXY(currId,
 					turtleTranslator.convertXImageCordinate(turtleStateDataSource.getXCoordinate(currId)),
 					turtleTranslator.convertYImageCordinate(turtleStateDataSource.getYCoordinate(currId)),
