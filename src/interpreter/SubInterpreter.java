@@ -3,7 +3,11 @@ package interpreter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Queue;
 import java.util.ResourceBundle;
-
+/**
+ * Abstract class that is extended by specific instances, which are divided according to functionality.
+ * All abstract classes contain the canHandle() and handle() methods, which are called by the Main Interpreter in a loop.
+ * @author Ray Song
+ */
 public abstract class SubInterpreter {
 	
 	private final String DEFAULT_RESOURCE_PACKAGE = "resources/properties/";

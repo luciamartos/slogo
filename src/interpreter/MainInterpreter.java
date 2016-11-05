@@ -15,6 +15,10 @@ import java.util.Set;
 import gui.SlogoCommandInterpreter;
 import regularExpression.ProgramParser;
 
+/**
+ * Main Interpreter that calls upon relevant sub-interpreters when necessary.
+ * @author Ray Song
+ */
 public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	private final String DEFAULT_RESOURCE_LANGUAGE = "resources/languages/";
