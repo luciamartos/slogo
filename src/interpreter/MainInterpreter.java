@@ -16,7 +16,7 @@ import gui.SlogoCommandInterpreter;
 import regularExpression.ProgramParser;
 
 /**
- * Main Interpreter that calls upon relevant sub-interpreters when necessary.
+ * Main Interpreter that ensures parsing of String input commands and calls relevant sub-interpreters whenever necessary.
  * @author Ray Song
  */
 public class MainInterpreter implements SlogoCommandInterpreter {
@@ -239,6 +239,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		return args;
 	}
 
+	/**
+	 * The following instructions (marked as "never used locally)" are in fact called using Java reflection.
+	 */
 	private double makeuserinstruction(String[] input, String[] parsed, int index) {
 		if(listQueue.size()!=2) return 0;
 		String[] varNameInArray = listQueue.poll();
@@ -333,7 +336,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		return param;
 	}
 	
-
+	/**
+	 * This is a key method that accounts for the recursive parsing of the String command.
+	 */
 	private double[] parseParam(String[] input, int startSearchIndex, int numOfParams) throws ClassNotFoundException, 
 	NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, 
 	IllegalArgumentException, InvocationTargetException{
