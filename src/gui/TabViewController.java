@@ -73,9 +73,6 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 	private ObservableList<String> pastCommands;
 	private CanvasActions canvasActions;
 	private SettingsController settingsController;
-	// private WorkspaceSettingsController workspaceSettingsController;
-	// private PenSettingsController penSettingsController;
-	// private TurtleSettingsController turtleSettingsController;
 	private ErrorConsole errorConsole;
 
 	private BoardStateDataSource boardStateDataSource;
@@ -220,7 +217,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		return titleBox;
 	}
 
-	public Node createCanvas() {
+	private Node createCanvas() {
 		double canvasWidth = viewProperties.getDoubleProperty("canvas_width");
 		double canvasHeight = viewProperties.getDoubleProperty("canvas_height");
 		canvasActions = new CanvasActions(canvasWidth, canvasHeight, getImageWidth(), getImageHeight());
@@ -307,6 +304,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 
 	}
 
+	@Override
 	public void update(Observable obs, Object o) {
 		if (o != null) {
 			errorConsole.displayErrorMessage(o.toString());
@@ -340,6 +338,12 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		errorConsole.displayErrorMessage(errorMessage);
 	}
 
+	/**
+	 * @param obs
+	 * @param o
+	 *            performs all necessary updates when something in
+	 *            TurtleStateDataSource changes
+	 */
 	public void update(TurtleStateDataSource obs, Object o) {
 		Iterator<Integer> turtleIds = turtleStateDataSource.getTurtleIDs();
 		List<Integer> activeTurtleIds = turtleStateDataSource.getActiveTurtleIDs();
@@ -348,7 +352,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 
 			if (!canvasActions.turtleExists(currId))
 				initializeTurtle(currId);
-		
+
 			canvasActions.setTurtleImage(currId, shapeMap.get(turtleStateDataSource.getShape(currId)));
 			canvasActions.setTurtleActive(currId, activeTurtleIds.contains(currId));
 			canvasActions.animatedMovementToXY(currId,
@@ -380,11 +384,17 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 
 	}
 
+	/**
+	 * @param obs
+	 * @param o
+	 *            performs all necessary updates when something in
+	 *            BoardStateDataSource changes
+	 */
 	public void update(BoardStateDataSource obs, Object o) {
 		colorMap = boardStateDataSource.getColorMap();
 		Iterator<PathLine> pathLine = obs.getPaths();
-		if (pathLine.hasNext() == false){
-			//TODO: Paint fresh rectangle to background color.
+		if (pathLine.hasNext() == false) {
+			// TODO: Paint fresh rectangle to background color.
 		}
 		while (pathLine.hasNext()) {
 			PathLine currPathLine = pathLine.next();
@@ -400,11 +410,23 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		canvasActions.setBackgroundColorCanvas(colorMap.get(obs.getBackgroundColorIndex()));
 	}
 
+	/**
+	 * @param obs
+	 * @param o
+	 *            performs all necessary updates when something in
+	 *            GeneralSettingsController changes
+	 */
 	public void update(GeneralSettingsController obs, Object o) {
 		if (obs.getNewCommandLineFromFile() != null)
 			runCommand(obs.getNewCommandLineFromFile());
 	}
 
+	/**
+	 * @param obs
+	 * @param o
+	 *            performs all necessary updates when something in
+	 *            TurtleSettingsController changes
+	 */
 	public void update(TurtleSettingsController obs, Object o) {
 		if (obs.getNewImage() != null) {
 			int myShape = 0;
@@ -415,12 +437,18 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 				}
 			}
 			turtleActionsHandler.setShape(myShape);
-			
+
 		}
 		canvasActions.setAnimationSpeed(obs.getNewAnimationSpeed());
 
 	}
 
+	/**
+	 * @param obs
+	 * @param o
+	 *            performs all necessary updates when something in
+	 *            WorkspaceSettingsController changes
+	 */
 	public void update(WorkspaceSettingsController obs, Object o) {
 		colorMap = boardStateDataSource.getColorMap();
 		if (obs.getNewBackgroundColor() != null)
@@ -430,19 +458,27 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 			commandHandler.setLanguage(this, obs.getNewLanguage());
 	}
 
+	/**
+	 * @param obs
+	 * @param o
+	 *            performs all necessary updates when something in
+	 *            PenSettingsController changes
+	 */
 	public void update(PenSettingsController obs, Object o) {
 		if (obs.getNewPenColor() != null) {
-			int i =0;
-			if(!colorMap.containsValue(new RGBColor(obs.getNewPenColor()))){
-				while(true){
-					if(!colorMap.containsKey(i)) break;
-						i++;
+			int i = 0;
+			if (!colorMap.containsValue(new RGBColor(obs.getNewPenColor()))) {
+				while (true) {
+					if (!colorMap.containsKey(i))
+						break;
+					i++;
 				}
-				boardStateDataSource.addColorToPalette(i,(int)(obs.getNewPenColor().getRed()*255),(int)(obs.getNewPenColor().getBlue()*255), (int)(obs.getNewPenColor().getGreen()*255));
+				boardStateDataSource.addColorToPalette(i, (int) (obs.getNewPenColor().getRed() * 255),
+						(int) (obs.getNewPenColor().getBlue() * 255), (int) (obs.getNewPenColor().getGreen() * 255));
 				turtleActionsHandler.setPenColor(i);
 			}
-			if(i==0){
-				for(Integer myElem:colorMap.keySet()){
+			if (i == 0) {
+				for (Integer myElem : colorMap.keySet()) {
 					if (colorMap.get(myElem).equals(obs.getNewPenColor())) {
 						turtleActionsHandler.setPenColor(myElem);
 						break;
@@ -450,7 +486,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 				}
 			}
 		}
-		
+
 		if (obs.getNewPenType() != null && penTypeMap.containsValue(obs.getNewPenType())) {
 			for (Integer myElem : penTypeMap.keySet()) {
 				if (penTypeMap.get(myElem).equals(obs.getNewPenType())) {
@@ -462,6 +498,42 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		if (obs.getNewPenThickness() != 0)
 			turtleActionsHandler.setPenThickness(obs.getNewPenThickness());
 	}
+
+	/**
+	 * updates all variables in the TableViews based on the information from the
+	 * turtle and board state data sources
+	 */
+	public void updateVariables() {
+		tableViewController.updateTurtleVariablesList(turtleStateDataSource, currentlySelectedID);
+		tableViewController.updateUserDefinedVariablesList(boardStateDataSource);
+		tableViewController.updateUserDefinedCommandsList(boardStateDataSource);
+		tableViewController.updateMapList(colorMap, penTypeMap, shapeMap);
+	}
+
+	@Override
+	public void saveWorkspace() {
+		DateFormat df = new SimpleDateFormat("MM_dd_yyyy_HH_mm_ss");
+		Date today = Calendar.getInstance().getTime();
+		String reportDate = df.format(today);
+		XMLWriter myWriter = new XMLWriter("workspace_at_" + reportDate, boardStateDataSource, turtleStateDataSource);
+
+	}
+
+	@Override
+	public void saveHistoricCommands() {
+		DateFormat df = new SimpleDateFormat("MM_dd_yyyy_HH_mm_ss");
+		Date today = Calendar.getInstance().getTime();
+		String reportDate = df.format(today);
+		CommandPrinter myWriter = new CommandPrinter("history_at_" + reportDate, pastCommands);
+
+	}
+
+	@Override
+	public void loadBoard(String string) {
+		FileIOController.loadBoardWithFile(string, this);
+	}
+
+	//// setters and getters
 
 	public void setBoardStateDataSource(BoardStateDataSource boardStateDataSource) {
 		this.boardStateDataSource = boardStateDataSource;
@@ -487,13 +559,6 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		this.turtleActionsHandler = turtleActionsHandler;
 	}
 
-	public void updateVariables() {
-		tableViewController.updateTurtleVariablesList(turtleStateDataSource, currentlySelectedID);
-		tableViewController.updateUserDefinedVariablesList(boardStateDataSource);
-		tableViewController.updateUserDefinedCommandsList(boardStateDataSource);
-		tableViewController.updateMapList(colorMap, penTypeMap, shapeMap);
-	}
-
 	public void setCommandHandler(SlogoCommandHandler commandHandler) {
 		this.commandHandler = commandHandler;
 	}
@@ -504,29 +569,5 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 
 	public double getImageHeight() {
 		return viewProperties.getDoubleProperty("image_height");
-	}
-
-	@Override
-	public void saveWorkspace() {
-		DateFormat df = new SimpleDateFormat("MM_dd_yyyy_HH_mm_ss");
-		Date today = Calendar.getInstance().getTime();
-		String reportDate = df.format(today);
-		XMLWriter myWriter = new XMLWriter("workspace_at_" + reportDate , boardStateDataSource, turtleStateDataSource);
-
-	}
-
-	@Override
-	public void saveHistoricCommands() {
-		DateFormat df = new SimpleDateFormat("MM_dd_yyyy_HH_mm_ss");
-		Date today = Calendar.getInstance().getTime();
-		String reportDate = df.format(today);
-		CommandPrinter myWriter = new CommandPrinter("history_at_" + reportDate, pastCommands);
-		
-		
-	}
-
-	@Override
-	public void loadBoard(String string) {
-		FileIOController.loadBoardWithFile(string, this);		
 	}
 }

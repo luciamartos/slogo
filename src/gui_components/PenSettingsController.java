@@ -22,11 +22,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 /**
- * @author Lucia Martos
+ * @author Lucia Martos, Eric Song
  */
 public class PenSettingsController extends Observable {
-
-	private static final String IMAGE_PATH = "resources/images/";
 
 	private static final int PADDING = 4;
 

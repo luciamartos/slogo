@@ -47,7 +47,7 @@ import model.PathLine;
 import model.RGBColor;
 
 /**
- * @author Lucia Martos
+ * @author Lucia Martos, Eric Song
  */
 public class CanvasActions {
 	private static final RGBColor COLOR_CANVAS = new RGBColor(255, 255, 255);
@@ -71,18 +71,20 @@ public class CanvasActions {
 		imageWidth = imWidth;
 		imageHeight = imHeight;
 		pane.getChildren().addAll(canvas);
-		gc = canvas.getGraphicsContext2D(); // TODO: make a more descriptive
-											// name
+		gc = canvas.getGraphicsContext2D();
 		map = new HashMap<Integer, ImageView>();
 	}
 
+	/**
+	 * @param rgbColor
+	 * sets background color to rgbColor
+	 */
 	public void setBackgroundColorCanvas(RGBColor rgbColor) {
 		Color myColor = Color.rgb(rgbColor.getRed(), rgbColor.getGreen(), rgbColor.getBlue());
 		pane.setBackground(new Background(new BackgroundFill(myColor, CornerRadii.EMPTY, Insets.EMPTY)));
 	}
 
 	private void initializeCanvas(double canvasWidth, double canvasHeight) {
-		// TODO: delete all x and y's
 		canvas = new Canvas();
 		canvas.setWidth(canvasWidth);
 		canvas.setHeight(canvasHeight);
@@ -102,6 +104,16 @@ public class CanvasActions {
 		return canvas;
 	}
 
+	/**
+	 * @param color
+	 * @param penThickness
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @param penType
+	 * draw a path onto the canvas
+	 */
 	public void drawPath(Color color, int penThickness, double x1, double y1, double x2, double y2, String penType) {
 		handleDifferentPenTypes(penType);
 		gc.setStroke(color);
@@ -112,9 +124,7 @@ public class CanvasActions {
 	}
 
 	private void handleDifferentPenTypes(String penType) {
-		if (penType.equals("dashed")) { // THESE ARENT WORKING EXACTLY HOW THEY
-
-
+		if (penType.equals("dashed")) {
 			gc.setLineCap(StrokeLineCap.BUTT);
 			gc.setLineJoin(StrokeLineJoin.MITER);
 			gc.setMiterLimit(10.0f);
@@ -127,6 +137,14 @@ public class CanvasActions {
 		}
 	}
 
+	/**
+	 * @param id
+	 * @param nextXLoc
+	 * @param nextYLoc
+	 * @param heading
+	 * @param isShowing
+	 * animate the movement of the turtles 
+	 */
 	public void animatedMovementToXY(int id, double nextXLoc, double nextYLoc, double heading, boolean isShowing) {
 		ImageView turtleImgView = map.get(id);
 		turtleImgView.setVisible(isShowing);
@@ -137,6 +155,11 @@ public class CanvasActions {
 
 	}
 
+	/**
+	 * @param turtleImgView
+	 * @param heading
+	 * animate the rotation of the turtles
+	 */
 	private void makeAnimationRotateTurtle(ImageView turtleImgView, double heading) {
 		RotateTransition rt = new RotateTransition(Duration.millis(3000 / animationSpeed), turtleImgView);
 		rt.setByAngle(heading - turtleImgView.getRotate());
@@ -155,12 +178,25 @@ public class CanvasActions {
 		return;
 	}
 
-	// where is the method that takes in the string?
+	/**
+	 * @param id
+	 * @param image
+	 * set the image of the turtle
+	 */
 	public void setTurtleImage(int id, String image) {
 		ImageView turtleImgView = map.get(id);
 		turtleImgView.setImage(FileChooserPath.selectImage(IMAGE_PATH + image + ".png", 50, 50));
 	}
 
+	/**
+	 * @param id
+	 * @param xLoc
+	 * @param yLoc
+	 * @param heading
+	 * @param isShowing
+	 * @param e
+	 * create a new turtle with an eventhandler
+	 */
 	public void initializeTurtle(int id, double xLoc, double yLoc, double heading, boolean isShowing,
 			EventHandler<MouseEvent> e) {
 		ImageView turtleImgView = new ImageView(
@@ -175,19 +211,35 @@ public class CanvasActions {
 
 	}
 
+	/**
+	 * @param currId
+	 * @return if turtle exists
+	 */
 	public boolean turtleExists(int currId) {
 		return map.get(currId) != null;
 	}
 
+	/**
+	 * returns the canvas to the default
+	 */
 	public void clearCanvas() {
 		gc.clearRect(0, 0, canvasWidth, canvasHeight);
 
 	}
 
+	/**
+	 * @param speed
+	 * sets the speed of movement and rotation animations of the turtles
+	 */
 	public void setAnimationSpeed(int speed) {
 		animationSpeed = speed;
 	}
 
+	/**
+	 * @param currId
+	 * @param active
+	 * sets the activity of the turtle with ID currId to the value of the boolean
+	 */
 	public void setTurtleActive(int currId, boolean active) {
 		ImageView turtleImgView = map.get(currId);
 		if (active)

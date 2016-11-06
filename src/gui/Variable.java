@@ -2,6 +2,10 @@ package gui;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * @author Eric Song
+ * creates a variable to be input to the tableviews for the UI
+ */
 public class Variable {
 	private final SimpleStringProperty name;
     private final SimpleStringProperty value;
@@ -14,6 +18,7 @@ public class Variable {
     public String getName() {
         return name.get();
     }
+
     public void setName(String name) {
         this.name.set(name);
     }

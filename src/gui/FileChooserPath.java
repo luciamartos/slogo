@@ -4,7 +4,10 @@ import java.io.File;
 
 import javafx.scene.image.Image;
 
-//to fix path issues
+/**
+ * @author Eric Song
+ * to prevent path issues with chosing files and images
+ */
 public class FileChooserPath {
 
 	public static Image selectImage(String path, double x, double y) {

@@ -13,6 +13,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
+/**
+ * @author Eric Song
+ *
+ */
 public class WindowViewController {
 
 	private static final String VIEW_PROPERTIES_PACKAGE = "resources.properties/";
@@ -32,6 +36,10 @@ public class WindowViewController {
 
 	}
 
+	/**
+	 * @param tabTitle
+	 * @return a new tab view controller
+	 */
 	public TabViewController makeTabViewController(String tabTitle) {
 		TabViewController tabViewController = new TabViewController(tabPane, viewProperties, tabTitle, instanceCreator);
 		tabViewControllerList.add(tabViewController);
@@ -39,6 +47,10 @@ public class WindowViewController {
 		return tabViewController;
 	}
 
+	/**
+	 * @param closedTab
+	 * performs garbage collection for when tab is closed
+	 */
 	public void closeTabViewController(TabViewController closedTab) {
 		tabPane.getTabs().remove(closedTab.getTab());
 

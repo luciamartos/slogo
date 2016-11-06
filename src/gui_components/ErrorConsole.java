@@ -5,6 +5,10 @@ import javafx.animation.SequentialTransition;
 import javafx.scene.control.Label;
 import javafx.scene.text.Font;
 
+/**
+ * @author Eric Song
+ *
+ */
 public class ErrorConsole {
 
 	private Label errorMessage;
@@ -19,7 +23,10 @@ public class ErrorConsole {
 
 	}
 
-	// TODO: error which clears the message
+	/**
+	 * @param myError
+	 * displays myError on the user interface as a blinking text
+	 */
 	public void displayErrorMessage(String myError) {
 		blinkThenFade.stop();
 		errorMessage.setText(myError);
