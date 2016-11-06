@@ -5,7 +5,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
-
+/**
+ * @author Ray Song
+ */
 public class MultipleTurtleInterpreter extends SubInterpreter{
 	
 	private SlogoUpdate model;

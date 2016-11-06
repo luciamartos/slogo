@@ -2,7 +2,9 @@ package interpreter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
+/**
+ * @author Ray Song
+ */
 public class MathInterpreter extends SubInterpreter{
 	
 	private final double PI = 3.14159;

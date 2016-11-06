@@ -15,6 +15,10 @@ import java.util.Set;
 import gui.SlogoCommandInterpreter;
 import regularExpression.ProgramParser;
 
+/**
+ * Main Interpreter that calls upon relevant sub-interpreters when necessary.
+ * @author Ray Song
+ */
 public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	private final String DEFAULT_RESOURCE_LANGUAGE = "resources/languages/";
@@ -54,9 +58,11 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 			parseInputForActiveTurtles(input, turtleID);
 			if(commandContainsAsk) break;
 		}
+		if(tellWhileNoActiveTurtles(input)) parseInputForActiveTurtles(input, 0);
 	}
+
 	
-	public double parseInputForActiveTurtles(String input, int turtleID) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	private double parseInputForActiveTurtles(String input, int turtleID) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		model = new SlogoUpdate(stateDataSource, turtleID);
 		String[] split = input.split("\\s+");
 		if(split[0].equals("")){
@@ -396,6 +402,16 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		String[] split = input.split("\\s+");
 		for(String elem: split){
 			if(elem.equalsIgnoreCase(rb.getString("ask"))) return true;
+		}
+		return false;
+	}
+	
+	//return true only when no active turtles and command has tell
+	private boolean tellWhileNoActiveTurtles(String input){
+		String[] split = input.split("\\s+");
+		if(!stateDataSource.getActiveTurtleIDs().isEmpty()) return false;
+		for(String elem: split){
+			if(elem.equalsIgnoreCase(rb.getString("tell")))	return true;
 		}
 		return false;
 	}
