@@ -37,7 +37,7 @@ import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 /**
- * @author Lucia Martos
+ * @author Lucia Martos, Eric Song
  */
 public class TurtleSettingsController extends Observable {
 
@@ -86,11 +86,6 @@ public class TurtleSettingsController extends Observable {
 	private Node initializeTurtleImageSetting() {
 		ComboBox<String> shapesComboBox = new ComboBox<String>();
 		shapesComboBox.setVisibleRowCount(3);
-//		File dataDirectory = new File(IMAGE_PATH);
-//		File[] dataFiles = dataDirectory.listFiles();
-//		for (File file : dataFiles) {
-//			shapesComboBox.getItems().add(file.getName());
-//		}
 		shapesComboBox.getItems().addAll("elephant", "turtle", "pig", "frog");
 		shapesComboBox.setValue("Change Shape");
 
@@ -116,10 +111,6 @@ public class TurtleSettingsController extends Observable {
 		return newImage;
 	}
 
-//	public Node getTurtleSettingsController() {
-//		return vBox;
-//	}
-	
 	public int getNewAnimationSpeed(){
 		return newAnimationSpeed;
 	}

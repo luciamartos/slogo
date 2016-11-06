@@ -18,8 +18,6 @@ public class InputPanel extends HBox {
 	private TextField commandInput;
 	private String currentCommandLine;
 
-	// TODO:check if there is a better way to get the width and the height
-	// rather than feeding it
 	public InputPanel(double inputPanelHeight, double textFieldWidth, double runButtonWidth, Properties viewProperties, EventHandler<ActionEvent> runCommandHandler) {
 		super(INPUT_PANEL_PADDING);
 		setPrefHeight(inputPanelHeight);
@@ -28,7 +26,7 @@ public class InputPanel extends HBox {
 		// set the text box
 		commandInput = new TextField();
 		commandInput.setPromptText("Enter your command here...");
-		commandInput.setPrefWidth(textFieldWidth); // CHANGE TO COMMAND BUTTON WIDTH
+		commandInput.setPrefWidth(textFieldWidth);
 		commandInput.getText();
 
 		// set the run button
@@ -42,6 +40,9 @@ public class InputPanel extends HBox {
 	public String getText() {
 		return commandInput.getText();
 	}
+	/**
+	 * clears the input box
+	 */
 	public void clear(){
 		commandInput.clear();
 	}

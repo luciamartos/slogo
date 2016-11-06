@@ -19,18 +19,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * @author Lucia Martos, Eric Song
+ */
 public class SettingsController extends Observable {
-	/**
-	 * @author Lucia Martos
-	 */
-	private static final String IMAGE_PATH = "resources/images/";
-
-	private static final int PADDING = 4;
-
-	private static final double MIN_THICKNESS = 1;
-	private static final double MAX_THICKNESS = 10;
-	private static final double INIT_THICKNESS = 2;
-
 	private PenSettingsController penSettingsController;
 	private TurtleSettingsController turtleSettingsController;
 	private WorkspaceSettingsController workspaceSettingsController;

@@ -16,10 +16,12 @@ import javafx.util.Duration;
  */
 public class FadingTransition {
 
-	public FadingTransition() {
-		// TODO Auto-generated constructor stub
-	}
+	public FadingTransition() {}
 
+	/**
+	 * @param node
+	 * @return an object that can that can blink and then fadenodes
+	 */
 	public SequentialTransition setupNode(Node node) {
 		Timeline blinker = createBlinker(node);
 		FadeTransition fader = createFader(node);
