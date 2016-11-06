@@ -23,21 +23,17 @@ import javafx.stage.Stage;
 /**
  * @author Lucia Martos
  */
+
+//This entire file is part of my masterpiece.
+//Lucia Martos Jimenez
+//The reason I chose this file as my master piece is because it shows the use of our binding pattern and interfaces and it is an
+//example of the way that I arranged the creation of the different parts of the GUI
+//I think its a good class because the components are very clearly segregated and jobs are delegated between different classes
+
 public class GeneralSettingsController extends Observable implements ReadCommandFileInterface {
 	private Properties viewProperties;
 	private HBox hBox;
-	private boolean newTab;
-	private String newImageURL;
-	private int newBackgroundColor;
-	private String newLanguage;
-	private int newTurtleCount;
-	private int newPenColor;
-	private boolean newPenDown;
-	private int newLineStyle;
-	private int newPenThickness;
 	private SaveWorkspaceInterface myInterface;
-	
-	private Image newImage;
 	private String newCommandString;
 	private NewSlogoInstanceCreator instanceCreator;
 
@@ -45,31 +41,27 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 		this.instanceCreator = instanceCreator;
 		this.viewProperties = viewProperties;
 		this.myInterface = myInterface;
-
-		newPenThickness = -1;
-		newBackgroundColor = -1;
-		newPenColor = -1;
-		VBox vBox1 = new VBox(viewProperties.getDoubleProperty("padding"));
-		vBox1.getChildren().add(initializeUndoButton());
-		vBox1.getChildren().add(initalizeFileLoader());
-		vBox1.getChildren().add(initalizeCommandFileLoader());
-
-
-		VBox vBox2 = new VBox(viewProperties.getDoubleProperty("padding"));
-		vBox2.getChildren().add(initializeAddTabButton());
-		vBox2.getChildren().add(initializeGetHelpButton());
-		vBox2.getChildren().add(initializeSaveWorskpaceButton());
 		
-		VBox vBox3 = new VBox(viewProperties.getDoubleProperty("padding"));
+		populateHBox(viewProperties.getDoubleProperty("padding"));
+		
+	}
+
+	private void populateHBox(double padding) {
+		VBox vBox1 = new VBox(padding);
+		vBox1.getChildren().addAll(initializeUndoButton(),initalizeFileLoader(),initalizeCommandFileLoader());
+
+		VBox vBox2 = new VBox(padding);
+		vBox2.getChildren().addAll(initializeAddTabButton(),initializeGetHelpButton(),initializeSaveWorskpaceButton());
+
+		VBox vBox3 = new VBox(padding);
 		vBox3.getChildren().add(initializeSaveHistoricCommandsButton());
 		
-		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
-		hBox.getChildren().addAll(vBox1, vBox2,vBox3);
+		hBox = new HBox(padding);
+		hBox.getChildren().addAll(vBox1, vBox2,vBox3);		
 	}
 
 	private Node initializeSaveWorskpaceButton() {
 		Button saveWorkspace = createButton(viewProperties.getStringProperty("Save_workspace"), viewProperties.getDoubleProperty("loads_button_width"));
-
 		saveWorkspace.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
@@ -91,7 +83,7 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	private Node initializeAddTabButton() {
-		Button addTab = createButton("Add Tab", viewProperties.getDoubleProperty("help_button_width"));
+		Button addTab = createButton(viewProperties.getStringProperty("add_tab"), viewProperties.getDoubleProperty("help_button_width"));
 		addTab.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
@@ -102,12 +94,12 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	private Node initalizeCommandFileLoader() {
-		CommandFileUploader myUploader = new CommandFileUploader(this, "Command file", viewProperties.getStringProperty("command_file_uploader_path"));
+		CommandFileUploader myUploader = new CommandFileUploader(this, viewProperties.getStringProperty("Command_file"), viewProperties.getStringProperty("command_file_uploader_path"));
 		return myUploader.getFileUploaderButton();
 	}
 
 	private Node initalizeFileLoader() {
-		EnvironmentFileUploader myUploader = new EnvironmentFileUploader(this, "Settings file", "data/examples/workspace_settings/");
+		EnvironmentFileUploader myUploader = new EnvironmentFileUploader(this, viewProperties.getStringProperty("Settings file"), viewProperties.getStringProperty("settings_file_uploader_path"));
 		return myUploader.getFileUploaderButton();
 	}
 	
@@ -118,7 +110,7 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 			@Override
 			public void handle(ActionEvent e) {
 				setChanged();
-				System.out.println("UNDO ACTION");
+				System.out.println("UNDO ACTION"); //this feature was never implemented
 				notifyObservers();
 			}
 		});
@@ -131,10 +123,9 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 			@Override
 			public void handle(ActionEvent e) {
 				BrowserView myView = new BrowserView(new Stage(), viewProperties.getDoubleProperty("help_width"),
-						viewProperties.getDoubleProperty("help_height"));
+				viewProperties.getDoubleProperty("help_height"));
 			}
 		});
-
 		return helpButton;
 	}
 
@@ -147,7 +138,6 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	public Node getNode() {
 		return hBox;
 	}
-
 
 	@Override
 	public void getCommandLineFromFile(String myCommand) {
@@ -164,103 +154,5 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	public void loadBoard(String string) {
 		myInterface.loadBoard(string);	
 	}
-
-//	@Override
-//	public void getLineTypeFromFile(int lineStyle) {
-//		setChanged();
-//		newLineStyle = lineStyle;
-//		notifyObservers();
-//	}
-//
-//	public int getNewPenType() {
-//		return newLineStyle;
-//	}
-//
-//	@Override
-//	public void getPenDownFromFile(String penDown) {
-//		setChanged();
-//		if(penDown.equals("no")) newPenDown = false;
-//		else{
-//			newPenDown =true;
-//		}
-//		notifyObservers();
-//	}
-//
-//	public boolean getNewPenDown() {
-//		return newPenDown;
-//	}
-//
-//	@Override
-//	public void getPenColorFromFile(int penColor) {
-//		setChanged();
-//		newPenColor =  penColor;
-//		notifyObservers();
-//	}
-//
-//	public int getNewPenColor() {
-//		return newPenColor;
-//	}
-//
-//	@Override
-//	public void getTurtleCountFromFile(String turtleCount) {
-//		setChanged();
-//		newTurtleCount = Integer.parseInt(turtleCount);
-//		notifyObservers();
-//	}
-//
-//	public int getNewTurtleCount() {
-//		return newTurtleCount;
-//	}
-//
-//	@Override
-//	public void getLanguageFromFile(String language) {
-//		setChanged();
-//		newLanguage = language;
-//		notifyObservers();
-//	}
-//
-//	public String getNewLanguage() {
-//		return newLanguage;
-//	}
-//
-//	@Override
-//	public void getBackgroundColorFromFile(int backgroundColor) {
-//		setChanged();
-//		newBackgroundColor = backgroundColor;
-//		notifyObservers();
-//	}
-//
-//	public int getNewBackgroundColor() {
-//		return newBackgroundColor;
-//	}
-//	
-//	@Override
-//	public void getImageURLFromFile(String imageURL) {
-//		setChanged();
-//		newImageURL = imageURL;
-//		notifyObservers();
-//	}
-//	
-//	public Image getNewImage() {
-//		Image image = FileChooserPath.selectImage(newImageURL, 50, 50);
-//		return image;
-//	}
-//
-//	@Override
-//	public void getPenThicknessFromFile(int penThickness) {
-//		setChanged();
-//		newPenThickness = penThickness;
-//		notifyObservers();
-//	}
-//	
-//	public int getNewPenThickness(){
-//		return newPenThickness;
-//	}
-//
-//	@Override
-//	public int getTurtleID() {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
 
 }

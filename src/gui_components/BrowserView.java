@@ -19,7 +19,7 @@ import javafx.stage.Stage;
  */
 public class BrowserView {
 
-	public  BrowserView (Stage stage, double webWidth, double webHeight) {
+	public BrowserView (Stage stage, double webWidth, double webHeight) {
        // stage.getScene().add
         stage.setTitle("Web View");
       stage.setWidth(webWidth);
