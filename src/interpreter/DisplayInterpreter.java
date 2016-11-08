@@ -1,3 +1,10 @@
+// This entire file is part of my masterpiece.
+// Ray Song(ys101)
+// This is a specific instance of the SubInterpreter that I've selected as an example.
+// Not only does this display a good understanding of Java reflection in the handle() method,
+// it also shows how our SLogo is integrated through the MVC model (SlogoUpate) and 
+// various interfaces (BoardStateUpdater).  
+
 package interpreter;
 
 import java.lang.reflect.InvocationTargetException;

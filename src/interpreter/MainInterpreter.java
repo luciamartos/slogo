@@ -1,3 +1,13 @@
+// This entire file is part of my masterpiece.
+// Ray Song(ys101)
+// Lines 88-112
+// This method loops through a collection of SubInterpreters, all of which have the canHandle() and handle() methods.
+// because the two methods are abstract methods declared in the SubInterpreter abstract class.
+// By looping through each SubInterpreter, the Main Interpreter can tell which SubInterpreter can handle the 
+// given keyword, and only then will the SubInterpreter be called to actually handle the keyword.
+// I feel that this not only displays my understanding of inheritance and polymorphism, but also does so in a clever
+// way - looping through specific instances that all have the same method.
+
 package interpreter;
 
 import java.lang.reflect.InvocationTargetException;
@@ -73,6 +83,8 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		return interpretCommand(split, 0);   //first search(non-recursive) begins at index 0;
 	}
 	
+	// This method is part of my masterpiece (lines 88-112)
+	// Ray Song(ys101)
 	private double interpretCommand(String[] input, int searchStartIndex) throws ClassNotFoundException, NoSuchMethodException, 
 	SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		

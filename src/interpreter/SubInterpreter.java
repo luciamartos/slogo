@@ -1,3 +1,9 @@
+// This entire file is part of my masterpiece.
+// Ray Song(ys101)
+// This is the abstract class from which all specific SubInterpreters are extended. 
+// The abstract methods that are declared make it easy for the Main Interpreter to loop through each SubInterpreter
+// and call the same method for each specific SubInterpreter.
+
 package interpreter;
 
 import java.lang.reflect.InvocationTargetException;
