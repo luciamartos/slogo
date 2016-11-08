@@ -15,7 +15,7 @@ public class CommandFileUploader extends FileChooser {
 
 	private String myCommandLine;
 	//private String MY_PATH = "data/examples/simple/";	
-	public CommandFileUploader(ReadCommandFileInterface myInterface, String initVal, String filePath) {
+	public CommandFileUploader(ReadCommandFile myInterface, String initVal, String filePath) {
 		super(myInterface, initVal, filePath);
 	}
 	

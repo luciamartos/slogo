@@ -6,7 +6,7 @@ import fileIO.XMLReader;
  */
 public class EnvironmentFileUploader extends FileChooser {
 	private String MY_PATH = "data/examples/workspace_settings/";
-	public EnvironmentFileUploader(ReadCommandFileInterface myInterface, String initVal, String filePath) {
+	public EnvironmentFileUploader(ReadCommandFile myInterface, String initVal, String filePath) {
 		super(myInterface, initVal, filePath);
 	}
 

@@ -13,10 +13,10 @@ public abstract class FileChooser {
 
 	protected ComboBox<String> fileSelect;
 	protected String selectedFilename;
-	protected ReadCommandFileInterface myInterface;
+	protected ReadCommandFile myInterface;
 	protected String myPath;
 
-	public FileChooser(ReadCommandFileInterface myInterface, String initVal, String filePath) {
+	public FileChooser(ReadCommandFile myInterface, String initVal, String filePath) {
 		this.myInterface = myInterface;
 		myPath = filePath;
 		createComboBox(initVal);

@@ -1,59 +1,65 @@
+// This entire file is part of my masterpiece.
+// Eric Song
+//
+// This code visualizes various settings buttons as well as hooks up different ActionHandlers.
+// I think this class is well designed because it is not only clean and maintainable but also 
+// effectively delegates tasks to other classes. For example, the class is consistent with the
+// observer/observable design pattern in that it extends Observable so that any observer can 
+// be notified when there is an undo request or a command input. Furthermore it implements the
+// ReadCommandFile interface with Override methods to allow for the CommandFileUploader to call
+// methods inside this interface
+
 package gui_components;
 
 import java.util.Observable;
-
-import fileIO.XMLReader;
-import fileIO.XMLWriter;
 import general.NewSlogoInstanceCreator;
-
 import general.Properties;
-import gui.FileChooserPath;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
 /**
  * @author Lucia Martos, Eric Song
  */
-public class GeneralSettingsController extends Observable implements ReadCommandFileInterface {
+public class GeneralSettingsController extends Observable implements ReadCommandFile {
+	private static final String WORKSPACE_SETTINGS = "data/examples/workspace_settings/";
 	private Properties viewProperties;
 	private HBox hBox;
 	private SaveWorkspaceInterface myInterface;
 	private String newCommandString;
 	private NewSlogoInstanceCreator instanceCreator;
+	private boolean undo;
 
-	public GeneralSettingsController(Properties viewProperties, NewSlogoInstanceCreator instanceCreator, SaveWorkspaceInterface myInterface) {
+	public GeneralSettingsController(Properties viewProperties, NewSlogoInstanceCreator instanceCreator,
+			SaveWorkspaceInterface myInterface) {
 		this.instanceCreator = instanceCreator;
 		this.viewProperties = viewProperties;
 		this.myInterface = myInterface;
-		VBox vBox1 = new VBox(viewProperties.getDoubleProperty("padding"));
-		vBox1.getChildren().add(initializeUndoButton());
-		vBox1.getChildren().add(initalizeFileLoader());
-		vBox1.getChildren().add(initalizeCommandFileLoader());
 
+		VBox leftBox = new VBox(viewProperties.getDoubleProperty("padding"));
+		leftBox.getChildren().add(initializeUndoButton());
+		leftBox.getChildren().add(initalizeFileLoader());
+		leftBox.getChildren().add(initalizeCommandFileLoader());
 
-		VBox vBox2 = new VBox(viewProperties.getDoubleProperty("padding"));
-		vBox2.getChildren().add(initializeAddTabButton());
-		vBox2.getChildren().add(initializeGetHelpButton());
-		vBox2.getChildren().add(initializeSaveWorskpaceButton());
-		
-		VBox vBox3 = new VBox(viewProperties.getDoubleProperty("padding"));
-		vBox3.getChildren().add(initializeSaveHistoricCommandsButton());
-		
+		VBox middleBox = new VBox(viewProperties.getDoubleProperty("padding"));
+		middleBox.getChildren().add(initializeAddTabButton());
+		middleBox.getChildren().add(initializeGetHelpButton());
+		middleBox.getChildren().add(initializeSaveWorskpaceButton());
+
+		VBox rightBox = new VBox(viewProperties.getDoubleProperty("padding"));
+		rightBox.getChildren().add(initializeSaveHistoricCommandsButton());
+
 		hBox = new HBox(viewProperties.getDoubleProperty("padding"));
-		hBox.getChildren().addAll(vBox1, vBox2,vBox3);
+		hBox.getChildren().addAll(leftBox, middleBox, rightBox);
 	}
 
 	private Node initializeSaveWorskpaceButton() {
-		Button saveWorkspace = createButton(viewProperties.getStringProperty("Save_workspace"), viewProperties.getDoubleProperty("loads_button_width"));
+		Button saveWorkspace = createButton(viewProperties.getStringProperty("Save_workspace"),
+				viewProperties.getDoubleProperty("loads_button_width"));
 
 		saveWorkspace.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -63,16 +69,17 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 		});
 		return saveWorkspace;
 	}
-	
+
 	private Node initializeSaveHistoricCommandsButton() {
-		Button saveHistoricCommands = createButton(viewProperties.getStringProperty("Save_history"), viewProperties.getDoubleProperty("loads_button_width"));
+		Button saveHistoricCommands = createButton(viewProperties.getStringProperty("Save_history"),
+				viewProperties.getDoubleProperty("loads_button_width"));
 		saveHistoricCommands.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				myInterface.saveHistoricCommands();
 			}
 		});
-		return saveHistoricCommands;	
+		return saveHistoricCommands;
 	}
 
 	private Node initializeAddTabButton() {
@@ -87,23 +94,24 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	private Node initalizeCommandFileLoader() {
-		CommandFileUploader myUploader = new CommandFileUploader(this, "Command file", viewProperties.getStringProperty("command_file_uploader_path"));
+		CommandFileUploader myUploader = new CommandFileUploader(this, "Command file",
+				viewProperties.getStringProperty("command_file_uploader_path"));
 		return myUploader.getFileUploaderButton();
 	}
 
 	private Node initalizeFileLoader() {
-		EnvironmentFileUploader myUploader = new EnvironmentFileUploader(this, "Settings file", "data/examples/workspace_settings/");
+		EnvironmentFileUploader myUploader = new EnvironmentFileUploader(this, "Settings file", WORKSPACE_SETTINGS);
 		return myUploader.getFileUploaderButton();
 	}
-	
 
 	private Node initializeUndoButton() {
-		Button undoButton = createButton(viewProperties.getStringProperty("Undo"), viewProperties.getDoubleProperty("help_button_width"));
+		Button undoButton = createButton(viewProperties.getStringProperty("Undo"),
+				viewProperties.getDoubleProperty("help_button_width"));
 		undoButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				setChanged();
-				System.out.println("UNDO ACTION");
+				undo = true;
 				notifyObservers();
 			}
 		});
@@ -111,7 +119,8 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 	}
 
 	private Node initializeGetHelpButton() {
-		Button helpButton = createButton(viewProperties.getStringProperty("get_help"), viewProperties.getDoubleProperty("help_button_width"));
+		Button helpButton = createButton(viewProperties.getStringProperty("get_help"),
+				viewProperties.getDoubleProperty("help_button_width"));
 		helpButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
@@ -133,7 +142,6 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 		return hBox;
 	}
 
-
 	@Override
 	public void getCommandLineFromFile(String myCommand) {
 		setChanged();
@@ -147,6 +155,10 @@ public class GeneralSettingsController extends Observable implements ReadCommand
 
 	@Override
 	public void loadBoard(String string) {
-		myInterface.loadBoard(string);	
+		myInterface.loadBoard(string);
+	}
+
+	public boolean isUndo() {
+		return undo;
 	}
 }
