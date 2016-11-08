@@ -369,7 +369,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 
 			@Override
 			public void handle(MouseEvent event) {
-				turtleActionsHandler.toggleTurtle(currId);
+				turtleActionsHandler.toggleTurtleActive(currId);
 				currentlySelectedID = currId;
 				updateVariables();
 				event.consume();

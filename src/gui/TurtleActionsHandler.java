@@ -11,5 +11,5 @@ public interface TurtleActionsHandler {
 	public void setPenThickness(int thickness);
 	public void setPenType(int type);
 	public void setShape(int shape);
-	public void toggleTurtle(int id);
+	public void toggleTurtleActive(int id);
 }

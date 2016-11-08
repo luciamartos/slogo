@@ -3,12 +3,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
-
-import fileIO.XMLReader;
 import general.Properties;
 import gui.BoardActionsHandler;
 import gui.BoardStateDataSource;
-import gui.TabViewController;
 import interpreter.BoardStateUpdater;
 import interpreter.UserVariablesDataSource;
 
@@ -44,7 +41,6 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	}
 	
 	public void addBoardStateListener(Observer o){
-		//TODO: Decide whether it is necessary to override this stuff.
 		this.addObserver(o);
 		setChanged();
 		this.notifyObservers();
@@ -122,13 +118,6 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	}
 
 	@Override
-	public void undo() {
-		// TODO Auto-generated method stub
-		this.setChanged();
-		this.notifyObservers();
-	}
-
-	@Override
 	public void setBackgroundColor(int colorIndex) {
 		this.boardState.setBackgroundColorIndex(colorIndex);
 		this.setChanged();
@@ -146,6 +135,11 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	@Override
 	public Map<Integer, RGBColor> getColorMap() {
 		return boardState.getColorMap();
+	}
+
+	@Override
+	public void undo() {
+		// TODO Auto-generated method stub
 	}
 
 }
