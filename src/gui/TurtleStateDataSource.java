@@ -58,4 +58,7 @@ public interface TurtleStateDataSource {
 	 * @return a list of all the active turtle IDs
 	 */
 	public List<Integer> getActiveTurtleIDs();
+	
+	public List<Integer> getTurtleStampIDs();
+	
 }

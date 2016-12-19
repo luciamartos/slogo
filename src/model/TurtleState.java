@@ -145,4 +145,15 @@ public class TurtleState extends Observable {
 	void setId(int id) {
 		this.id = id;
 	}
+
+	TurtleState createStampCopy(){
+		TurtleState clone = new TurtleState();
+		clone.setAngle(this.angle);
+		clone.setXCoordinate(xCoordinate);
+		clone.setYCoordinate(this.yCoordinate);
+		clone.setActive(false);
+		clone.setShapeIndex(this.shapeIndex);
+		clone.setShowing(true);
+		return clone;
+	}
 }

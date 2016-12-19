@@ -16,6 +16,7 @@ import interpreter.TurtleStateUpdater;
 public class TurtleStatesController extends Observable implements interpreter.TurtleStateDataSource, gui.TurtleStateDataSource, TurtleStateUpdater, TurtleActionsHandler {
 	private BoardStateController board;
 	private HashMap<Integer, TurtleState> turtles;
+	private ArrayList<Integer> turtleStamps;
 	
 	private class Coordinates{
 		double x;
@@ -33,6 +34,7 @@ public class TurtleStatesController extends Observable implements interpreter.Tu
 	
 	void setDefaultTurtles(){
 		this.turtles = new HashMap<Integer, TurtleState>();
+		this.turtleStamps = new ArrayList<Integer>();
 		addNewTurtle(0);
 		setChanged();
 		notifyObservers();
@@ -220,6 +222,10 @@ public class TurtleStatesController extends Observable implements interpreter.Tu
 
 	@Override
 	public void toggleTurtle(int id) {
+		if (this.turtleStamps.contains(id)){
+			//Stamps should not be made active.
+			return;
+		}
 		TurtleState turtle = this.turtles.get(id);
 		turtle.setActive(!turtle.isActive());
 		this.setChanged();
@@ -268,6 +274,48 @@ public class TurtleStatesController extends Observable implements interpreter.Tu
 	public int getNumberOfTurtles() {
 		return this.turtles.size();
 	}
+
 	
+	@Override
+	public int createTurtleStamps() {
+		int shapeIndex = -1;
+		ArrayList<TurtleState> turtlesToAdd = new ArrayList<TurtleState>();
+		for (TurtleState turtle : this.turtles.values()){
+			if (turtle.isActive()){
+				TurtleState stamp = turtle.createStampCopy();
+				//I don't remember how we chose IDs originally, but this should work.
+				stamp.setId(stamp.hashCode());
+				this.turtleStamps.add(stamp.getId());
+				turtlesToAdd.add(stamp);
+				shapeIndex = stamp.getShapeIndex();
+			}
+		}
+		for (TurtleState stamp : turtlesToAdd){
+			this.turtles.put(stamp.getId(), stamp);
+		}
+		System.out.println("Created some stamps. turtleStamps.size()=="+this.turtleStamps.size());
+		System.out.println("Current turtle stamps:");
+		for (Integer i : this.turtleStamps){
+			TurtleState stamp = this.turtles.get(i);
+			System.out.println("Turtle "+ stamp.getId()+" is at index ("+stamp.getXCoordinate()+", "+stamp.getYCoordinate()+").");
+		}
+		return shapeIndex;
+	}
+
+	@Override
+	public List<Integer> getTurtleStampIDs() {
+		return this.turtleStamps;
+	}
+
+	@Override
+	public boolean clearTurtleStamps() {
+		boolean didClearSomeStamps = this.turtleStamps.size() > 0;
+		for (Integer i: this.turtleStamps){
+			this.turtles.remove(i);
+		}
+		this.turtleStamps = new ArrayList<Integer>();
+		System.out.println("Cleared turtles! turtleStamps.size()==" +this.turtleStamps.size());
+		return didClearSomeStamps;
+	}
 	
 }
