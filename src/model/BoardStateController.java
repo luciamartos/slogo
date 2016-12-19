@@ -10,13 +10,14 @@ import gui.BoardActionsHandler;
 import gui.BoardStateDataSource;
 import gui.TabViewController;
 import interpreter.BoardStateUpdater;
+import interpreter.TurtleStampUpdater;
 import interpreter.UserVariablesDataSource;
 
 /**
  * @author Andrew Bihl
  */
 
-public class BoardStateController extends Observable implements BoardStateDataSource, BoardStateUpdater, UserVariablesDataSource, BoardActionsHandler{
+public class BoardStateController extends Observable implements TurtleStampUpdater, BoardStateDataSource, BoardStateUpdater, UserVariablesDataSource, BoardActionsHandler{
 	private final String VIEW_PROPERTIES_FILE_PATH = "resources.properties.View";
 	private final String BOARD_WIDTH_KEY = "canvas_width";
 	private final String BOARD_HEIGHT_KEY = "canvas_height";
@@ -146,6 +147,21 @@ public class BoardStateController extends Observable implements BoardStateDataSo
 	@Override
 	public Map<Integer, RGBColor> getColorMap() {
 		return boardState.getColorMap();
+	}
+
+	@Override
+	public void addTurtleStamp(TurtleStamp stamp) {
+		boardState.addTurtleStamp(stamp);
+	}
+
+	@Override
+	public void clearTurtleStamps() {
+		boardState.clearTurtleStamp();
+	}
+
+	@Override
+	public int getNumberOfStamps() {
+		return boardState.getStamps().size();
 	}
 
 }

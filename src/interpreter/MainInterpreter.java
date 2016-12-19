@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import gui.SlogoCommandInterpreter;
+import model.TurtleStamp;
 import regularExpression.ProgramParser;
 
 /**
@@ -33,12 +34,14 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	private ProgramParser lang;
 	private SlogoUpdate model;
+	private TurtleStamp stamp;
 	private Collection<SubInterpreter> listOfSubInterpreters;
 	private BoardStateUpdater boardStateUpdater;
 	private TurtleStateDataSource stateDataSource;
 	private TurtleStateUpdater turtleStateUpdater;
 	private UserVariablesDataSource varDataSource;
 	private ErrorPresenter errorPresenter;
+	private TurtleStampUpdater turtleStampUpdater;
 	private ResourceBundle rb;
 	private Queue<String[]> listQueue;
 	
@@ -64,6 +67,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	private double parseInputForActiveTurtles(String input, int turtleID) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		model = new SlogoUpdate(stateDataSource, turtleID);
+		stamp = new TurtleStamp(turtleID);
 		String[] split = input.split("\\s+");
 		if(split[0].equals("")){
 			split = Arrays.copyOfRange(split, 1, split.length);
@@ -367,6 +371,7 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 		list.add(new BooleanInterpreter());		
 		list.add(new DisplayInterpreter(model, boardStateUpdater));
 		list.add(new MultipleTurtleInterpreter(model, stateDataSource, turtleStateUpdater, listQueue));
+		list.add(new StampInterpreter(stamp, turtleStampUpdater));
 		return list;
 	}
 	
@@ -493,5 +498,9 @@ public class MainInterpreter implements SlogoCommandInterpreter {
 	
 	public void setErrorPresenter(ErrorPresenter p){
 		this.errorPresenter = p;
+	}
+	
+	public void setTurtleStampUpdater(TurtleStampUpdater turtleStampUpdater){
+		this.turtleStampUpdater = turtleStampUpdater;
 	}
 }

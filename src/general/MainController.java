@@ -85,6 +85,7 @@ public class MainController implements NewSlogoInstanceCreator, SlogoCommandHand
 		interpreter.setTurtleStateUpdater(modelController.getTurtleStatesController());
 		interpreter.setBoardStateUpdater(modelController);
 		interpreter.setErrorPresenter(viewController);
+		interpreter.setTurtleStampUpdater(modelController);
 	}
 
 	@Override

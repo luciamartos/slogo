@@ -13,6 +13,7 @@ public class BoardState{
 	private HashMap<String, String> userDefinedVariables;
 	private HashMap<Integer, RGBColor> colors;
 	private int backgroundColorIndex;
+	private ArrayList<TurtleStamp> turtleStamps;
 	
 	
 	BoardState(){
@@ -23,6 +24,7 @@ public class BoardState{
 		this.lineCoordinates= new ArrayList<PathLine>();
 		this.userDefinedVariables = new HashMap<String, String>();
 		this.colors = new HashMap<Integer, RGBColor>();
+		this.turtleStamps = new ArrayList<TurtleStamp>();
 		RGBColor white = new RGBColor(255,255,255);
 		RGBColor black = new RGBColor(0,0,0);
 		RGBColor red = new RGBColor(255, 0, 0);
@@ -38,6 +40,18 @@ public class BoardState{
 	
 	void addLineCoordinates(PathLine line){
 		lineCoordinates.add(line);
+	}
+	
+	public List<TurtleStamp> getStamps(){
+		return turtleStamps;
+	}
+	
+	public void addTurtleStamp(TurtleStamp stamp){
+		turtleStamps.add(stamp);
+	}
+	
+	public void clearTurtleStamp(){
+		turtleStamps.clear();
 	}
 	
 	void addUserDefinedVariable(String varName, String userInput){
