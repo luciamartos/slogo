@@ -221,15 +221,16 @@ public class TurtleStatesController extends Observable implements interpreter.Tu
 	}
 
 	@Override
-	public void toggleTurtle(int id) {
-		if (this.turtleStamps.contains(id)){
+	public boolean toggleTurtle(int id) {
+		if (this.turtleStamps.contains(id) && !this.turtles.containsKey(id)){
 			//Stamps should not be made active.
-			return;
+			return false;
 		}
 		TurtleState turtle = this.turtles.get(id);
 		turtle.setActive(!turtle.isActive());
 		this.setChanged();
 		this.notifyObservers();
+		return true;
 	}
 	
 	private void applyChangeToActiveTurtles(Consumer<TurtleState> lambda){
