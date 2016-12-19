@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * @author Andrew Bihl, Eric Song
+ * Methods and variables have been added to this class for the stamp and clearStamp functionalities.
+ * The frontend will use the turtleStamps List in this class to display stamps on the screen.
+ * 
+ * @author Andrew Bihl, Eric Song, Ray Song
  */
 
 public class BoardState{

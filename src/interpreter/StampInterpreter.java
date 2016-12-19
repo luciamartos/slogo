@@ -6,7 +6,11 @@ import java.lang.reflect.Method;
 import model.TurtleStamp;
 
 /**
- * This is a newly added subinterpreter for the SLogo Extension of CS308 Final Project.
+ * This is a newly added sub-interpreter for the SLogo Extension of CS308 Final Project.
+ * This class inherits from an abstract class just like all the other interpreters,
+ * so it is flawlessly integrated into the loop that MainInterpreter runs to check for
+ * which sub-interpreter can handle a given command.
+ * 
  * @author Ray Song
  *
  */

@@ -1,5 +1,10 @@
 package model;
 
+/**
+ * This is a newly created class that represents the concept of "stamps".
+ * @author Ray Song
+ *
+ */
 public class TurtleStamp {
 	
 	private double xCoordinate;

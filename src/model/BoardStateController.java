@@ -14,7 +14,7 @@ import interpreter.TurtleStampUpdater;
 import interpreter.UserVariablesDataSource;
 
 /**
- * @author Andrew Bihl
+ * @author Andrew Bihl, Ray Song
  */
 
 public class BoardStateController extends Observable implements TurtleStampUpdater, BoardStateDataSource, BoardStateUpdater, UserVariablesDataSource, BoardActionsHandler{
