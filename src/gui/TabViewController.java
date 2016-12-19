@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Random;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -50,11 +51,13 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import model.PathLine;
 import model.RGBColor;
 import tableviews.TableViewController;
@@ -90,6 +93,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 	private Map<Integer, RGBColor> colorMap;
 	private Map<Integer, String> penTypeMap;
 	private Map<Integer, String> shapeMap;
+	private VBox reallyTired;
 
 	TableView<Variable> defaultVariableTableView;
 	TableView<Variable> userDefinedVariableTableView;
@@ -163,6 +167,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		rightTableBox.getChildren().add(tableViewController.getUserDefinedVariableTableView());
 		rightTableBox.getChildren().add(tableViewController.getUserDefinedCommandTableView());
 		canvasAndTablesBox.getChildren().add(rightTableBox);
+		canvasAndTablesBox.getChildren().add(createTurtleImagesView());
 
 		canvasAndCommandsBox.getChildren().add(createCanvas());
 		canvasAndCommandsBox.getChildren().add(createCommandInputter());
@@ -173,6 +178,35 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		settingsBox.getChildren().add(settingsController);
 
 		return windowBox;
+	}
+
+	private Node createTurtleImagesView() {
+		int spacing = 5;
+		reallyTired = new VBox(spacing);
+		// Iterator<Integer> ids = turtleStateDataSource.getTurtleIDs();
+		//
+		// while(ids.hasNext()){
+		// int currID = ids.next();
+		// HBox tired = new HBox(spacing);
+		// tired.getChildren().add(new Text("ID: "+currID));
+		// ImageView img = new ImageView();
+		// img.setImage(FileChooserPath.selectImage("resources/images/" +
+		// shapeMap.get(turtleStateDataSource.getShape(currID)) + ".png", 50,
+		// 50));
+		// img.addEventHandler(MouseEvent.MOUSE_CLICKED, new
+		// EventHandler<MouseEvent>() {
+		//
+		// @Override
+		// public void handle(MouseEvent event) {
+		// System.out.println("Tile pressed ");
+		// event.consume();
+		// }
+		// });
+		// tired.getChildren().add(img);
+		// reallyTired.getChildren().add(tired);
+		// }
+		return reallyTired;
+
 	}
 
 	private Node createViewSelector() {
@@ -353,6 +387,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 			if (!canvasActions.turtleExists(currId))
 				initializeTurtle(currId);
 
+			updateExtension();
 			canvasActions.setTurtleImage(currId, shapeMap.get(turtleStateDataSource.getShape(currId)));
 			canvasActions.setTurtleActive(currId, activeTurtleIds.contains(currId));
 			canvasActions.animatedMovementToXY(currId,
@@ -363,7 +398,36 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		}
 	}
 
+	private void updateExtension() {
+		reallyTired.getChildren().clear();
+		Iterator<Integer> ids = turtleStateDataSource.getTurtleIDs();
+		while (ids.hasNext()) {
+			reallyTired.getChildren().add(createExtensionHBox(ids.next()));
+		}
+	}
+	
+	private Node createExtensionHBox(int currId){
+		HBox tired = new HBox(5);
+		tired.getChildren().add(new Text("ID: " + currId));
+		ImageView img = new ImageView();
+		img.setImage(FileChooserPath.selectImage(
+				"resources/images/" + shapeMap.get(turtleStateDataSource.getShape(currId)) + ".png", 50, 50));
+		img.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				Random generator = new Random();
+				turtleActionsHandler.setShape(generator.nextInt(4), currId);
+				event.consume();
+			}
+		});
+		tired.getChildren().add(img);
+		return tired;
+	}
+
 	private void initializeTurtle(int currId) {
+
+		reallyTired.getChildren().add(createExtensionHBox(currId));
 
 		EventHandler<MouseEvent> e = new EventHandler<MouseEvent>() {
 

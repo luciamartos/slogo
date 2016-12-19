@@ -29,9 +29,9 @@ public class MainController implements NewSlogoInstanceCreator, SlogoCommandHand
 
 	@Override
 	public void addSlogoInstance() {
-		TabViewController viewController = makeTabViewController("Tab " + (vcMap.keySet().size() + 1));
 		BoardStateController modelController = new BoardStateController();
 		TurtleStatesController turtleStatesController = modelController.getTurtleStatesController();
+		TabViewController viewController = makeTabViewController("Tab " + (vcMap.keySet().size() + 1));
 		vcMap.put(viewController, modelController);
 		viewController.setCommandHandler(this);
 		initializeControllerConnections(modelController, turtleStatesController, viewController);
