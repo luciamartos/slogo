@@ -50,6 +50,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -90,6 +91,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 	private Map<Integer, RGBColor> colorMap;
 	private Map<Integer, String> penTypeMap;
 	private Map<Integer, String> shapeMap;
+	private HBox turtleImages;
 
 	TableView<Variable> defaultVariableTableView;
 	TableView<Variable> userDefinedVariableTableView;
@@ -162,6 +164,8 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		VBox rightTableBox = new VBox(15);
 		rightTableBox.getChildren().add(tableViewController.getUserDefinedVariableTableView());
 		rightTableBox.getChildren().add(tableViewController.getUserDefinedCommandTableView());
+		turtleImages = new HBox(5);
+		rightTableBox.getChildren().add(turtleImages);
 		canvasAndTablesBox.getChildren().add(rightTableBox);
 
 		canvasAndCommandsBox.getChildren().add(createCanvas());
@@ -173,6 +177,30 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 		settingsBox.getChildren().add(settingsController);
 
 		return windowBox;
+	}
+	
+	private void imageBox() {
+		turtleImages.getChildren().clear();
+		Iterator<Integer> ids = turtleStateDataSource.getTurtleIDs();
+		while (ids.hasNext()) {
+			turtleImages.getChildren().add(createImageBox(ids.next()));
+		}
+	}
+	
+	private Node createImageBox(int id){
+		HBox image = new HBox(5);
+		ImageView turtleImg = new ImageView();
+		turtleImg.setImage(FileChooserPath.selectImage(
+				"resources/images/" + shapeMap.get(turtleStateDataSource.getShape(id)) + ".png", 50, 50));
+		turtleImg.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				turtleActionsHandler.setShape(0);
+			}
+		});
+		image.getChildren().add(turtleImg);
+		return image;
 	}
 
 	private Node createViewSelector() {
@@ -352,7 +380,7 @@ public class TabViewController implements Observer, ErrorPresenter, SaveWorkspac
 
 			if (!canvasActions.turtleExists(currId))
 				initializeTurtle(currId);
-
+			imageBox();
 			canvasActions.setTurtleImage(currId, shapeMap.get(turtleStateDataSource.getShape(currId)));
 			canvasActions.setTurtleActive(currId, activeTurtleIds.contains(currId));
 			canvasActions.animatedMovementToXY(currId,

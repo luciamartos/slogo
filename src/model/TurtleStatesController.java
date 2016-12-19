@@ -268,6 +268,13 @@ public class TurtleStatesController extends Observable implements interpreter.Tu
 	public int getNumberOfTurtles() {
 		return this.turtles.size();
 	}
+
+	@Override
+	public void setShape(int shape, int id) {
+		turtles.get(id).setShapeIndex(shape);
+		this.setChanged();
+		this.notifyObservers();
+	}
 	
 	
 }
